@@ -13,6 +13,7 @@ import com.github.bea4dev.snowDawn.world.WorldRegistry
 import com.github.bea4dev.vanilla_source.api.VanillaSourceAPI
 import com.github.bea4dev.vanilla_source.api.camera.CameraPositionAt
 import com.github.bea4dev.vanilla_source.api.camera.CameraPositionsManager
+import com.github.bea4dev.vanilla_source.api.entity.EngineEntity
 import com.github.bea4dev.vanilla_source.api.entity.TickBase
 import com.github.bea4dev.vanilla_source.api.nms.entity.NMSEntityController
 import com.github.bea4dev.vanilla_source.api.player.EnginePlayer
@@ -76,6 +77,8 @@ object Prologue : Scenario() {
         val playerSkin = async {
             getPlayerSkin(player.uniqueId)
         }.await()
+
+        delay(Duration.ofSeconds(3).toMillis())
 
         MainThread.sync {
             player.gameMode = GameMode.SPECTATOR
@@ -177,7 +180,7 @@ object Prologue : Scenario() {
         TextBox(
             player,
             DEFAULT_TEXT_BOX,
-            "？？？？？",
+            "？？？",
             1,
             "聞こえるか？  ${player.name}？\n"
                     + "私はこの作戦の指揮を担当する司令官、\nルーカスだ。"
@@ -386,9 +389,10 @@ object Prologue : Scenario() {
             }
             spawnLocation.y += 2.2
 
+            player.health = 5.0
             player.teleport(spawnLocation)
-            player.inventory.helmet = null
-            player.gameMode = GameMode.SURVIVAL
+            player.inventory.clear()
+            player.gameMode = GameMode.ADVENTURE
         }.await()
 
         val sitEntity = nmsHandler.createNMSEntityController(
@@ -404,14 +408,147 @@ object Prologue : Scenario() {
         val sitPacket = nmsHandler.createSetPassengersPacket(sitEntity, intArrayOf(player.entityId))
         nmsHandler.sendPacket(player, sitPacket)
 
+        val modelLocation = spawnLocation.clone().add(Vector(-2.0, 1.3, 2.0))
+
+        val modelEntity = EngineEntity(
+            SCENARIO_TICK_THREAD.threadLocalCache.getGlobalWorld(WorldRegistry.SNOW_LAND.name),
+            nmsHandler.createNMSEntityController(
+                WorldRegistry.SNOW_LAND,
+                modelLocation.x,
+                modelLocation.y,
+                modelLocation.z,
+                EntityType.ITEM_DISPLAY,
+                null
+            ),
+            SCENARIO_TICK_THREAD,
+            null
+        )
+        modelEntity.setGravity(false)
+        modelEntity.setModel("benevo_1")
+        modelEntity.setRotationLookAt(spawnLocation.x, spawnLocation.y + 1.0, spawnLocation.z)
+
+        val animationHandler = modelEntity.animationHandler!!
+        animationHandler.playAnimation("idle", 0.3, 0.3, 1.0, true)
+
+        modelEntity.spawn()
+
         delay(Duration.ofSeconds(5).toMillis())
 
         blackFeedIn(player, Duration.ofSeconds(4).toMillis())
 
-        delay(Duration.ofSeconds(6).toMillis())
+        delay(Duration.ofSeconds(5).toMillis())
+
+        animationHandler.playAnimation("talk", 0.3, 0.3, 1.0, true)
+
+        TextBox(
+            player,
+            DEFAULT_TEXT_BOX,
+            "？？？",
+            1,
+            ". . . 気が付きましたか？\n\n"
+                    + "どうやらあなたは不時着したようですね。\n"
+        ).play().await()
+
+        animationHandler.playAnimation("point", 0.3, 0.3, 1.0, false)
+
+        TextBox(
+            player,
+            DEFAULT_TEXT_BOX,
+            "？？？",
+            1,
+            "おっと、自己紹介がまだでしたね。\n"
+                    + "こんにちは。\n"
+                    + "私はベネと申します。\n"
+        ).play().await()
+
+        TextBox(
+            player,
+            DEFAULT_TEXT_BOX,
+            "ベネ",
+            1,
+            "大きな衝撃があったので様子を見に来ました。\n\n"
+        ).play().await()
+
+        TextBox(
+            player,
+            DEFAULT_TEXT_BOX,
+            "ベネ",
+            1,
+            "調査施設を探しているのでしょう？\n"
+                    + "施設はここからかなり距離があります。\n"
+        ).play().await()
+
+        TextBox(
+            player,
+            DEFAULT_TEXT_BOX,
+            "ベネ",
+            1,
+            "早速向かいたいところですが、\n"
+                    + "この惑星の気候はかなり厳しいです。\n"
+                    + "装備を整える必要があるでしょう。\n"
+                    + "これをどうぞ。\n"
+        ).play().await()
+
+        delay(100)
+
+        MainThread.sync {
+            player.inventory.addItem(
+                ItemStack(Material.CAMPFIRE),
+                ItemStack(Material.FLINT_AND_STEEL)
+            )
+            player.playSound(
+                net.kyori.adventure.sound.Sound.sound(
+                    Sound.ENTITY_ITEM_PICKUP,
+                    net.kyori.adventure.sound.Sound.Source.NEUTRAL,
+                    1.0F,
+                    Float.MAX_VALUE
+                )
+            )
+        }.await()
+
+        delay(100)
+
+        TextBox(
+            player,
+            DEFAULT_TEXT_BOX,
+            "ベネ",
+            1,
+            "あたりに落ちていた残骸から見つけました。\n"
+                    + "恐らく緊急時のサバイバルキットでしょう。\n"
+                    + "一度体を温めたほうが良さそうです。\n"
+        ).play().await()
+
+        animationHandler.stopAnimation("talk")
+
+        delay(100)
+
+        blackFeedOut(player, Duration.ofSeconds(1).toMillis())
+
+        delay(1500)
+
+        modelEntity.kill()
+
+        delay(500)
+
+        blackFeedIn(player, Duration.ofSeconds(1).toMillis())
+
+        delay(Duration.ofSeconds(1).toMillis())
+
+        MainThread.sync {
+            player.gameMode = GameMode.SURVIVAL
+        }.await()
 
         val sitDeletePacket = nmsHandler.createEntityDestroyPacket(sitEntity)
         nmsHandler.sendPacket(player, sitDeletePacket)
+
+        TextBox(
+            player,
+            DEFAULT_TEXT_BOX,
+            "ベネ",
+            1,
+            "火の近くで温まる必要があります。\n"
+                    + "キャンプファイアを設置してみてください。"
+        ).play().await()
     }
 
 

@@ -18,6 +18,7 @@ repositories {
         name = "sonatype"
     }
     maven("https://raw.github.com/bea4dev/VanillaSourceBukkit/mvn-repo/")
+    maven("https://mvn.lumine.io/repository/maven-public/")
 }
 
 dependencies {
@@ -33,6 +34,8 @@ dependencies {
     implementation("com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:2.20.0")
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.1")
+
+    compileOnly("com.ticxo.modelengine:ModelEngine:R4.0.7")
 }
 
 val targetJavaVersion = 21

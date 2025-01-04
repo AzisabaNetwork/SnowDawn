@@ -10,10 +10,6 @@ import com.github.shynixn.mccoroutine.bukkit.scope
 import kotlinx.coroutines.*
 import org.bukkit.Bukkit
 
-fun launch(block: suspend CoroutineScope.() -> Unit): Job {
-    return VanillaSourceAPI.getInstance().plugin.launch(block = block)
-}
-
 fun <T> async(block: suspend CoroutineScope.() -> T): Deferred<T> {
     val dispatcher = ManualDispatcher()
     val future = VanillaSourceAPI.getInstance().plugin.scope.async(dispatcher, CoroutineStart.DEFAULT, block)
@@ -48,6 +44,10 @@ object MainThread {
         val future = VanillaSourceAPI.getInstance().plugin.scope.async(dispatcher, CoroutineStart.DEFAULT, block)
         Bukkit.getScheduler().runTask(VanillaSourceAPI.getInstance().plugin, dispatcher)
         return future
+    }
+
+    fun launch(block: suspend CoroutineScope.() -> Unit): Job {
+        return VanillaSourceAPI.getInstance().plugin.launch(block = block)
     }
 }
 
