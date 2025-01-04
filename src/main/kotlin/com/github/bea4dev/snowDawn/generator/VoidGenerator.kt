@@ -1,4 +1,5 @@
 package com.github.bea4dev.snowDawn.generator
 
-class VoidGenerator {
-}
+import org.bukkit.generator.ChunkGenerator
+
+class VoidGenerator internal constructor(): ChunkGenerator()
