@@ -5,7 +5,11 @@ import com.github.bea4dev.snowDawn.dimension.DimensionRegistry
 import com.github.bea4dev.snowDawn.generator.GeneratorRegistry
 import com.github.bea4dev.snowDawn.listeners.ChunkListener
 import com.github.bea4dev.snowDawn.listeners.PlayerJoinQuitListener
+import com.github.bea4dev.snowDawn.listeners.WeaponListener
+import com.github.bea4dev.snowDawn.player.PlayerManagerListener
 import com.github.bea4dev.snowDawn.world.WorldRegistry
+import com.github.bea4dev.vanilla_source.api.VanillaSourceAPI
+import com.github.bea4dev.vanilla_source.api.entity.tick.TickThread
 import com.github.shynixn.mccoroutine.bukkit.ShutdownStrategy
 import com.github.shynixn.mccoroutine.bukkit.mcCoroutineConfiguration
 import com.github.shynixn.mccoroutine.bukkit.scope
@@ -21,7 +25,18 @@ import java.time.Duration
 
 class SnowDawn : JavaPlugin() {
 
+    companion object {
+        lateinit var ENTITY_THREAD: TickThread
+            private set
+        lateinit var plugin: SnowDawn
+            private set
+    }
+
     override fun onEnable() {
+        plugin = this
+
+        ENTITY_THREAD = VanillaSourceAPI.getInstance().tickThreadPool.nextTickThread
+
         DimensionRegistry.init()
         BiomeRegistry.init()
         GeneratorRegistry.init(0)
@@ -30,6 +45,8 @@ class SnowDawn : JavaPlugin() {
         val pluginManager = Bukkit.getPluginManager()
         pluginManager.registerEvents(PlayerJoinQuitListener(), this)
         pluginManager.registerEvents(ChunkListener(), this)
+        pluginManager.registerEvents(PlayerManagerListener(), this)
+        pluginManager.registerEvents(WeaponListener(), this)
 
         SpigotConfig.disabledAdvancements.add("*")
 

@@ -12,6 +12,8 @@ import java.nio.file.*
 import java.nio.file.attribute.BasicFileAttributes
 
 object WorldRegistry {
+    lateinit var ASSET: World
+        private set
     lateinit var VOID: World
         private set
     lateinit var SNOW_LAND: World
@@ -19,6 +21,8 @@ object WorldRegistry {
 
     fun init() {
         Bukkit.getScheduler().runTask(VanillaSourceAPI.getInstance().plugin, Runnable {
+            ASSET = Bukkit.getWorld("vanilla_source_assets_world")!!
+
             val voidWorldCreator = WorldCreator("prologue")
             voidWorldCreator.generator(GeneratorRegistry.VOID)
             VOID = Bukkit.createWorld(voidWorldCreator)!!

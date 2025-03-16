@@ -1,6 +1,6 @@
 plugins {
     kotlin("jvm") version "2.1.0"
-    id("com.github.johnrengelman.shadow") version "8.1.1"
+    id("io.github.goooler.shadow") version "8.1.8"
     id("io.papermc.paperweight.userdev") version "1.7.7"
 }
 
@@ -19,6 +19,7 @@ repositories {
     }
     maven("https://raw.github.com/bea4dev/VanillaSourceBukkit/mvn-repo/")
     maven("https://mvn.lumine.io/repository/maven-public/")
+    maven("https://repo.codemc.io/repository/maven-public/")
 }
 
 dependencies {
@@ -36,6 +37,12 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.1")
 
     compileOnly("com.ticxo.modelengine:ModelEngine:R4.0.7")
+
+    implementation("de.tr7zw:item-nbt-api:2.14.1")
+}
+
+tasks.shadowJar {
+    relocate("de.tr7zw.changeme.nbtapi", "${project.group}.libs.nbtapi")
 }
 
 val targetJavaVersion = 21

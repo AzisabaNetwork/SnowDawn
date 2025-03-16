@@ -15,7 +15,7 @@ import java.util.UUID
 
 val SCENARIO_TICK_THREAD: TickThread = VanillaSourceAPI.getInstance().tickThreadPool.nextTickThread
 const val DEFAULT_TEXT_BOX = "\uE201"
-const val BLACK_SCREEN_TEXT = "\uE001"
+const val BLACK_SCREEN_TEXT = "\uE101"
 
 abstract class Scenario {
     protected abstract suspend fun run(player: Player)
