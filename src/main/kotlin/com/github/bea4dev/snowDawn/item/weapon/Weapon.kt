@@ -4,7 +4,6 @@ import com.github.bea4dev.snowDawn.entity.mob.Phage
 import com.github.bea4dev.snowDawn.item.Item
 import com.github.bea4dev.snowDawn.item.getItem
 import com.github.bea4dev.snowDawn.player.PlayerManager
-import com.github.bea4dev.vanilla_source.api.entity.EngineEntity
 import com.github.bea4dev.vanilla_source.api.util.collision.CollideOption
 import com.github.bea4dev.vanilla_source.api.world.cache.AsyncWorldCache
 import de.tr7zw.changeme.nbtapi.NBT
@@ -22,10 +21,13 @@ class Weapon(
     material: Material,
     customModelData: Int,
     private val maxAttackTick: Int,
-    private val parryWaveRange: Double
+    private val parryWaveRange: Double,
+    private val attackDamage: Float,
 ) : Item(
     id, material, customModelData
 ) {
+    private val parryCheckRange = 3.0
+
     override fun createItemStack(): ItemStack {
         return super.createItemStack()
             .also { item -> NBT.modify(item) { nbt -> nbt.setInteger(WeaponTag.MAX_ATTACK_TICK.key, maxAttackTick) } }
@@ -47,38 +49,42 @@ class Weapon(
         val location = player.eyeLocation
         val world = AsyncWorldCache.getAsyncWorld(location.world.name)
 
-        var entity: EngineEntity? = null
-        for (phage in world.getNearbyEntities(location.x, location.y, location.z, 1.0)) {
-            if (phage is Phage && phage.tryParry()) {
-                entity = phage
+        val result =
+            world.rayTrace(location.toVector(), location.direction, 3.0, CollideOption(FluidCollisionMode.NEVER, true))
+
+        if (result != null) {
+            val hitEntity = result.hitEntity
+            if (hitEntity != null && hitEntity is Phage) {
+                val damage = if (attackTick == maxAttackTick) {
+                    attackDamage
+                } else {
+                    attackDamage / 2.0F
+                }
+                hitEntity.damage(player, damage, attackTick == maxAttackTick)
             }
         }
 
-        if (entity == null) {
-            val result =
-                world.rayTrace(
-                    location.toVector(),
-                    location.direction,
-                    3.0,
-                    CollideOption(FluidCollisionMode.NEVER, true)
-                ) ?: return
-
-            entity = result.hitEntity ?: return
-        }
-
-        if (entity !is Phage || !entity.tryParry()) {
+        if (attackTick != maxAttackTick) {
             return
         }
 
-        val hitPosition = entity.location.toVector()
+        val parryCenter = location.toVector().add(location.direction.multiply(parryCheckRange - 0.5))
+        val parryEntities = world.getNearbyEntities(parryCenter.x, parryCenter.y, parryCenter.z, parryCheckRange)
+        var successParry = false
+        for (entity in parryEntities) {
+            if (entity is Phage && entity.tryParry()) {
+                successParry = true
+            }
+        }
+
+        if (!successParry) {
+            return
+        }
 
         PlayerManager.ONLINE_PLAYERS.forEach {
             it.playSound(
                 Sound.sound(
-                    org.bukkit.Sound.ENTITY_ZOMBIE_ATTACK_IRON_DOOR,
-                    Sound.Source.PLAYER,
-                    1.0F,
-                    1.2F
+                    org.bukkit.Sound.ENTITY_ZOMBIE_ATTACK_IRON_DOOR, Sound.Source.PLAYER, 1.0F, 1.2F
                 ),
                 location.x,
                 location.y,
@@ -86,9 +92,9 @@ class Weapon(
             )
         }
 
-        for (nearEntity in world.getNearbyEntities(hitPosition.x, hitPosition.y, hitPosition.z, parryWaveRange)) {
-            if (nearEntity is Phage) {
-                nearEntity.parryBy(player)
+        for (parryEntity in world.getNearbyEntities(parryCenter.x, parryCenter.y, parryCenter.z, parryWaveRange)) {
+            if (parryEntity is Phage) {
+                parryEntity.parryBy(player)
             }
         }
 
@@ -101,20 +107,12 @@ class Weapon(
             val y = Random.nextDouble(size) - (size / 2.0)
             val z = Random.nextDouble(size) - (size / 2.0)
             PlayerManager.ONLINE_PLAYERS.forEach {
-                it.spawnParticle(Particle.CRIT, hitPosition.x, hitPosition.y, hitPosition.z, 0, x, y, z, 1.5)
+                it.spawnParticle(Particle.CRIT, parryCenter.x, parryCenter.y, parryCenter.z, 0, x, y, z, 1.5)
             }
         }
         PlayerManager.ONLINE_PLAYERS.forEach {
             it.spawnParticle(
-                Particle.FLASH,
-                hitPosition.x,
-                hitPosition.y,
-                hitPosition.z,
-                0,
-                0.0,
-                0.0,
-                0.0,
-                0.5
+                Particle.FLASH, parryCenter.x, parryCenter.y, parryCenter.z, 0, 0.0, 0.0, 0.0, 0.5
             )
         }
     }

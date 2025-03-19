@@ -16,7 +16,7 @@ import org.bukkit.util.Vector
 
 private val LOGIN_POSITION = Vector(0.5, 0.0, 0.5)
 
-internal class PlayerJoinQuitListener: Listener {
+internal class PlayerJoinQuitListener : Listener {
 
     @EventHandler
     fun onPlayerJoin(event: PlayerJoinEvent) {
@@ -26,7 +26,7 @@ internal class PlayerJoinQuitListener: Listener {
 
         player.teleport(Location(WorldRegistry.ASSET, 0.5, 1.0, 0.5))
 
-        val weapon = Weapon("pipe0", Material.SHEARS, 1, 20, 5.0)
+        val weapon = Weapon("pipe0", Material.SHEARS, 1, 10, 5.0, 4.0F)
         player.inventory.setItemInMainHand(weapon.createItemStack())
 
         PlayerWeaponTask(player).runTaskTimer(SnowDawn.plugin, 0, 1)
@@ -44,7 +44,8 @@ internal class PlayerJoinQuitListener: Listener {
         val player = event.player
 
         if (player.isSneaking) {
-            val phage = Phage(player.location)
+            val phage = Phage(player.location, 20.0F, 5.0F)
+            phage.block = Material.DEEPSLATE
             phage.spawn()
         }
     }
