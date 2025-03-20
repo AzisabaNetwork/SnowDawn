@@ -17,7 +17,12 @@ object PlayerManager {
         var nearestPlayer: Player? = null
 
         for (player in ONLINE_PLAYERS) {
-            val distance = player.location.distanceSquared(location)
+            val playerLocation = player.location
+            if (playerLocation.world != location.world) {
+                continue
+            }
+
+            val distance = playerLocation.distanceSquared(location)
             if (distance < minDistance) {
                 minDistance = distance
                 nearestPlayer = player

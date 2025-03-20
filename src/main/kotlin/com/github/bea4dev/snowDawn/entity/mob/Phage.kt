@@ -44,11 +44,13 @@ class Phage(
     private var stateVariables = PhageStateVariables()
     internal var target: Player? = null
     private var tick = 0
+    private var noDamageTick = 0
 
     private val attackRange = 4.0
     private val attackJumpTick = 20
     private val parryBufferTick = 3
     private val maxStuck = TickThread.TPS * 5
+    private val maxDamageTick = 10
 
     private val height = 1.6
     private val width = 0.9
@@ -83,9 +85,14 @@ class Phage(
         this.stateVariables.reset()
     }
 
+    @Synchronized
     override fun tick() {
         tick++
         super.tick()
+
+        if (noDamageTick > 0) {
+            noDamageTick--
+        }
 
         super.modeledEntityHolder.dummy.bodyRotationController.yBodyRot = super.yaw
 
@@ -231,11 +238,17 @@ class Phage(
         }
     }
 
+    @Synchronized
     fun tryParry(): Boolean {
         return state == PhageState.ATTACK && stateVariables.attackTick in attackJumpTick until (attackJumpTick + parryBufferTick)
     }
 
+    @Synchronized
     fun parryBy(player: Player) {
+        if (health <= 0.0F) {
+            return
+        }
+
         val location = player.location
         super.setRotationLookAt(location.x, location.y, location.z)
 
@@ -257,9 +270,9 @@ class Phage(
                     super.y + 1.0,
                     super.z,
                     10,
-                    1.0,
-                    1.0,
-                    1.0,
+                    0.5,
+                    0.5,
+                    0.5,
                     block.createBlockData()
                 )
                 it.playSound(
@@ -273,8 +286,9 @@ class Phage(
         }
     }
 
+    @Synchronized
     fun damage(player: Player, damage: Float, critical: Boolean) {
-        if (health <= 0.0F) {
+        if (health <= 0.0F || noDamageTick > 0) {
             return
         }
 
@@ -310,11 +324,15 @@ class Phage(
             player.playSound(Sound.sound(org.bukkit.Sound.ENTITY_PLAYER_ATTACK_STRONG, Sound.Source.PLAYER, 1.0F, 1.0F))
         }
 
+        noDamageTick = maxDamageTick
+
         health -= if (state == PhageState.STUCK) {
             damage * 2.0F
         } else {
             damage
         }
+
+        modeledEntityHolder.modeledEntity.markHurt()
 
         if (health <= 0.0F) {
             val location = player.location
@@ -364,7 +382,6 @@ class Phage(
                     super.z,
                 )
             }
-            modeledEntityHolder.modeledEntity.markHurt()
         }
     }
 }
