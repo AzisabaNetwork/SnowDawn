@@ -9,6 +9,7 @@ import com.github.bea4dev.snowDawn.scenario.DEFAULT_TEXT_BOX
 import com.github.bea4dev.snowDawn.scenario.SCENARIO_TICK_THREAD
 import com.github.bea4dev.snowDawn.scenario.Scenario
 import com.github.bea4dev.snowDawn.scenario.getPlayerSkin
+import com.github.bea4dev.snowDawn.text.Text
 import com.github.bea4dev.snowDawn.world.WorldRegistry
 import com.github.bea4dev.vanilla_source.api.VanillaSourceAPI
 import com.github.bea4dev.vanilla_source.api.camera.CameraPositionAt
@@ -153,7 +154,7 @@ object Prologue : Scenario() {
             DEFAULT_TEXT_BOX,
             "",
             1,
-            "21XX年、\n人類は異星文明との戦闘状態に突入した。"
+            Text.TUTORIAL_1[player]
         ).play().await()
 
         TextBox(
@@ -161,8 +162,7 @@ object Prologue : Scenario() {
             DEFAULT_TEXT_BOX,
             "",
             1,
-            "敵勢力の攻撃に圧倒され\n敗戦間近まで追い詰められたが、\n"
-                    + "奇妙なことに敵の攻撃は突然止んだ....."
+            Text.TUTORIAL_2[player]
         ).play().await()
 
         player.playSound(
@@ -182,17 +182,15 @@ object Prologue : Scenario() {
             DEFAULT_TEXT_BOX,
             "？？？",
             1,
-            "聞こえるか？  ${player.name}？\n"
-                    + "私はこの作戦の指揮を担当する司令官、\nルーカスだ。"
+            Text.TUTORIAL_3[player, player.name]
         ).lowSound().play().await()
 
         TextBox(
             player,
             DEFAULT_TEXT_BOX,
-            "司令官ルーカス",
+            Text.LUCAS[player],
             1,
-            "君も知っての通り、\n敵の攻撃が昨年、突如止まった。\n"
-                    + "君には敵の居住地である地球型惑星、\n「TR1-e」の調査を命じる。"
+            Text.TUTORIAL_4[player]
         ).lowSound().play().await()
 
         player.playSound(
@@ -210,30 +208,33 @@ object Prologue : Scenario() {
         TextBox(
             player,
             DEFAULT_TEXT_BOX,
-            "司令官ルーカス",
+            Text.LUCAS[player],
             1,
-            "くれぐれも注意を怠るな。\n"
-                    + "攻撃が止んだとはいえ、\n敵の動きは依然掴めていない。\n"
-                    + "二度とあのようなことは御免だ. . . . . .\n. . . . .\n\n"
-                    + ". . . . . . . ともかく、\nこの作戦の目的はこの惑星の調査だ。"
+            Text.TUTORIAL_5[player]
         ).lowSound().play().await()
 
         TextBox(
             player,
             DEFAULT_TEXT_BOX,
-            "司令官ルーカス",
+            Text.LUCAS[player],
             1,
-            "地上には我々の建設した\n調査設備がある。\n"
-                    + "しかし、最近になって連絡が取れなくなった。\n"
-                    + "君にはその施設を調査して\n記録媒体を回収してきてほしい。"
+            Text.TUTORIAL_6[player]
         ).lowSound().play().await()
 
         TextBox(
             player,
             DEFAULT_TEXT_BOX,
-            "司令官ルーカス",
+            Text.LUCAS[player],
             1,
-            "健闘を祈る。\n\n"
+            Text.TUTORIAL_7[player]
+        ).lowSound().play().await()
+
+        TextBox(
+            player,
+            DEFAULT_TEXT_BOX,
+            Text.LUCAS[player],
+            1,
+            Text.TUTORIAL_8[player]
         ).lowSound().play().await()
 
         player.playSound(
@@ -251,22 +252,41 @@ object Prologue : Scenario() {
         TextBox(
             player,
             DEFAULT_TEXT_BOX,
-            "司令官ルーカス",
+            Text.LUCAS[player],
             1,
-            "いや待て. . .\n\n\n"
-                    + "君の突入カプセルの電磁波計測器から\n異常値が送信されている。\n"
-                    + "その機体はオンボロだが、\n計測器のような"
-                    + "命に関わる部分は\nキチンと整備されているはずだ。\n"
-                    + "しかも異常値を示すのは一つだけではない。\n"
-                    + "全てだ。"
+            Text.TUTORIAL_9[player]
         ).lowSound().play().await()
 
         TextBox(
             player,
             DEFAULT_TEXT_BOX,
-            "司令官ルーカス",
+            Text.LUCAS[player],
             1,
-            "嫌な予感がする. . . . .\n\n"
+            Text.TUTORIAL_10[player]
+        ).lowSound().play().await()
+
+        TextBox(
+            player,
+            DEFAULT_TEXT_BOX,
+            Text.LUCAS[player],
+            1,
+            Text.TUTORIAL_11[player]
+        ).lowSound().play().await()
+
+        TextBox(
+            player,
+            DEFAULT_TEXT_BOX,
+            Text.LUCAS[player],
+            1,
+            Text.TUTORIAL_12[player]
+        ).lowSound().play().await()
+
+        TextBox(
+            player,
+            DEFAULT_TEXT_BOX,
+            Text.LUCAS[player],
+            1,
+            Text.TUTORIAL_13[player]
         ).lowSound().play().await()
 
         val camera3Future = camera3.play()
@@ -445,8 +465,15 @@ object Prologue : Scenario() {
             DEFAULT_TEXT_BOX,
             "？？？",
             1,
-            ". . . 気が付きましたか？\n\n"
-                    + "どうやらあなたは不時着したようですね。\n"
+            Text.TUTORIAL_14[player]
+        ).play().await()
+
+        TextBox(
+            player,
+            DEFAULT_TEXT_BOX,
+            "？？？",
+            1,
+            Text.TUTORIAL_15[player]
         ).play().await()
 
         animationHandler.playAnimation("point", 0.3, 0.3, 1.0, false)
@@ -456,37 +483,23 @@ object Prologue : Scenario() {
             DEFAULT_TEXT_BOX,
             "？？？",
             1,
-            "おっと、自己紹介がまだでしたね。\n"
-                    + "こんにちは。\n"
-                    + "私はベネと申します。\n"
+            Text.TUTORIAL_16[player]
         ).play().await()
 
         TextBox(
             player,
             DEFAULT_TEXT_BOX,
-            "ベネ",
+            Text.BENE[player],
             1,
-            "大きな衝撃があったので様子を見に来ました。\n\n"
+            Text.TUTORIAL_17[player]
         ).play().await()
 
         TextBox(
             player,
             DEFAULT_TEXT_BOX,
-            "ベネ",
+            Text.BENE[player],
             1,
-            "調査施設を探しているのでしょう？\n"
-                    + "施設はここからかなり距離があります。\n"
-        ).play().await()
-
-        TextBox(
-            player,
-            DEFAULT_TEXT_BOX,
-            "ベネ",
-            1,
-            "早速向かいたいところですが、\n"
-                    + "この惑星の気候はかなり厳しいです。\n"
-                    + "装備を整える必要があるでしょう。\n"
-                    + "これをどうぞ。\n"
+            Text.TUTORIAL_18[player]
         ).play().await()
 
         delay(100)
@@ -511,11 +524,9 @@ object Prologue : Scenario() {
         TextBox(
             player,
             DEFAULT_TEXT_BOX,
-            "ベネ",
+            Text.BENE[player],
             1,
-            "あたりに落ちていた残骸から見つけました。\n"
-                    + "恐らく緊急時のサバイバルキットでしょう。\n"
-                    + "一度体を温めたほうが良さそうです。\n"
+            Text.TUTORIAL_19[player]
         ).play().await()
 
         animationHandler.stopAnimation("talk")
@@ -544,10 +555,9 @@ object Prologue : Scenario() {
         TextBox(
             player,
             DEFAULT_TEXT_BOX,
-            "ベネ",
+            Text.BENE[player],
             1,
-            "火の近くで温まる必要があります。\n"
-                    + "キャンプファイアを設置してみてください。"
+            Text.TUTORIAL_20[player]
         ).play().await()
     }
 
