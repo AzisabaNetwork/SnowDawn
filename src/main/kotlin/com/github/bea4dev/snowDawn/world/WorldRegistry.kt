@@ -14,9 +14,11 @@ import java.nio.file.attribute.BasicFileAttributes
 object WorldRegistry {
     lateinit var ASSET: World
         private set
-    lateinit var VOID: World
+    lateinit var PROLOGUE: World
         private set
     lateinit var SNOW_LAND: World
+        private set
+    lateinit var SECOND_MEGA_STRUCTURE: World
         private set
 
     fun init() {
@@ -25,22 +27,31 @@ object WorldRegistry {
 
             val voidWorldCreator = WorldCreator("prologue")
             voidWorldCreator.generator(GeneratorRegistry.VOID)
-            VOID = Bukkit.createWorld(voidWorldCreator)!!
-            VanillaSourceAPI.getInstance().nmsHandler.setDimensionType(VOID, DimensionRegistry.SNOW_LAND_DIMENSION)
+            PROLOGUE = Bukkit.createWorld(voidWorldCreator)!!
+            VanillaSourceAPI.getInstance().nmsHandler.setDimensionType(PROLOGUE, DimensionRegistry.SNOW_LAND)
 
 
             val directory = Paths.get("snow_land")
             deleteDirectory(directory)
 
-            val creator = WorldCreator("snow_land")
-            creator.generator(GeneratorRegistry.SNOW_LAND)
-            SNOW_LAND = Bukkit.createWorld(creator)!!
+            val slCreator = WorldCreator("snow_land")
+            slCreator.generator(GeneratorRegistry.SNOW_LAND)
+            SNOW_LAND = Bukkit.createWorld(slCreator)!!
 
-            VanillaSourceAPI.getInstance().nmsHandler.setDimensionType(SNOW_LAND, DimensionRegistry.SNOW_LAND_DIMENSION)
+            val smCreator = WorldCreator("second_mega_structure")
+            smCreator.generator(GeneratorRegistry.SECOND_MEGA_STRUCTURE)
+            SECOND_MEGA_STRUCTURE = Bukkit.createWorld(smCreator)!!
+
+            val nmsHandler = VanillaSourceAPI.getInstance().nmsHandler
+            nmsHandler.setDimensionType(SNOW_LAND, DimensionRegistry.SNOW_LAND)
+            nmsHandler.setDimensionType(SECOND_MEGA_STRUCTURE, DimensionRegistry.SECOND_MEGA_STRUCTURE)
 
             SNOW_LAND.setGameRule(GameRule.DO_MOB_SPAWNING, false)
             SNOW_LAND.setGameRule(GameRule.DO_WEATHER_CYCLE, false)
             SNOW_LAND.setStorm(true)
+
+            SECOND_MEGA_STRUCTURE.setGameRule(GameRule.DO_MOB_SPAWNING, false)
+            SECOND_MEGA_STRUCTURE.setGameRule(GameRule.DO_WEATHER_CYCLE, false)
         })
     }
 

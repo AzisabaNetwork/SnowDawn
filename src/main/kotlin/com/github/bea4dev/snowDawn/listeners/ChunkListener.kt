@@ -1,6 +1,7 @@
 package com.github.bea4dev.snowDawn.listeners
 
 import com.github.bea4dev.snowDawn.biome.BiomeRegistry
+import com.github.bea4dev.snowDawn.world.WorldRegistry
 import com.github.bea4dev.vanilla_source.api.VanillaSourceAPI
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
@@ -16,6 +17,10 @@ internal class ChunkListener : Listener {
 
         if (event.world.name == "prologue") {
             VanillaSourceAPI.getInstance().nmsHandler.setBiomeForChunk(event.chunk, BiomeRegistry.NO_BGM)
+        }
+
+        if (event.world.name == "second_mega_structure") {
+            VanillaSourceAPI.getInstance().nmsHandler.setBiomeForChunk(event.chunk, BiomeRegistry.SECOND_MEGA_STRUCTURE)
         }
     }
 }

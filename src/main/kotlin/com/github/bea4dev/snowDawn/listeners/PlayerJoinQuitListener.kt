@@ -24,7 +24,8 @@ internal class PlayerJoinQuitListener : Listener {
 
         player.gameMode = GameMode.CREATIVE
 
-        player.teleport(Location(WorldRegistry.ASSET, 0.5, 1.0, 0.5))
+        //player.teleport(Location(WorldRegistry.ASSET, 0.5, 1.0, 0.5))
+        player.teleport(Location(WorldRegistry.SECOND_MEGA_STRUCTURE, 0.5, 330.0, 0.5))
 
         val weapon = Weapon("pipe0", Material.SHEARS, 1, 10, 5.0, 4.0F)
         player.inventory.setItemInMainHand(weapon.createItemStack())
@@ -44,9 +45,9 @@ internal class PlayerJoinQuitListener : Listener {
         val player = event.player
 
         if (player.isSneaking) {
-            val phage = Phage(player.location, 20.0F, 5.0F)
-            phage.block = Material.DEEPSLATE
-            phage.spawn()
+            //val phage = Phage(player.location, 20.0F, 5.0F)
+            //phage.block = Material.DEEPSLATE
+            //phage.spawn()
         }
     }
 
