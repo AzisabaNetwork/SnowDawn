@@ -2,6 +2,7 @@ package com.github.bea4dev.snowDawn.listeners
 
 import com.github.bea4dev.snowDawn.SnowDawn
 import com.github.bea4dev.snowDawn.entity.mob.Phage
+import com.github.bea4dev.snowDawn.entity.mob.Test
 import com.github.bea4dev.snowDawn.item.weapon.PlayerWeaponTask
 import com.github.bea4dev.snowDawn.item.weapon.Weapon
 import com.github.bea4dev.snowDawn.world.WorldRegistry
@@ -44,7 +45,10 @@ internal class PlayerJoinQuitListener : Listener {
         val player = event.player
 
         if (player.isSneaking) {
-            val phage = Phage(player.location, 20.0F, 5.0F)
+            val test = Test(player.location, 20.0F, 1.0F)
+            test.block = Material.STONE
+            test.spawn()
+            val phage = Phage(player.location, 20.0F, 1.0F)
             phage.block = Material.DEEPSLATE
             phage.spawn()
         }

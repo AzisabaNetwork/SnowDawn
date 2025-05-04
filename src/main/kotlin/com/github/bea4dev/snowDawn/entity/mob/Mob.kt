@@ -1,0 +1,443 @@
+package com.github.bea4dev.snowDawn.entity.mob
+
+import com.github.bea4dev.snowDawn.SnowDawn
+import com.github.bea4dev.snowDawn.entity.mob.MobState.*
+import com.github.bea4dev.snowDawn.player.PlayerManager
+import com.github.bea4dev.vanilla_source.api.VanillaSourceAPI
+import com.github.bea4dev.vanilla_source.api.entity.EngineEntity
+import com.github.bea4dev.vanilla_source.api.entity.ai.navigation.GoalSelector
+import com.github.bea4dev.vanilla_source.api.entity.ai.navigation.Navigator
+import com.github.bea4dev.vanilla_source.api.entity.ai.navigation.goal.PathfindingGoal
+import com.github.bea4dev.vanilla_source.api.entity.ai.pathfinding.BlockPosition
+import com.github.bea4dev.vanilla_source.api.entity.tick.TickThread
+import com.github.bea4dev.vanilla_source.api.util.collision.EngineBoundingBox
+import net.kyori.adventure.sound.Sound
+import org.bukkit.Bukkit
+import org.bukkit.Location
+import org.bukkit.Material
+import org.bukkit.Particle
+import org.bukkit.entity.EntityType
+import org.bukkit.entity.Player
+import org.bukkit.inventory.ItemStack
+import org.bukkit.util.Vector
+import kotlin.math.pow
+import kotlin.random.Random
+
+abstract class Mob(
+    location: Location,
+    protected open var health: Float,
+    protected open val attackDamage: Float
+) : EngineEntity(
+    SnowDawn.ENTITY_THREAD.threadLocalCache.getGlobalWorld(location.world.name),
+    VanillaSourceAPI.getInstance().nmsHandler.createNMSEntityController(location.world, location.x, location.y, location.z, EntityType.ITEM_DISPLAY, null),
+    SnowDawn.ENTITY_THREAD, null
+), IMobState {
+    internal val bukkitWorld = location.world
+    protected open var state = IDLE
+    protected open var stateVariables = MobStateVariables()
+    internal var target: Player? = null
+    protected open var tick = 0
+    protected open var noDamageTick = 0
+
+    protected open val attackRange = 4.0
+    protected open val attackJumpTick = 20
+    protected open val parryBufferTick = 3
+    protected open val maxStuck = TickThread.TPS * 5
+    protected open val maxDamageTick = 10
+
+    protected open val height = 1.6
+    protected open val width = 0.9
+
+    var block: Material = Material.AIR
+
+    init {
+        super.aiController.goalSelector.registerGoal(0, MobAIGoal(this))
+        super.aiController.navigator.maxIterations = 100
+        super.aiController.navigator.speed = 0.25F
+        super.aiController.navigator.pathfindingInterval = 20
+
+        super.hasGravity = true
+
+        super.setModel("phage_normal")
+        super.getAnimationHandler().playAnimation(MobAnimation.IDLE.key, 0.3, 0.3, 1.0, true)
+
+        super.entityController.resetBoundingBoxForMovement(
+            EngineBoundingBox(
+                location.x - width / 2.0,
+                location.y,
+                location.z - width / 2.0,
+                location.x + width / 2.0,
+                location.y + height,
+                location.z + width / 2.0
+            )
+        )
+    }
+
+    private fun setMobState(state: MobState) {
+        this.state = state
+        this.stateVariables.reset()
+    }
+
+    @Synchronized
+    override fun tick() {
+        tick++
+        super.tick()
+
+        if (noDamageTick > 0) {
+            noDamageTick--
+        }
+
+        super.modeledEntityHolder.dummy.bodyRotationController.yBodyRot = super.yaw
+
+        val activeModel = super.modeledEntityHolder.modeledEntity.models.values.first()
+        activeModel.getBone("block").orElseThrow().model = ItemStack(block)
+
+        tickState(state)
+    }
+
+    override fun tickIdle() {
+        super.aiController.navigator.enableNavigation = true
+        // TODO : walk randomly
+
+        playIdleOrWalkAnimation()
+
+        val target = this.target
+        if (target != null) {
+            this.setMobState(RUN)
+        }
+    }
+
+    override fun tickRun() {
+        super.aiController.navigator.enableNavigation = true
+
+        val target = this.target
+        if (target == null) {
+            this.setMobState(IDLE)
+        } else {
+            playIdleOrWalkAnimation()
+
+            if (target.location.toVector().distanceSquared(super.getPosition()) < attackRange.pow(2)) {
+                animationHandler.stopAnimation(MobAnimation.WALK.key)
+                this.setMobState(ATTACK)
+                this.stateVariables.attackTarget = target
+            }
+        }
+    }
+
+    override fun tickStuck() {
+
+        super.aiController.navigator.enableNavigation = false
+        stateVariables.stuckTick++
+
+        if (stateVariables.stuckTick == 14) {
+            animationHandler.playAnimation(MobAnimation.STUCK.key, 0.0, 0.3, 1.0, true)
+        }
+
+        if (stateVariables.stuckTick > maxStuck) {
+            animationHandler.stopAnimation(MobAnimation.STUCK.key)
+            this.setMobState(RUN)
+        }
+    }
+
+    override fun tickAttack() {
+
+        super.aiController.navigator.enableNavigation = false
+
+        val target = this.stateVariables.attackTarget!!
+
+        if (this.stateVariables.attackTick == 0) {
+            animationHandler.playAnimation(MobAnimation.ATTACK.key, 0.3, 0.3, 1.0, true)
+        }
+
+        if (this.stateVariables.attackTick == 5) {
+            PlayerManager.ONLINE_PLAYERS.forEach {
+                it.spawnParticle(
+                    Particle.SONIC_BOOM,
+                    super.x,
+                    super.y + 1.25,
+                    super.z,
+                    1
+                )
+            }
+        }
+
+        this.stateVariables.attackTick++
+
+        if (this.stateVariables.attackTick < attackJumpTick) {
+            super.setRotationLookAt(target.x, target.y, target.z)
+        } else if (this.stateVariables.attackTick == attackJumpTick) {
+            val direction = target.location.toVector().subtract(super.getPosition())
+
+            if (!direction.isZero) {
+                direction.normalize().multiply(0.8).add(Vector(0.0, 0.4, 0.0))
+            }
+
+            super.velocity = direction
+        } else {
+            PlayerManager.ONLINE_PLAYERS
+                .filter { it.boundingBox.overlaps(super.getBoundingBox()!!) }
+                .forEach {
+                    Bukkit.getScheduler()
+                        .runTaskLater(SnowDawn.plugin, Runnable {
+                            if (state == ATTACK) {
+                                it.damage(attackDamage.toDouble())
+                            }
+                        }, 1)
+                }
+
+            super.velocity.add(Vector(0.0, -0.08, 0.0))
+
+            if (super.isOnGround()) {
+                animationHandler.stopAnimation(MobAnimation.ATTACK.key)
+                this.setMobState(RUN)
+            }
+        }
+    }
+
+    override fun tickDeath() {
+        stateVariables.deathTick++
+
+        if (stateVariables.deathTick == 13) {
+            super.kill()
+
+            PlayerManager.ONLINE_PLAYERS.forEach {
+                it.spawnParticle(
+                    Particle.POOF,
+                    super.x,
+                    super.y + 0.5,
+                    super.z,
+                    0,
+                    0.0,
+                    0.0,
+                    0.0,
+                )
+            }
+        }
+    }
+
+    private fun playIdleOrWalkAnimation() {
+        if (super.getMoveDelta().isZero) {
+            animationHandler.stopAnimation(MobAnimation.WALK.key)
+            if (!animationHandler.animations.containsKey(MobAnimation.IDLE.key)) {
+                animationHandler.playAnimation(MobAnimation.IDLE.key, 0.3, 0.3, 1.0, true)
+            }
+        } else {
+            animationHandler.stopAnimation(MobAnimation.IDLE.key)
+            if (!animationHandler.animations.containsKey(MobAnimation.WALK.key)) {
+                animationHandler.playAnimation(MobAnimation.WALK.key, 0.3, 0.3, 2.0, true)
+            }
+        }
+    }
+
+    @Synchronized
+    fun tryParry(): Boolean {
+        return state == ATTACK && stateVariables.attackTick in attackJumpTick until (attackJumpTick + parryBufferTick)
+    }
+
+    @Synchronized
+    fun parryBy(player: Player, v: Double = 0.2, vy: Double = 0.1) {
+        if (health <= 0.0F) {
+            return
+        }
+
+        val location = player.location
+        super.setRotationLookAt(location.x, location.y, location.z)
+
+        val direction = super.getPosition().subtract(location.toVector())
+        direction.setY(0.0)
+        if (!direction.isZero) {
+            direction.normalize().multiply(v).add(Vector(0.0, vy, 0.0))
+        }
+        super.velocity = direction
+
+        animationHandler.playAnimation(MobAnimation.PARRY.key, 0.0, 0.0, 1.0, true)
+        this.setMobState(STUCK)
+
+        if (!block.isEmpty) {
+            PlayerManager.ONLINE_PLAYERS.forEach {
+                it.spawnParticle(
+                    Particle.BLOCK,
+                    super.x,
+                    super.y + 1.0,
+                    super.z,
+                    10,
+                    0.5,
+                    0.5,
+                    0.5,
+                    block.createBlockData()
+                )
+                it.playSound(
+                    Sound.sound(block.createBlockData().soundGroup.breakSound, Sound.Source.AMBIENT, 1f, 1f),
+                    super.x,
+                    super.y,
+                    super.z
+                )
+            }
+            block = Material.AIR
+        }
+    }
+
+    @Synchronized
+    fun damage(player: Player, damage: Float, critical: Boolean) {
+        if (health <= 0.0F || noDamageTick > 0) {
+            return
+        }
+
+        if (!block.isEmpty && state != STUCK) {
+            PlayerManager.ONLINE_PLAYERS.forEach {
+                it.playSound(
+                    Sound.sound(
+                        org.bukkit.Sound.BLOCK_COPPER_HIT,
+                        Sound.Source.AMBIENT,
+                        1f,
+                        1.4f
+                    ),
+                    super.x,
+                    super.y,
+                    super.z,
+                )
+            }
+            for (i in 0..<10) {
+                val size = 2.5
+                val x = Random.nextDouble(size) - (size / 2.0)
+                val y = Random.nextDouble(size) - (size / 2.0)
+                val z = Random.nextDouble(size) - (size / 2.0)
+                PlayerManager.ONLINE_PLAYERS.forEach {
+                    it.spawnParticle(Particle.ENCHANTED_HIT, super.x, super.y + 1.0, super.z, 0, x, y, z, 1.5)
+                }
+            }
+            return
+        }
+
+        if (critical) {
+            player.playSound(Sound.sound(org.bukkit.Sound.ENTITY_PLAYER_ATTACK_WEAK, Sound.Source.PLAYER, 1.0F, 1.0F))
+        } else {
+            player.playSound(Sound.sound(org.bukkit.Sound.ENTITY_PLAYER_ATTACK_STRONG, Sound.Source.PLAYER, 1.0F, 1.0F))
+        }
+
+        noDamageTick = maxDamageTick
+
+        health -= if (state == STUCK) {
+            damage * 2.0F
+        } else {
+            damage
+        }
+
+        modeledEntityHolder.modeledEntity.markHurt()
+
+        if (health <= 0.0F) {
+            val location = player.location
+            super.setRotationLookAt(location.x, location.y, location.z)
+
+            val direction = super.getPosition().subtract(location.toVector())
+            direction.setY(0.0)
+            if (!direction.isZero) {
+                direction.normalize().multiply(0.3).add(Vector(0.0, 0.25, 0.0))
+            }
+            super.velocity = direction
+
+            PlayerManager.ONLINE_PLAYERS.forEach {
+                it.playSound(
+                    Sound.sound(
+                        org.bukkit.Sound.ENTITY_IRON_GOLEM_DEATH,
+                        Sound.Source.AMBIENT,
+                        1f,
+                        2.0f
+                    ),
+                    super.x,
+                    super.y,
+                    super.z,
+                )
+            }
+
+            animationHandler.stopAnimation(MobAnimation.STUCK.key)
+            animationHandler.stopAnimation(MobAnimation.ATTACK.key)
+            animationHandler.playAnimation(MobAnimation.PARRY.key, 0.0, 0.0, 1.0, true)
+            this.setMobState(DEATH)
+        } else {
+            val pitch = if (critical) {
+                1.3F
+            } else {
+                1.4F
+            }
+            PlayerManager.ONLINE_PLAYERS.forEach {
+                it.playSound(
+                    Sound.sound(
+                        org.bukkit.Sound.ENTITY_IRON_GOLEM_REPAIR,
+                        Sound.Source.AMBIENT,
+                        1f,
+                        pitch,
+                    ),
+                    super.x,
+                    super.y,
+                    super.z,
+                )
+            }
+        }
+    }
+}
+
+enum class MobAnimation(val key: String) {
+    IDLE("idle"),
+    WALK("walk"),
+    ATTACK("attack"),
+    PARRY("parry"),
+    STUCK("stuck"),
+}
+
+enum class MobState {
+    IDLE,
+    RUN,
+    ATTACK,
+    STUCK,
+    DEATH,
+}
+
+class MobStateVariables {
+    var attackTarget: Player? = null
+    var attackTick = 0
+    var stuckTick = 0
+    var deathTick = 0
+
+    fun reset() {
+        attackTarget = null
+        attackTick = 0
+        stuckTick = 0
+        deathTick = 0
+    }
+}
+
+open class MobAIGoal(private val mob: Mob) : PathfindingGoal {
+    protected open val maxTargetFollowTick = TickThread.TPS * 30
+    protected open val targetSearchInterval = TickThread.TPS * 2
+    protected open val maxPlayerDetectionRange = 50.0
+
+    private var tick = 0
+    private var targetFollowTick = maxTargetFollowTick
+
+    override fun run(selector: GoalSelector, navigator: Navigator) {
+        tick++
+
+        if (mob.target != null) {
+            targetFollowTick++
+        }
+
+        if (targetFollowTick >= maxTargetFollowTick && tick % targetSearchInterval == 0) {
+            val target = PlayerManager.getNearestPlayer(mob.position.toLocation(mob.bukkitWorld))
+
+            if (target != null && target.location.toVector()
+                    .distanceSquared(mob.position) < maxPlayerDetectionRange.pow(2)
+            ) {
+                mob.target = target
+            }
+        }
+
+        val tl = mob.target?.location
+        if (tl != null) {
+            navigator.navigationGoal =
+                BlockPosition(tl.blockX, tl.blockY, tl.blockZ)
+        }
+
+        selector.isFinished = true
+    }
+}

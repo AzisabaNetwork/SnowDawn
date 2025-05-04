@@ -1,6 +1,6 @@
 package com.github.bea4dev.snowDawn.item.weapon
 
-import com.github.bea4dev.snowDawn.entity.mob.Phage
+import com.github.bea4dev.snowDawn.entity.mob.Mob
 import com.github.bea4dev.snowDawn.item.Item
 import com.github.bea4dev.snowDawn.item.getItem
 import com.github.bea4dev.snowDawn.player.PlayerManager
@@ -54,7 +54,7 @@ class Weapon(
 
         if (result != null) {
             val hitEntity = result.hitEntity
-            if (hitEntity != null && hitEntity is Phage) {
+            if (hitEntity != null && hitEntity is Mob) {
                 val damage = if (attackTick == maxAttackTick) {
                     attackDamage
                 } else {
@@ -72,7 +72,7 @@ class Weapon(
         val parryEntities = world.getNearbyEntities(parryCenter.x, parryCenter.y, parryCenter.z, parryCheckRange)
         var successParry = false
         for (entity in parryEntities) {
-            if (entity is Phage && entity.tryParry()) {
+            if (entity is Mob && entity.tryParry()) {
                 successParry = true
             }
         }
@@ -93,7 +93,7 @@ class Weapon(
         }
 
         for (parryEntity in world.getNearbyEntities(parryCenter.x, parryCenter.y, parryCenter.z, parryWaveRange)) {
-            if (parryEntity is Phage) {
+            if (parryEntity is Mob) {
                 parryEntity.parryBy(player)
             }
         }
