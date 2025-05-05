@@ -8,7 +8,7 @@ interface Structures {
     fun getBlock(x: Int, structureY: Int, z: Int): BlockData?
 }
 
-fun ChunkGenerator.ChunkData.placeAsset(asset: WorldAsset, startX: Int, startY: Int, startZ: Int) {
+fun ChunkGenerator.ChunkData.placeAsset(asset: WorldAsset, startX: Int, startY: Int, startZ: Int, merge: Boolean = false) {
     val assetSize = asset.endPosition.clone().subtract(asset.startPosition)
 
     for (x in startX..startX + assetSize.blockX) {
@@ -17,6 +17,10 @@ fun ChunkGenerator.ChunkData.placeAsset(asset: WorldAsset, startX: Int, startY: 
                 val block = asset.getBlock(x - startX, y - startY, z - startZ)
 
                 if (block != null) {
+                    if (merge && block.material.isAir) {
+                        continue
+                    }
+
                     this.setBlock(x, y, z, block)
                 }
             }

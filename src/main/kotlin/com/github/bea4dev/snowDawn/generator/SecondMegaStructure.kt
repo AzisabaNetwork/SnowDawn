@@ -31,10 +31,59 @@ class SecondMegaStructure(private val seed: Long) : ChunkGenerator() {
     private val fan0 = WorldAssetsRegistry.getAsset("fan_0")
     private val fan1 = WorldAssetsRegistry.getAsset("fan_1")
     private val fan2 = WorldAssetsRegistry.getAsset("fan_2")
+    private val hideInXP = WorldAssetsRegistry.getAsset("hide_in_xp")
+    private val hideOutXP = WorldAssetsRegistry.getAsset("hide_out_xp")
+    private val hideInXN = WorldAssetsRegistry.getAsset("hide_in_xn")
+    private val hideOutXN = WorldAssetsRegistry.getAsset("hide_out_xn")
+    private val hideInZP = WorldAssetsRegistry.getAsset("hide_in_zp")
+    private val hideOutZP = WorldAssetsRegistry.getAsset("hide_out_zp")
+    private val hideInZN = WorldAssetsRegistry.getAsset("hide_in_zn")
+    private val hideOutZN = WorldAssetsRegistry.getAsset("hide_out_zn")
 
     override fun generateNoise(worldInfo: WorldInfo, random: Random, chunkX: Int, chunkZ: Int, chunkData: ChunkData) {
         val variables = this.variables.get()
 
+        val isGeneratePillar = { chunkX: Int, chunkZ: Int ->
+            (chunkX.mod(interval) in -thickness until thickness) && (chunkZ.mod(interval) in -thickness until thickness) && variables.populateNoise.evaluateNoise(
+                (chunkX / interval).toDouble(),
+                (chunkZ / interval).toDouble()
+            ) < 0.3
+        }
+
+        val generatePillar = isGeneratePillar(chunkX, chunkZ)
+
+        generatePillarAndCeil(generatePillar, chunkData)
+        generateChain(variables, generatePillar, chunkX, chunkZ, chunkData)
+        generateFan(variables, isGeneratePillar, chunkX, chunkZ, chunkData)
+        generateHiddenRoom(variables, generatePillar, isGeneratePillar, chunkX, chunkZ, chunkData)
+    }
+
+    private fun generatePillarAndCeil(
+        generatePillar: Boolean,
+        chunkData: ChunkData
+    ) {
+        for (x in 0 until 16) {
+            for (z in 0 until 16) {
+                for (y in 310 until 320) {
+                    chunkData.setBlock(x, y, z, Material.STONE)
+                }
+
+                if (generatePillar) {
+                    for (y in -64 until 320) {
+                        chunkData.setBlock(x, y, z, Material.STONE)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun generateChain(
+        variables: Variables,
+        generatePillar: Boolean,
+        chunkX: Int,
+        chunkZ: Int,
+        chunkData: ChunkData
+    ) {
         val generateChain =
             variables.populateDetailNoise.evaluateNoise(chunkX.toDouble() * 16.0, chunkZ.toDouble() * 16.0) > 0.3
         val chainSize = chain.endPosition.clone().subtract(chain.startPosition).add(Vector(1, 1, 1))
@@ -50,15 +99,30 @@ class SecondMegaStructure(private val seed: Long) : ChunkGenerator() {
         ).toInt()
         val chainRepeat = (chunkStartPopulateNoise * 16.0 + 16.0).toInt()
 
-        val isGeneratePillar = { chunkX: Int, chunkZ: Int ->
-            (chunkX.mod(interval) in -thickness until thickness) && (chunkZ.mod(interval) in -thickness until thickness) && variables.populateNoise.evaluateNoise(
-                (chunkX / interval).toDouble(),
-                (chunkZ / interval).toDouble()
-            ) < 0.3
+        if (!generatePillar) {
+            if (generateChain) {
+                for (i in 0 until chainRepeat) {
+                    if (i < chainRepeat - 1) {
+                        val startY = 310 - 1 - (chainSize.blockY * i) - chainSize.blockY
+                        chunkData.placeAsset(chain, chainStartX, startY + 1, chainStartZ)
+                    } else {
+                        val startY = 310 - 1 - (chainSize.blockY * i) - chainEndSize.blockY
+                        chunkData.placeAsset(chainEnd, chainStartX, startY + 1, chainStartZ)
+                    }
+                }
+            }
         }
+    }
 
+    private fun generateFan(
+        variables: Variables,
+        isGeneratePillar: (Int, Int) -> Boolean,
+        chunkX: Int,
+        chunkZ: Int,
+        chunkData: ChunkData
+    ) {
         if (isGeneratePillar(chunkX - 1, chunkZ) && isGeneratePillar(chunkX + 1, chunkZ)) {
-            for (y in -32 until 310 step 16) {
+            for (y in -32 until (310 - 16) step 16) {
                 if (variables.populateDetailNoise.evaluateNoise(chunkX * 16.0, y.toDouble(), chunkZ * 16.0) > 0.5) {
                     val random = variables.populateDetailNoise.evaluateNoise(chunkZ * 16.0, y.toDouble(), chunkX * 16.0)
                     val fanAsset = if (random > 0.3) {
@@ -73,34 +137,85 @@ class SecondMegaStructure(private val seed: Long) : ChunkGenerator() {
                 }
             }
         }
+    }
 
-        val generatePillar = isGeneratePillar(chunkX, chunkZ)
+    private fun generateHiddenRoom(
+        variables: Variables,
+        generatePillar: Boolean,
+        isGeneratePillar: (Int, Int) -> Boolean,
+        chunkX: Int,
+        chunkZ: Int,
+        chunkData: ChunkData
+    ) {
+        val isGenerateHiddenRoom = { chunkX: Int, chunkZ: Int ->
+            val x = chunkX.mod(interval)
+            val z = chunkZ.mod(interval)
 
-        for (x in 0 until 16) {
-            for (z in 0 until 16) {
-                for (y in 310 until 320) {
-                    chunkData.setBlock(x, y, z, Material.STONE)
-                }
+            variables.populateDetailNoise.evaluateNoise(x * 16.0, z * 16.0) > -1.0
+        }
 
-                if (generatePillar) {
-                    for (y in -64 until 320) {
-                        chunkData.setBlock(x, y, z, Material.STONE)
+        val isCenterOfPillar =
+            { chunkX: Int, chunkZ: Int -> (chunkX.mod(interval) == 1) && (chunkZ.mod(interval) == 1) }
+
+        val waterHeight = 200
+        val enterHeight = 24
+
+        if (!generatePillar) {
+            if (isCenterOfPillar(chunkX + 2, chunkZ)) {
+                chunkData.placeAsset(hideOutXN, 15, waterHeight + enterHeight, 5)
+            }
+            if (isCenterOfPillar(chunkX - 3, chunkZ)) {
+                chunkData.placeAsset(hideOutXP, -16, waterHeight + enterHeight, 5)
+            }
+            if (isCenterOfPillar(chunkX, chunkZ + 2)) {
+                chunkData.placeAsset(hideOutZN, 5, waterHeight + enterHeight, 15)
+            }
+            if (isCenterOfPillar(chunkX, chunkZ - 3)) {
+                chunkData.placeAsset(hideOutZP, 5, waterHeight + enterHeight, -16)
+            }
+
+            if (isCenterOfPillar(chunkX + 2, chunkZ) && isCenterOfPillar(chunkX - 3, chunkZ)) {
+                chunkData.placeAsset(hideInXN, 0, waterHeight + enterHeight, 5, true)
+            }
+            if (isCenterOfPillar(chunkX, chunkZ + 2) && isCenterOfPillar(chunkX, chunkZ - 3)) {
+                chunkData.placeAsset(hideInZN, 5, waterHeight + enterHeight, 0, true)
+            }
+            return
+        }
+
+        if (isCenterOfPillar(chunkX, chunkZ)) {
+            for (x in 0 until 16) {
+                for (z in 0 until 16) {
+                    for (y in 0 until waterHeight) {
+                        chunkData.setBlock(x, y, z, Material.WATER)
+                    }
+
+                    for (y in waterHeight until 310) {
+                        chunkData.setBlock(x, y, z, Material.AIR)
                     }
                 }
             }
-        }
+        } else {
+            if (isCenterOfPillar(chunkX + 1, chunkZ)) {
+                chunkData.placeAsset(hideOutXN, -1, waterHeight + enterHeight, 5)
+            }
 
-        if (!generatePillar) {
-            if (generateChain) {
-                for (i in 0 until chainRepeat) {
-                    if (i < chainRepeat - 1) {
-                        val startY = 310 - 1 - (chainSize.blockY * i) - chainSize.blockY
-                        chunkData.placeAsset(chain, chainStartX, startY + 1, chainStartZ)
-                    } else {
-                        val startY = 310 - 1 - (chainSize.blockY * i) - chainEndSize.blockY
-                        chunkData.placeAsset(chainEnd, chainStartX, startY + 1, chainStartZ)
-                    }
-                }
+            if (isCenterOfPillar(chunkX - 2, chunkZ)) {
+                chunkData.placeAsset(hideOutXP, 0, waterHeight + enterHeight, 5)
+            }
+            if (isCenterOfPillar(chunkX - 1, chunkZ)) {
+                chunkData.placeAsset(hideInXP, 0, waterHeight + enterHeight, 5)
+            }
+
+            if (isCenterOfPillar(chunkX, chunkZ + 1)) {
+                chunkData.placeAsset(hideOutZN, 5, waterHeight + enterHeight, -1)
+            }
+
+            if (isCenterOfPillar(chunkX, chunkZ - 2)) {
+                chunkData.placeAsset(hideOutZP, 5, waterHeight + enterHeight, 0)
+            }
+            if (isCenterOfPillar(chunkX, chunkZ - 1)) {
+                chunkData.placeAsset(hideInZP, 5, waterHeight + enterHeight, 0)
             }
         }
     }
