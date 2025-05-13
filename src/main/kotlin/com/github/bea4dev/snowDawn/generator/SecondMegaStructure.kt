@@ -4,6 +4,7 @@ import com.github.bea4dev.snowDawn.generator.structure.placeAsset
 import com.github.bea4dev.vanilla_source.api.asset.WorldAssetsRegistry
 import de.articdive.jnoise.generators.noisegen.perlin.PerlinNoiseGenerator
 import de.articdive.jnoise.pipeline.JNoise
+import net.minecraft.core.SectionPos.x
 import org.bukkit.Material
 import org.bukkit.generator.ChunkGenerator
 import org.bukkit.generator.WorldInfo
@@ -12,14 +13,10 @@ import java.util.Random
 import kotlin.math.min
 
 private class Variables(seed: Long) {
-    val populateNoise: JNoise = JNoise.newBuilder()
-        .perlin(PerlinNoiseGenerator.newBuilder().setSeed(seed).build())
-        .scale(0.1)
-        .build()
-    val populateDetailNoise: JNoise = JNoise.newBuilder()
-        .perlin(PerlinNoiseGenerator.newBuilder().setSeed(seed).build())
-        .scale(0.05)
-        .build()
+    val populateNoise: JNoise =
+        JNoise.newBuilder().perlin(PerlinNoiseGenerator.newBuilder().setSeed(seed).build()).scale(0.1).build()
+    val populateDetailNoise: JNoise =
+        JNoise.newBuilder().perlin(PerlinNoiseGenerator.newBuilder().setSeed(seed).build()).scale(0.05).build()
 }
 
 class SecondMegaStructure(private val seed: Long) : ChunkGenerator() {
@@ -45,8 +42,7 @@ class SecondMegaStructure(private val seed: Long) : ChunkGenerator() {
 
         val isGeneratePillar = { chunkX: Int, chunkZ: Int ->
             (chunkX.mod(interval) in -thickness until thickness) && (chunkZ.mod(interval) in -thickness until thickness) && variables.populateNoise.evaluateNoise(
-                (chunkX / interval).toDouble(),
-                (chunkZ / interval).toDouble()
+                (chunkX / interval).toDouble(), (chunkZ / interval).toDouble()
             ) < 0.3
         }
 
@@ -56,11 +52,11 @@ class SecondMegaStructure(private val seed: Long) : ChunkGenerator() {
         generateChain(variables, generatePillar, chunkX, chunkZ, chunkData)
         generateFan(variables, isGeneratePillar, chunkX, chunkZ, chunkData)
         generateHiddenRoom(variables, generatePillar, isGeneratePillar, chunkX, chunkZ, chunkData)
+        generateStairs(variables, isGeneratePillar, chunkX, chunkZ, chunkData)
     }
 
     private fun generatePillarAndCeil(
-        generatePillar: Boolean,
-        chunkData: ChunkData
+        generatePillar: Boolean, chunkData: ChunkData
     ) {
         for (x in 0 until 16) {
             for (z in 0 until 16) {
@@ -78,11 +74,7 @@ class SecondMegaStructure(private val seed: Long) : ChunkGenerator() {
     }
 
     private fun generateChain(
-        variables: Variables,
-        generatePillar: Boolean,
-        chunkX: Int,
-        chunkZ: Int,
-        chunkData: ChunkData
+        variables: Variables, generatePillar: Boolean, chunkX: Int, chunkZ: Int, chunkData: ChunkData
     ) {
         val generateChain =
             variables.populateDetailNoise.evaluateNoise(chunkX.toDouble() * 16.0, chunkZ.toDouble() * 16.0) > 0.3
@@ -94,8 +86,7 @@ class SecondMegaStructure(private val seed: Long) : ChunkGenerator() {
             16.0 - chainSize.x
         ).toInt()
         val chainStartZ = min(
-            variables.populateDetailNoise.evaluateNoise(chunkX * 2.0, chunkZ * 2.0) * 8.0 + 8.0,
-            16.0 - chainSize.z
+            variables.populateDetailNoise.evaluateNoise(chunkX * 2.0, chunkZ * 2.0) * 8.0 + 8.0, 16.0 - chainSize.z
         ).toInt()
         val chainRepeat = (chunkStartPopulateNoise * 16.0 + 16.0).toInt()
 
@@ -115,11 +106,7 @@ class SecondMegaStructure(private val seed: Long) : ChunkGenerator() {
     }
 
     private fun generateFan(
-        variables: Variables,
-        isGeneratePillar: (Int, Int) -> Boolean,
-        chunkX: Int,
-        chunkZ: Int,
-        chunkData: ChunkData
+        variables: Variables, isGeneratePillar: (Int, Int) -> Boolean, chunkX: Int, chunkZ: Int, chunkData: ChunkData
     ) {
         if (isGeneratePillar(chunkX - 1, chunkZ) && isGeneratePillar(chunkX + 1, chunkZ)) {
             for (y in -32 until (310 - 16) step 16) {
@@ -148,14 +135,16 @@ class SecondMegaStructure(private val seed: Long) : ChunkGenerator() {
         chunkData: ChunkData
     ) {
         val isGenerateHiddenRoom = { chunkX: Int, chunkZ: Int ->
-            val x = chunkX.mod(interval)
-            val z = chunkZ.mod(interval)
-
-            variables.populateDetailNoise.evaluateNoise(x * 16.0, z * 16.0) > -1.0
+            variables.populateNoise.evaluateNoise(chunkX * 16.0, chunkZ * 16.0) > 0.3
         }
 
-        val isCenterOfPillar =
-            { chunkX: Int, chunkZ: Int -> (chunkX.mod(interval) == 1) && (chunkZ.mod(interval) == 1) }
+        val isCenterOfPillar = { chunkX: Int, chunkZ: Int ->
+            (chunkX.mod(interval) == 1) && (chunkZ.mod(interval) == 1) && isGenerateHiddenRoom(
+                chunkX, chunkZ
+            ) && isGeneratePillar(chunkX + 1, chunkZ) && isGeneratePillar(
+                chunkX - 1, chunkZ
+            ) && isGeneratePillar(chunkX, chunkZ + 1) && isGeneratePillar(chunkX, chunkZ - 1)
+        }
 
         val waterHeight = 200
         val enterHeight = 24
@@ -216,6 +205,59 @@ class SecondMegaStructure(private val seed: Long) : ChunkGenerator() {
             }
             if (isCenterOfPillar(chunkX, chunkZ - 1)) {
                 chunkData.placeAsset(hideInZP, 5, waterHeight + enterHeight, 0)
+            }
+        }
+    }
+
+    private fun generateStairs(
+        variables: Variables, isGeneratePillar: (Int, Int) -> Boolean, chunkX: Int, chunkZ: Int, chunkData: ChunkData
+    ) {
+        val isGenerateStairs = { chunkX: Int, chunkZ: Int ->
+            val x = chunkX.mod(interval)
+            val z = chunkZ.mod(interval)
+
+            variables.populateNoise.evaluateNoise(x * 16.0, z * 16.0) > -0.2
+        }
+
+        if (!isGenerateStairs(chunkX, chunkZ)) {
+            return
+        }
+
+        val zFunction = { z: Int ->
+            val worldZ = chunkZ * 16 + z
+            worldZ.mod(256) - 64
+        }
+        val xFunction = { x: Int ->
+            val worldX = chunkX * 16 + x
+            (worldX.mod(256) * -1) + 192
+        }
+
+        if (isGeneratePillar(chunkX + 1, chunkZ)) {
+            for (z in 0 until 16) {
+                val y = zFunction(z + chunkX * 16)
+
+                chunkData.setBlock(15, y, z, Material.STONE)
+            }
+        }
+        if (isGeneratePillar(chunkX - 1, chunkZ)) {
+            for (z in 0 until 16) {
+                val y = zFunction(z - chunkX * 16)
+
+                chunkData.setBlock(0, y, z, Material.STONE)
+            }
+        }
+        if (isGeneratePillar(chunkX, chunkZ + 1)) {
+            for (x in 0 until 16) {
+                val y = xFunction(x + chunkZ * 16)
+
+                chunkData.setBlock(x, y, 15, Material.STONE)
+            }
+        }
+        if (isGeneratePillar(chunkX, chunkZ - 1)) {
+            for (x in 0 until 16) {
+                val y = xFunction(x - chunkZ * 16)
+
+                chunkData.setBlock(x, y, 0, Material.STONE)
             }
         }
     }
