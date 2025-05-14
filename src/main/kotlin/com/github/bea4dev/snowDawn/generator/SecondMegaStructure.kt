@@ -11,6 +11,7 @@ import org.bukkit.generator.WorldInfo
 import org.bukkit.util.Vector
 import java.util.Random
 import kotlin.math.min
+import kotlin.math.pow
 
 private class Variables(seed: Long) {
     val populateNoise: JNoise =
@@ -175,8 +176,18 @@ class SecondMegaStructure(private val seed: Long) : ChunkGenerator() {
         if (isCenterOfPillar(chunkX, chunkZ)) {
             for (x in 0 until 16) {
                 for (z in 0 until 16) {
-                    for (y in 0 until waterHeight) {
-                        chunkData.setBlock(x, y, z, Material.WATER)
+                    val radius = 6.0
+                    val xFromCenter = x - 7.5
+                    val zFromCenter = z - 7.5
+
+                    if (xFromCenter * xFromCenter + zFromCenter * zFromCenter < radius * radius) {
+                        for (y in 0 until waterHeight) {
+                            chunkData.setBlock(x, y, z, Material.WATER)
+                        }
+                    } else {
+                        for (y in 0 until waterHeight) {
+                            chunkData.setBlock(x, y, z, Material.STONE)
+                        }
                     }
 
                     for (y in waterHeight until 310) {

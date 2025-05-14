@@ -4,6 +4,7 @@ import com.github.bea4dev.snowDawn.entity.mob.Phage
 import com.github.bea4dev.snowDawn.item.Item
 import com.github.bea4dev.snowDawn.item.getItem
 import com.github.bea4dev.snowDawn.player.PlayerManager
+import com.github.bea4dev.snowDawn.text.Text
 import com.github.bea4dev.vanilla_source.api.util.collision.CollideOption
 import com.github.bea4dev.vanilla_source.api.world.cache.AsyncWorldCache
 import de.tr7zw.changeme.nbtapi.NBT
@@ -20,11 +21,14 @@ class Weapon(
     id: String,
     material: Material,
     customModelData: Int,
+    inactiveModelData: Int?,
+    displayName: Text,
+    lore: List<Text>,
     private val maxAttackTick: Int,
     private val parryWaveRange: Double,
     private val attackDamage: Float,
 ) : Item(
-    id, material, customModelData
+    id, material, customModelData, inactiveModelData, displayName, lore
 ) {
     private val parryCheckRange = 3.0
 

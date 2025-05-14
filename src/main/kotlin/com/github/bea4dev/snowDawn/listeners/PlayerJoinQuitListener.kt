@@ -1,9 +1,9 @@
 package com.github.bea4dev.snowDawn.listeners
 
 import com.github.bea4dev.snowDawn.SnowDawn
-import com.github.bea4dev.snowDawn.entity.mob.Phage
 import com.github.bea4dev.snowDawn.item.weapon.PlayerWeaponTask
 import com.github.bea4dev.snowDawn.item.weapon.Weapon
+import com.github.bea4dev.snowDawn.text.Text
 import com.github.bea4dev.snowDawn.world.WorldRegistry
 import org.bukkit.GameMode
 import org.bukkit.Location
@@ -27,11 +27,16 @@ internal class PlayerJoinQuitListener : Listener {
         //player.teleport(Location(WorldRegistry.ASSET, 0.5, 1.0, 0.5))
         player.teleport(Location(WorldRegistry.SECOND_MEGA_STRUCTURE, 0.5, 330.0, 0.5))
 
-        val weapon = Weapon("pipe0", Material.SHEARS, 1, 10, 5.0, 4.0F)
+        val weapon =
+            Weapon(
+                "scrap_pipe", Material.SHEARS, 1, 2, Text.ITEM_SCRAP_PIPE, listOf(
+                    Text.ITEM_SCRAP_PIPE_LORE_0, Text.ITEM_SCRAP_PIPE_LORE_1,
+                    Text.ITEM_SCRAP_PIPE_LORE_2, Text.ITEM_SCRAP_PIPE_LORE_3, Text.ITEM_SCRAP_PIPE_LORE_4
+                ), 10, 5.0, 4.0F
+            )
         player.inventory.setItemInMainHand(weapon.createItemStack())
 
-        PlayerWeaponTask(player).runTaskTimer(SnowDawn.plugin, 0, 1)
-        /*
+        PlayerWeaponTask(player).runTaskTimer(SnowDawn.plugin, 0, 1)/*
         PlayerTask(player).start()
 
         player.teleport(LOGIN_POSITION.toLocation(WorldRegistry.VOID))
