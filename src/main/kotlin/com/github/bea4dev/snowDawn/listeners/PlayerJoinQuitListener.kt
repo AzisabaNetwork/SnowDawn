@@ -1,6 +1,7 @@
 package com.github.bea4dev.snowDawn.listeners
 
 import com.github.bea4dev.snowDawn.SnowDawn
+import com.github.bea4dev.snowDawn.item.ItemRegistry
 import com.github.bea4dev.snowDawn.item.weapon.PlayerWeaponTask
 import com.github.bea4dev.snowDawn.item.weapon.Weapon
 import com.github.bea4dev.snowDawn.text.Text
@@ -22,19 +23,15 @@ internal class PlayerJoinQuitListener : Listener {
     fun onPlayerJoin(event: PlayerJoinEvent) {
         val player = event.player
 
+        registerPacketListener(player)
+
         player.gameMode = GameMode.CREATIVE
 
         //player.teleport(Location(WorldRegistry.ASSET, 0.5, 1.0, 0.5))
         player.teleport(Location(WorldRegistry.SECOND_MEGA_STRUCTURE, 0.5, 330.0, 0.5))
 
-        val weapon =
-            Weapon(
-                "scrap_pipe", Material.SHEARS, 1, 2, Text.ITEM_SCRAP_PIPE, listOf(
-                    Text.ITEM_SCRAP_PIPE_LORE_0, Text.ITEM_SCRAP_PIPE_LORE_1,
-                    Text.ITEM_SCRAP_PIPE_LORE_2, Text.ITEM_SCRAP_PIPE_LORE_3, Text.ITEM_SCRAP_PIPE_LORE_4
-                ), 10, 5.0, 4.0F
-            )
-        player.inventory.setItemInMainHand(weapon.createItemStack())
+        player.inventory.setItemInMainHand(ItemRegistry.SCRAP_PIPE.createItemStack())
+        player.inventory.addItem(ItemRegistry.SCRAP.createItemStack())
 
         PlayerWeaponTask(player).runTaskTimer(SnowDawn.plugin, 0, 1)/*
         PlayerTask(player).start()

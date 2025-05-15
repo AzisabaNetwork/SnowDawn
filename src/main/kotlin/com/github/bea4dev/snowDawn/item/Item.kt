@@ -1,15 +1,26 @@
 package com.github.bea4dev.snowDawn.item
 
+import com.github.bea4dev.snowDawn.item.weapon.Weapon
 import com.github.bea4dev.snowDawn.text.Text
 import de.tr7zw.changeme.nbtapi.NBT
 import net.kyori.adventure.text.Component
 import org.bukkit.Material
-import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import java.util.function.Function
 
 object ItemRegistry {
     internal val itemIdMap = HashMap<String, Item>()
+
+    val SCRAP = Item("scrap", Material.STRING, 1, 2, Text.ITEM_SCRAP, listOf(Text.ITEM_SCRAP_LORE_0))
+    val SCRAP_PIPE = Weapon(
+        "scrap_pipe", Material.SHEARS, 1, 2, Text.ITEM_SCRAP_PIPE, listOf(
+            Text.ITEM_SCRAP_PIPE_LORE_0,
+            Text.ITEM_SCRAP_PIPE_LORE_1,
+            Text.ITEM_SCRAP_PIPE_LORE_2,
+            Text.ITEM_SCRAP_PIPE_LORE_3,
+            Text.ITEM_SCRAP_PIPE_LORE_4
+        ), 10, 5.0, 4.0F
+    )
 
     operator fun get(id: String): Item? {
         return itemIdMap[id]
@@ -25,6 +36,7 @@ open class Item(
     val inactiveModelData: Int?,
     val displayName: Text,
     val lore: List<Text>,
+    val fontIcon: String? = null,
 ) {
     init {
         ItemRegistry.itemIdMap[id] = this
@@ -45,7 +57,7 @@ open class Item(
     }
 
     open fun createInactiveItemStack(): ItemStack {
-        return ItemStack(material).also { item ->
+        return createItemStack().also { item ->
             val meta = item.itemMeta
             meta.setCustomModelData(inactiveModelData)
             item.itemMeta = meta

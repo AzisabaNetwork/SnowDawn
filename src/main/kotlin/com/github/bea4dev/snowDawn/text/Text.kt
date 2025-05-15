@@ -8,6 +8,14 @@ import java.text.MessageFormat
 import java.util.Locale
 
 enum class Text(val jp: String) {
+    CRAFT_UI("クラフト"),
+    CRAFT_UI_CLICK_TO_OPEN("クリックで開く"),
+    CRAFT_REQUIRED("> 必要なアイテム"),
+    CANNOT_CRAFT("材料が足りません"),
+
+    ITEM_SCRAP("スクラップ"),
+    ITEM_SCRAP_LORE_0("何らかの残骸、クラフトに使用する。"),
+
     ITEM_SCRAP_PIPE("スクラップのパイプ"),
     ITEM_SCRAP_PIPE_LORE_0("スクラップの寄せ集めでできたパイプ。"),
     ITEM_SCRAP_PIPE_LORE_1("敵の攻撃に合わせてクリックすると、"),
