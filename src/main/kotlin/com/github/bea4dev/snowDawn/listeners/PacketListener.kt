@@ -20,7 +20,7 @@ fun registerPacketListener(player: Player) {
 
 class PacketListener(private val player: Player) : ChannelDuplexHandler() {
     override fun channelRead(ctx: ChannelHandlerContext?, packet: Any?) {
-        if (packet is ServerboundContainerClickPacket && packet.containerId == 0 && packet.slotNum in 0..4) {
+        if (packet is ServerboundContainerClickPacket && packet.containerId == 0 && packet.slotNum in 1..4) {
             MainThread.launch { CraftGUIManager.open(player) }
             player.updateInventory()
             return
@@ -36,7 +36,6 @@ class PacketListener(private val player: Player) : ChannelDuplexHandler() {
                     val items = packet.items
 
                     val button = CraftItemStack.asNMSCopy(CRAFT_GUI_BUTTON)
-                    items[0] = button
                     items[1] = button
                     items[2] = button
                     items[3] = button
@@ -45,7 +44,7 @@ class PacketListener(private val player: Player) : ChannelDuplexHandler() {
             }
 
             is ClientboundContainerSetSlotPacket -> {
-                if (packet.containerId == 0 && packet.slot in 0..4) {
+                if (packet.containerId == 0 && packet.slot in 1..4) {
                     return super.write(
                         ctx,
                         ClientboundContainerSetSlotPacket(
