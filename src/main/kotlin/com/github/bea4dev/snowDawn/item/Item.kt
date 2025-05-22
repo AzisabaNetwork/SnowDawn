@@ -4,6 +4,8 @@ import com.github.bea4dev.snowDawn.item.weapon.Weapon
 import com.github.bea4dev.snowDawn.text.Text
 import de.tr7zw.changeme.nbtapi.NBT
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
 import java.util.function.Function
@@ -48,8 +50,11 @@ open class Item(
             meta.setCustomModelData(customModelData)
 
             meta.displayName(Component.translatable(displayName.toString()))
-            meta.lore(lore.map { line -> Component.translatable(line.toString()) })
-
+            meta.lore(lore.map { line ->
+                Component.translatable(line.toString()).color(NamedTextColor.GRAY).decoration(
+                    TextDecoration.ITALIC, false
+                )
+            })
             item.itemMeta = meta
         }.also { item ->
             NBT.modify(item) { nbt -> nbt.setString(ITEM_ID_TAG, id) }

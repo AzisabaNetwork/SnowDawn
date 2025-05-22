@@ -8,6 +8,9 @@ import java.text.MessageFormat
 import java.util.Locale
 
 enum class Text(val jp: String) {
+    CLOSE("閉じる"),
+    BACK("戻る"),
+
     CRAFT_UI("クラフト"),
     CRAFT_UI_CLICK_TO_OPEN("クリックで開く"),
     CRAFT_REQUIRED("> 必要なアイテム"),

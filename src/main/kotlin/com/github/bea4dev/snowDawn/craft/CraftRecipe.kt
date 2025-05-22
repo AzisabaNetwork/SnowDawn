@@ -6,6 +6,7 @@ import com.github.bea4dev.snowDawn.item.getItem
 import com.github.bea4dev.snowDawn.text.Text
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
@@ -79,9 +80,9 @@ class CraftRecipe(
                 }
 
                 val ok = if (has) {
-                    Component.text(" ✔ ").color(NamedTextColor.GREEN)
+                    Component.text(" ✔ ").color(NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false)
                 } else {
-                    Component.text(" ✘ ").color(NamedTextColor.RED)
+                    Component.text(" ✘ ").color(NamedTextColor.RED).decoration(TextDecoration.ITALIC, false)
                 }
                 newLore.add(
                     ok.append(

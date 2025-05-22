@@ -66,9 +66,30 @@ class CraftGUI(private val player: Player) : InventoryHolder {
 
             inventory.setItem(index, recipe.createCraftIconFor(player))
         }
+
+        inventory.setItem(53, ItemStack(Material.BARRIER).also { item ->
+            val meta = item.itemMeta
+            meta.displayName(Component.translatable(Text.CLOSE.toString()).color(NamedTextColor.RED))
+            item.itemMeta = meta
+        })
+
+        for (i in 0 until 54) {
+            if (inventory.getItem(i) == null) {
+                inventory.setItem(i, ItemStack(Material.BLACK_STAINED_GLASS_PANE).also { item ->
+                    val meta = item.itemMeta
+                    meta.displayName(Component.text("").color(NamedTextColor.WHITE))
+                    item.itemMeta = meta
+                })
+            }
+        }
     }
 
     fun onClick(event: InventoryClickEvent) {
+        if (event.slot == 53) {
+            player.closeInventory()
+            return
+        }
+
         val recipe = CraftRecipeRegistry.RECIPES.getOrNull(event.slot) ?: return
 
         if (!recipe.canCraft(player)) {
@@ -107,8 +128,9 @@ class CraftGUI(private val player: Player) : InventoryHolder {
 
         dropItem.forEach { item -> player.world.dropItemNaturally(player.eyeLocation, item) }
 
-        player.playSound(Sound.sound(org.bukkit.Sound.BLOCK_BEEHIVE_ENTER, Sound.Source.PLAYER, 1.0F, 1.2F))
+        player.playSound(Sound.sound(org.bukkit.Sound.BLOCK_BEEHIVE_EXIT, Sound.Source.PLAYER, 1.0F, 1.2F))
 
         update()
     }
+
 }
