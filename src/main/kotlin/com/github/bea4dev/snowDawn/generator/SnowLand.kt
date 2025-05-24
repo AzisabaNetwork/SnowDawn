@@ -1,5 +1,6 @@
 package com.github.bea4dev.snowDawn.generator
 
+import com.github.bea4dev.snowDawn.generator.structure.SurfaceStructures
 import com.github.bea4dev.vanilla_source.api.asset.WorldAssetsRegistry
 import de.articdive.jnoise.generators.noisegen.opensimplex.FastSimplexNoiseGenerator
 import de.articdive.jnoise.generators.noisegen.perlin.PerlinNoiseGenerator
@@ -161,6 +162,14 @@ class SnowLand internal constructor(seed: Long) : ChunkGenerator() {
     private val spawnAsset = WorldAssetsRegistry.getAsset("ship_1")!!
     val spawnAssetRange = variables.get().getSpawnAssetRange()
     private val populators = mutableListOf<BlockPopulator>()
+    private val surfaceStructures = SurfaceStructures(
+        { minX, surfaceY, minZ, asset, chunk -> true },
+        listOf(
+            WorldAssetsRegistry.getAsset("fan_0")!!,
+            WorldAssetsRegistry.getAsset("ship_0")!!,
+            WorldAssetsRegistry.getAsset("ship_1")!!
+        )
+    )
 
     override fun generateNoise(worldInfo: WorldInfo, random: Random, chunkX: Int, chunkZ: Int, chunkData: ChunkData) {
         val variables = variables.get()
@@ -255,6 +264,9 @@ class SnowLand internal constructor(seed: Long) : ChunkGenerator() {
                 }
             }
         }
+
+        val heightFunction = { x: Int, z: Int -> variables.evaluateHeight(x.toDouble(), z.toDouble()).toInt() }
+        surfaceStructures.generate(chunkX, heightFunction, chunkZ, chunkData)
     }
 
     override fun getDefaultPopulators(world: World): MutableList<BlockPopulator> {

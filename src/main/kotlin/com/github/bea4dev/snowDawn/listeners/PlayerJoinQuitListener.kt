@@ -28,7 +28,7 @@ internal class PlayerJoinQuitListener : Listener {
         player.gameMode = GameMode.CREATIVE
 
         //player.teleport(Location(WorldRegistry.ASSET, 0.5, 1.0, 0.5))
-        player.teleport(Location(WorldRegistry.SECOND_MEGA_STRUCTURE, 0.5, 330.0, 0.5))
+        player.teleport(Location(WorldRegistry.SNOW_LAND, 0.5, 330.0, 0.5))
 
         player.inventory.setItemInMainHand(ItemRegistry.SCRAP_PIPE.createItemStack())
         player.inventory.addItem(ItemRegistry.SCRAP.createItemStack())

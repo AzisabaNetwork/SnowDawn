@@ -1,64 +1,57 @@
 package com.github.bea4dev.snowDawn.generator.structure
 
 import com.github.bea4dev.vanilla_source.api.asset.WorldAsset
-import de.articdive.jnoise.generators.noisegen.opensimplex.FastSimplexNoiseGenerator
-import de.articdive.jnoise.pipeline.JNoise
-import org.bukkit.block.data.BlockData
-import org.bukkit.util.Vector
+import org.bukkit.generator.ChunkGenerator
 import java.util.Comparator
-import kotlin.math.max
+import kotlin.jvm.optionals.getOrDefault
 
 class SurfaceStructures(
+    private val shouldPlace: (minX: Int, minY: Int, minZ: Int, worldAsset: WorldAsset, chunkData: ChunkGenerator.ChunkData) -> Boolean,
     private val structures: List<WorldAsset>,
-    private val rate: Double,
-    private val excludeStart: Vector,
-    private val excludeEnd: Vector,
-    seed: Long
-) : Structures {
+    private val merge: Boolean = true,
+) {
+    private val maxLengthX =
+        structures.stream().map { asset -> asset.endPosition.blockX - asset.startPosition.blockX + 1 }
+            .max(Comparator.naturalOrder())
+            .getOrDefault(0)
+    private val maxLengthZ =
+        structures.stream().map { asset -> asset.endPosition.blockZ - asset.startPosition.blockZ + 1 }
+            .max(Comparator.naturalOrder())
+            .getOrDefault(0)
 
-    private val sizeX: Int = structures.stream()
-        .map { asset -> asset.endPosition.blockX - asset.startPosition.blockX }
-        .max(Comparator.naturalOrder())
-        .get()
-    private val sizeZ: Int = structures.stream()
-        .map { asset -> asset.endPosition.blockZ - asset.endPosition.blockZ }
-        .max(Comparator.naturalOrder())
-        .get()
+    fun generate(
+        chunkX: Int,
+        surfaceYFunction: (Int, Int) -> Int,
+        chunkZ: Int,
+        chunkData: ChunkGenerator.ChunkData
+    ) {
+        for (x in 0 until 16) {
+            for (z in 0 until 16) {
+                val worldX = chunkX * 16 + x
+                val worldZ = chunkZ * 16 + z
+                val minX = worldX - worldX.mod(maxLengthX)
+                val minZ = worldZ - worldZ.mod(maxLengthZ)
 
-    private val noise: JNoise = JNoise.newBuilder()
-        .fastSimplex(FastSimplexNoiseGenerator.newBuilder().setSeed(seed).build())
-        .scale(0.1)
-        .build()
-    private val selectNoise: JNoise = JNoise.newBuilder()
-        .fastSimplex(FastSimplexNoiseGenerator.newBuilder().setSeed(seed).build())
-        .scale(0.2)
-        .build()
+                val surfaceY = surfaceYFunction(minX, minZ)
 
-    override fun getBlock(x: Int, structureY: Int, z: Int): BlockData? {
-        val assetX = x.mod(sizeX)
-        val assetZ = z.mod(sizeZ)
+                val asset = structures[(minX xor minZ).mod(structures.size)]
 
-        if (assetX in excludeStart.blockX..excludeEnd.blockX) {
-            return null
+                if (!shouldPlace(minX, surfaceY, minZ, asset, chunkData)) {
+                    continue
+                }
+
+                for (y in surfaceY until chunkData.maxHeight) {
+                    val block = asset.getBlock(worldX - minX, y - surfaceY, worldZ - minZ)
+
+                    if (block != null) {
+                        if (merge && block.material.isAir) {
+                            continue
+                        }
+
+                        chunkData.setBlock(x, y, z, block)
+                    }
+                }
+            }
         }
-        if (assetZ in excludeStart.blockZ..excludeEnd.blockZ) {
-            return null
-        }
-
-        val minX = x - assetX
-        val minZ = z - assetZ
-
-        val noise = (this.noise.evaluateNoise(minX.toDouble(), minZ.toDouble()) + 1.0) / 2.0
-
-        if (noise > rate) {
-            return null
-        }
-
-        val selectNoise = (this.selectNoise.evaluateNoise(minX.toDouble(), minZ.toDouble()) + 1.0) / 2.0
-
-        val index = max((selectNoise * structures.size).toInt(), structures.size - 1)
-        val asset = structures[index]
-
-        return asset.getBlock(assetX, structureY, assetZ)
     }
 }
