@@ -165,10 +165,14 @@ class SnowLand internal constructor(seed: Long) : ChunkGenerator() {
     private val surfaceStructures = SurfaceStructures(
         { minX, surfaceY, minZ, asset, chunk -> true },
         listOf(
-            WorldAssetsRegistry.getAsset("fan_0")!!,
-            WorldAssetsRegistry.getAsset("ship_0")!!,
-            WorldAssetsRegistry.getAsset("ship_1")!!
-        )
+            WorldAssetsRegistry.getAsset("bridge_0")!! to 0.1,
+            WorldAssetsRegistry.getAsset("bridge_1")!! to 0.3,
+            WorldAssetsRegistry.getAsset("bridge_2")!! to 0.3,
+            WorldAssetsRegistry.getAsset("bridge_3")!! to 0.3,
+            WorldAssetsRegistry.getAsset("bridge_4")!! to 0.1,
+            WorldAssetsRegistry.getAsset("ant_0")!! to 0.1,
+        ),
+        seed
     )
 
     override fun generateNoise(worldInfo: WorldInfo, random: Random, chunkX: Int, chunkZ: Int, chunkData: ChunkData) {
