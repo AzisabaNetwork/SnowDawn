@@ -1,6 +1,9 @@
 package com.github.bea4dev.snowDawn.generator
 
+import com.github.bea4dev.snowDawn.generator.structure.ItemChest
 import com.github.bea4dev.snowDawn.generator.structure.SurfaceStructures
+import com.github.bea4dev.snowDawn.generator.structure.UnderGroundStructures
+import com.github.bea4dev.snowDawn.item.ItemRegistry
 import com.github.bea4dev.vanilla_source.api.asset.WorldAssetsRegistry
 import de.articdive.jnoise.generators.noisegen.opensimplex.FastSimplexNoiseGenerator
 import de.articdive.jnoise.generators.noisegen.perlin.PerlinNoiseGenerator
@@ -10,6 +13,7 @@ import org.bukkit.World
 import org.bukkit.generator.BlockPopulator
 import org.bukkit.generator.ChunkGenerator
 import org.bukkit.generator.WorldInfo
+import org.bukkit.inventory.ItemStack
 import org.bukkit.util.Vector
 import java.util.*
 import kotlin.math.abs
@@ -72,6 +76,18 @@ private class SnowLandGeneratorVariables(seed: Long) {
     val caveNoise9: JNoise = JNoise.newBuilder()
         .perlin(PerlinNoiseGenerator.newBuilder().setSeed(seed + 12).build())
         .scale(0.012)
+        .build()
+    val caveNoise10: JNoise = JNoise.newBuilder()
+        .perlin(PerlinNoiseGenerator.newBuilder().setSeed(seed + 13).build())
+        .scale(0.01)
+        .build()
+    val caveNoise11: JNoise = JNoise.newBuilder()
+        .perlin(PerlinNoiseGenerator.newBuilder().setSeed(seed + 14).build())
+        .scale(0.012)
+        .build()
+    val caveNoise12: JNoise = JNoise.newBuilder()
+        .perlin(PerlinNoiseGenerator.newBuilder().setSeed(seed + 15).build())
+        .scale(0.013)
         .build()
 
     val detailNoise: JNoise = JNoise.newBuilder()
@@ -161,18 +177,98 @@ class SnowLand internal constructor(seed: Long) : ChunkGenerator() {
     private val variables = ThreadLocal.withInitial { SnowLandGeneratorVariables(seed) }
     private val spawnAsset = WorldAssetsRegistry.getAsset("ship_1")!!
     val spawnAssetRange = variables.get().getSpawnAssetRange()
-    private val populators = mutableListOf<BlockPopulator>()
     private val surfaceStructures = SurfaceStructures(
-        { minX, surfaceY, minZ, asset, chunk -> true },
+        { minX, surfaceY, minZ, asset -> true },
         listOf(
-            WorldAssetsRegistry.getAsset("bridge_0")!! to 0.1,
-            WorldAssetsRegistry.getAsset("bridge_1")!! to 0.3,
-            WorldAssetsRegistry.getAsset("bridge_2")!! to 0.3,
-            WorldAssetsRegistry.getAsset("bridge_3")!! to 0.3,
-            WorldAssetsRegistry.getAsset("bridge_4")!! to 0.1,
-            WorldAssetsRegistry.getAsset("ant_0")!! to 0.1,
+            WorldAssetsRegistry.getAsset("bridge_0")!! to 0.05,
+            WorldAssetsRegistry.getAsset("bridge_1")!! to 0.1,
+            WorldAssetsRegistry.getAsset("bridge_2")!! to 0.1,
+            WorldAssetsRegistry.getAsset("bridge_3")!! to 0.1,
+            WorldAssetsRegistry.getAsset("bridge_4")!! to 0.05,
+            WorldAssetsRegistry.getAsset("bridge_mini_0")!! to 0.2,
+            WorldAssetsRegistry.getAsset("bridge_mini_1")!! to 0.2,
+            WorldAssetsRegistry.getAsset("ant_0")!! to 0.05,
         ),
-        seed
+        ThreadLocal.withInitial {
+            val variables = variables.get()
+            return@withInitial { chunkX: Int, chunkZ: Int ->
+                variables.evaluateHeight(
+                    chunkX.toDouble(),
+                    chunkZ.toDouble()
+                ).toInt()
+            }
+        },
+        ItemChest(
+            listOf(
+                listOf(
+                    ItemRegistry.COAL.createItemStack().also { item -> item.amount = 3 },
+                    ItemRegistry.COAL.createItemStack().also { item -> item.amount = 1 },
+                    ItemRegistry.SCRAP.createItemStack().also { item -> item.amount = 2 },
+                    ItemRegistry.TORCH.createItemStack().also { item -> item.amount = 5 },
+                ),
+                listOf(
+                    ItemRegistry.COAL.createItemStack().also { item -> item.amount = 1 },
+                    ItemStack(Material.POTATO, 3),
+                    ItemStack(Material.POISONOUS_POTATO, 2),
+                    ItemStack(Material.CARROT, 10),
+                    ItemStack(Material.BAKED_POTATO, 3),
+                ),
+                listOf(
+                    ItemRegistry.COAL.createItemStack().also { item -> item.amount = 1 },
+                    ItemStack(Material.POTATO, 1),
+                    ItemStack(Material.POISONOUS_POTATO, 1),
+                    ItemStack(Material.CARROT, 15),
+                    ItemRegistry.COAL.createItemStack().also { item -> item.amount = 3 },
+                    ItemRegistry.TORCH.createItemStack().also { item -> item.amount = 5 },
+                    ItemRegistry.SCRAP.createItemStack().also { item -> item.amount = 2 },
+                )
+            )
+        ),
+        seed,
+    )
+    private val roomStructures = UnderGroundStructures(
+        { minX, surfaceY, minZ, asset -> true },
+        listOf(
+            WorldAssetsRegistry.getAsset("room_0")!! to 0.03,
+            WorldAssetsRegistry.getAsset("room_1")!! to 0.08,
+        ),
+        ItemChest(
+            listOf(
+                listOf(
+                    ItemRegistry.COAL.createItemStack().also { item -> item.amount = 3 },
+                    ItemRegistry.SCRAP.createItemStack().also { item -> item.amount = 2 },
+                    ItemRegistry.TORCH.createItemStack().also { item -> item.amount = 5 },
+                ),
+            )
+        ),
+        seed,
+        16,
+        merge = false,
+    )
+    private val miniRoomStructures = UnderGroundStructures(
+        { minX, surfaceY, minZ, asset -> true },
+        listOf(
+            WorldAssetsRegistry.getAsset("room_0")!! to 0.1,
+            WorldAssetsRegistry.getAsset("room_1")!! to 0.03,
+        ),
+        ItemChest(
+            listOf(
+                listOf(
+                    ItemRegistry.COAL.createItemStack().also { item -> item.amount = 3 },
+                    ItemRegistry.SCRAP.createItemStack().also { item -> item.amount = 2 },
+                    ItemRegistry.TORCH.createItemStack().also { item -> item.amount = 5 },
+                ),
+            )
+        ),
+        seed,
+        72,
+        merge = false,
+    )
+
+    private val populators = listOf(
+        surfaceStructures,
+        roomStructures,
+        miniRoomStructures,
     )
 
     override fun generateNoise(worldInfo: WorldInfo, random: Random, chunkX: Int, chunkZ: Int, chunkData: ChunkData) {
@@ -229,7 +325,16 @@ class SnowLand internal constructor(seed: Long) : ChunkGenerator() {
                     val isNoodleCave2 =
                         (caveNoise7 * caveNoise7 + caveNoise8 * caveNoise8 + abs(caveNoise9) * 0.006 + detailNoise * 0.004) < 0.004
 
-                    val isNoodleCave = isNoodleCave1 || isNoodleCave2
+                    val caveNoise10 =
+                        variables.caveNoise10.evaluateNoise(worldX.toDouble(), y.toDouble(), worldZ.toDouble())
+                    val caveNoise11 =
+                        variables.caveNoise11.evaluateNoise(worldX.toDouble(), y.toDouble(), worldZ.toDouble())
+                    val caveNoise12 =
+                        variables.caveNoise12.evaluateNoise(worldX.toDouble(), y.toDouble(), worldZ.toDouble())
+                    val isNoodleCave3 =
+                        (caveNoise10 * caveNoise10 + caveNoise11 * caveNoise11 + abs(caveNoise12) * 0.006 + detailNoise * 0.004) < 0.0043
+
+                    val isNoodleCave = isNoodleCave1 || isNoodleCave2 || isNoodleCave3
 
                     val caveNoise4 =
                         variables.caveNoise4.evaluateNoise(worldX.toDouble(), y.toDouble(), worldZ.toDouble())
@@ -268,12 +373,9 @@ class SnowLand internal constructor(seed: Long) : ChunkGenerator() {
                 }
             }
         }
-
-        val heightFunction = { x: Int, z: Int -> variables.evaluateHeight(x.toDouble(), z.toDouble()).toInt() }
-        surfaceStructures.generate(chunkX, heightFunction, chunkZ, chunkData)
     }
 
-    override fun getDefaultPopulators(world: World): MutableList<BlockPopulator> {
+    override fun getDefaultPopulators(world: World): List<BlockPopulator> {
         return populators
     }
 

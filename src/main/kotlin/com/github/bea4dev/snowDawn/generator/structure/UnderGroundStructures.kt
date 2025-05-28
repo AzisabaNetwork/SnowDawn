@@ -11,17 +11,22 @@ import java.util.Comparator
 import java.util.Random
 import kotlin.jvm.optionals.getOrDefault
 
-class SurfaceStructures(
+class UnderGroundStructures(
     private val shouldPlace: (minX: Int, minY: Int, minZ: Int, worldAsset: WorldAsset) -> Boolean,
     private val structures: List<Pair<WorldAsset, Double>>,
-    private val surfaceYFunction: ThreadLocal<(Int, Int) -> Int>,
     private val itemChest: ItemChest,
     seed: Long,
+    private val placeHeight: Int,
     private val merge: Boolean = true,
-) : BlockPopulator() {
+): BlockPopulator() {
     private val maxLengthX =
         structures.stream().map { entry -> entry.first }
             .map { asset -> asset.endPosition.blockX - asset.startPosition.blockX + 1 }
+            .max(Comparator.naturalOrder())
+            .getOrDefault(0)
+    private val maxLengthY =
+        structures.stream().map { entry -> entry.first }
+            .map { asset -> asset.endPosition.blockY - asset.startPosition.blockY + 1 }
             .max(Comparator.naturalOrder())
             .getOrDefault(0)
     private val maxLengthZ =
@@ -45,7 +50,6 @@ class SurfaceStructures(
         limitedRegion: LimitedRegion
     ) {
         val noise = noise.get()
-        val surfaceYFunction = surfaceYFunction.get()
 
         for (x in 0 until 16) {
             for (z in 0 until 16) {
@@ -63,30 +67,22 @@ class SurfaceStructures(
                     continue
                 }
 
-                val maxX = minX + (asset.endPosition.blockX - asset.startPosition.blockX)
-                val maxZ = minZ + (asset.endPosition.blockZ - asset.startPosition.blockZ)
-
-                val midX = (minX + maxX) / 2
-                val midZ = (minZ + maxZ) / 2
-
-                val surfaceY = surfaceYFunction(midX, midZ)
-
-                if (!shouldPlace(minX, surfaceY, minZ, asset)) {
+                if (!shouldPlace(minX, placeHeight, minZ, asset)) {
                     continue
                 }
 
-                for (y in surfaceY until worldInfo.maxHeight) {
-                    val block = asset.getBlock(worldX - minX, y - surfaceY, worldZ - minZ)
+                for (y in placeHeight until (placeHeight + maxLengthY)) {
+                    val block = asset.getBlock(worldX - minX, y - placeHeight, worldZ - minZ)
 
                     if (block != null) {
                         if (merge && block.material.isAir) {
                             continue
                         }
 
-                        limitedRegion.setBlockData(worldX, y - 2, worldZ, block)
+                        limitedRegion.setBlockData(worldX, y, worldZ, block)
 
                         if (block.material == Material.CHEST) {
-                            itemChest.populate(worldX, y - 2, worldZ, limitedRegion, noise)
+                            itemChest.populate(worldX, y, worldZ, limitedRegion, noise)
                         }
                     }
                 }

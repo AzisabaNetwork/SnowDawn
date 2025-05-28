@@ -4,8 +4,10 @@ import com.github.bea4dev.snowDawn.biome.BiomeRegistry
 import com.github.bea4dev.snowDawn.craft.CraftGUIManager
 import com.github.bea4dev.snowDawn.dimension.DimensionRegistry
 import com.github.bea4dev.snowDawn.generator.GeneratorRegistry
+import com.github.bea4dev.snowDawn.listeners.BlockListener
 import com.github.bea4dev.snowDawn.listeners.ChunkListener
 import com.github.bea4dev.snowDawn.listeners.CraftListener
+import com.github.bea4dev.snowDawn.listeners.DropItemListener
 import com.github.bea4dev.snowDawn.listeners.PlayerJoinQuitListener
 import com.github.bea4dev.snowDawn.listeners.WeaponListener
 import com.github.bea4dev.snowDawn.player.PlayerManagerListener
@@ -50,6 +52,8 @@ class SnowDawn : JavaPlugin() {
         pluginManager.registerEvents(PlayerManagerListener(), this)
         pluginManager.registerEvents(WeaponListener(), this)
         pluginManager.registerEvents(CraftListener(), this)
+        pluginManager.registerEvents(BlockListener(), this)
+        pluginManager.registerEvents(DropItemListener(), this)
 
         SpigotConfig.disabledAdvancements.add("*")
 

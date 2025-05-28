@@ -26,6 +26,10 @@ enum class Text(val jp: String) {
     ITEM_SCRAP_PIPE_LORE_3(""),
     ITEM_SCRAP_PIPE_LORE_4("パリィ！"),
 
+    ITEM_ICE("氷"),
+    ITEM_COAL("石炭"),
+    ITEM_TORCH("松明"),
+
     LUCAS("司令官ルーカス"),
     BENE("ベネ"),
     TUTORIAL_1("21XX年――\n人類は異星文明との全面戦争に突入した。"),
