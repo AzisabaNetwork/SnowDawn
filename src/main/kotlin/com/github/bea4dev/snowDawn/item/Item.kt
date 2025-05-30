@@ -26,6 +26,7 @@ object ItemRegistry {
     val ICE = Item("ice", Material.ICE, 0, 0, Text.ITEM_ICE, listOf())
     val COAL = Item("coal", Material.COAL, 0, 0, Text.ITEM_COAL, listOf())
     val TORCH = Item("torch", Material.TORCH, 0, 1, Text.ITEM_TORCH, listOf())
+    val SCRAP_PICKAXE = Item("scrap_pickaxe", Material.WOODEN_PICKAXE, 1, 2, Text.ITEM_SCRAP_PIPE, listOf())
 
     operator fun get(id: String): Item? {
         return itemIdMap[id]

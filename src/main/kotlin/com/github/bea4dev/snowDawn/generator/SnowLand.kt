@@ -357,12 +357,14 @@ class SnowLand internal constructor(seed: Long) : ChunkGenerator() {
                                     y.toDouble(),
                                     worldZ.toDouble()
                                 ) + detailNoise * 0.1
-                            if (iceNoise in 0.7..<0.85) {
-                                chunkData.setBlock(x, y, z, Material.ICE)
-                            } else if (iceNoise in 0.85..1.0) {
-                                chunkData.setBlock(x, y, z, Material.PACKED_ICE)
-                            } else {
-                                chunkData.setBlock(x, y, z, Material.STONE)
+                            when (iceNoise) {
+                                in 0.9..<1.0 -> {
+                                    chunkData.setBlock(x, y, z, Material.ICE)
+                                }
+
+                                else -> {
+                                    chunkData.setBlock(x, y, z, Material.STONE)
+                                }
                             }
                         } else if (y == floor(landHeight).toInt()) {
                             val layerIndex = ((landHeight - floor(landHeight)) * 8).toInt()
