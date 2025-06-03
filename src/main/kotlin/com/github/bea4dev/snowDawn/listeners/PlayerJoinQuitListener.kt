@@ -5,6 +5,7 @@ import com.github.bea4dev.snowDawn.item.ItemRegistry
 import com.github.bea4dev.snowDawn.item.weapon.PlayerWeaponTask
 import com.github.bea4dev.snowDawn.item.weapon.Weapon
 import com.github.bea4dev.snowDawn.player.PlayerTask
+import com.github.bea4dev.snowDawn.scenario.script.Prologue
 import com.github.bea4dev.snowDawn.text.Text
 import com.github.bea4dev.snowDawn.world.WorldRegistry
 import org.bukkit.GameMode
@@ -36,11 +37,11 @@ internal class PlayerJoinQuitListener : Listener {
 
         PlayerWeaponTask(player).runTaskTimer(SnowDawn.plugin, 0, 1)
         PlayerTask(player).start()
-/*
-        player.teleport(LOGIN_POSITION.toLocation(WorldRegistry.VOID))
+
+        player.teleport(LOGIN_POSITION.toLocation(WorldRegistry.PROLOGUE))
         //player.teleport(Location(world, 0.5, 240.0, 0.5))
 
-        Prologue.start(player)*/
+        Prologue.start(player)
     }
 
     @EventHandler

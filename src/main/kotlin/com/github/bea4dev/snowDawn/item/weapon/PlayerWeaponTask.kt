@@ -1,6 +1,7 @@
 package com.github.bea4dev.snowDawn.item.weapon
 
 import de.tr7zw.changeme.nbtapi.NBT
+import org.bukkit.GameMode
 import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitRunnable
 import java.util.function.Function
@@ -9,6 +10,10 @@ class PlayerWeaponTask(private val player: Player) : BukkitRunnable() {
     override fun run() {
         if (!player.isOnline) {
             super.cancel()
+            return
+        }
+
+        if (player.gameMode != GameMode.SURVIVAL) {
             return
         }
 

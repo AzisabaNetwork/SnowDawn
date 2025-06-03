@@ -8,8 +8,6 @@ import org.bukkit.Material
 import org.bukkit.block.data.type.Campfire
 import org.bukkit.entity.Player
 import kotlin.math.abs
-import kotlin.math.max
-import kotlin.math.min
 
 private const val TEMPERATURE_CHECK_RADIUS = 16
 private const val MIN_TEMPERATURE = -140
@@ -45,13 +43,13 @@ class PlayerTask(private val player: Player) : TickBase {
                         if (block != null) {
                             if (block.material == Material.CAMPFIRE) {
                                 if ((block as Campfire).isLit) {
-                                    temperature = 1
+                                    temperature = +1
                                     break@loop
                                 }
                             }
 
                             if (temperature < 0 && (block.material == Material.TORCH || block.material == Material.WALL_TORCH)) {
-                                temperature = 1
+                                temperature = +1
                             }
                         }
                     }
