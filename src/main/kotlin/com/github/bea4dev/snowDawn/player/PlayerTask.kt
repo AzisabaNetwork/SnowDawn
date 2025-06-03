@@ -12,12 +12,14 @@ import kotlin.math.max
 import kotlin.math.min
 
 private const val TEMPERATURE_CHECK_RADIUS = 16
-private const val FREEZE_TICK_INTERVAL = 4
+private const val MIN_TEMPERATURE = -140
+private const val MAX_TEMPERATURE = 100
 
 private val thread = VanillaSourceAPI.getInstance().tickThreadPool.nextTickThread
 
-class PlayerTask(private val player: Player): TickBase {
+class PlayerTask(private val player: Player) : TickBase {
     private var tick = 0
+    private var temperature = MAX_TEMPERATURE
 
     override fun tick() {
         tick++
@@ -33,6 +35,7 @@ class PlayerTask(private val player: Player): TickBase {
 
         var temperature = -1
         val hasBlockLight = world.getBlockLightLevel(location.blockX, location.blockY, location.blockZ) > 0
+                || world.getBlockLightLevel(location.blockX, location.blockY + 1, location.blockZ) > 0
 
         if (hasBlockLight) {
             loop@ for (x in (location.blockX - TEMPERATURE_CHECK_RADIUS)..(location.blockX + TEMPERATURE_CHECK_RADIUS)) {
@@ -47,8 +50,8 @@ class PlayerTask(private val player: Player): TickBase {
                                 }
                             }
 
-                            if (temperature < 0 && block.material == Material.TORCH) {
-                                temperature = 0
+                            if (temperature < 0 && (block.material == Material.TORCH || block.material == Material.WALL_TORCH)) {
+                                temperature = 1
                             }
                         }
                     }
@@ -56,14 +59,19 @@ class PlayerTask(private val player: Player): TickBase {
             }
         }
 
-        if (tick % FREEZE_TICK_INTERVAL == 0) {
-            MainThread.launch {
-                player.lockFreezeTicks(true)
-                if (temperature <= 0) {
-                    player.freezeTicks = min(player.freezeTicks + abs(temperature), player.maxFreezeTicks)
-                } else {
-                    player.freezeTicks = max(player.freezeTicks - temperature, 0)
-                }
+        this.temperature += temperature
+
+        if (this.temperature > MAX_TEMPERATURE) {
+            this.temperature = MAX_TEMPERATURE
+        }
+        if (this.temperature < MIN_TEMPERATURE) {
+            this.temperature = MIN_TEMPERATURE
+        }
+
+        MainThread.launch {
+            player.lockFreezeTicks(true)
+            if (this@PlayerTask.temperature <= 0) {
+                player.freezeTicks = abs(this@PlayerTask.temperature)
             }
         }
     }
