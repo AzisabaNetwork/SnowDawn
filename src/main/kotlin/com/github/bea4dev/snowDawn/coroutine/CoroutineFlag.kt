@@ -1,9 +1,20 @@
 package com.github.bea4dev.snowDawn.coroutine
 
 import com.github.bea4dev.snowDawn.SnowDawn
+import com.github.bea4dev.vanilla_source.api.VanillaSourceAPI
+import com.github.shynixn.mccoroutine.bukkit.scope
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import kotlin.coroutines.CoroutineContext
+
+object CoroutineFlagRegistry {
+    val CAMPFIRE_PLACE = PlayerCoroutineFlag()
+    val CAMPFIRE_CLICK = PlayerCoroutineFlag()
+    val CLOSE_CRAFT_UI = PlayerCoroutineFlag()
+}
 
 class CoroutineFlag(private var isCompleted: Boolean) : ManualDispatcher() {
     @Synchronized
@@ -17,6 +28,16 @@ class CoroutineFlag(private var isCompleted: Boolean) : ManualDispatcher() {
     @Synchronized
     override fun isDispatchNeeded(context: CoroutineContext): Boolean {
         return !this.isCompleted
+    }
+
+    @Synchronized
+    fun future(): Deferred<Unit> {
+        return VanillaSourceAPI.getInstance().plugin.scope.async(this, CoroutineStart.DEFAULT) {}
+    }
+
+    @Synchronized
+    override fun run() {
+        super.run()
     }
 }
 

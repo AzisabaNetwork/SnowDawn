@@ -1,10 +1,14 @@
 package com.github.bea4dev.snowDawn.scenario.script
 
 import com.github.bea4dev.snowDawn.camera.createCamera
+import com.github.bea4dev.snowDawn.coroutine.CoroutineFlagRegistry
 import com.github.bea4dev.snowDawn.coroutine.MainThread
 import com.github.bea4dev.snowDawn.coroutine.async
 import com.github.bea4dev.snowDawn.coroutine.play
 import com.github.bea4dev.snowDawn.generator.GeneratorRegistry
+import com.github.bea4dev.snowDawn.item.ItemRegistry
+import com.github.bea4dev.snowDawn.listeners.InventoryListener
+import com.github.bea4dev.snowDawn.save.PlayerDataRegistry
 import com.github.bea4dev.snowDawn.scenario.DEFAULT_TEXT_BOX
 import com.github.bea4dev.snowDawn.scenario.SCENARIO_TICK_THREAD
 import com.github.bea4dev.snowDawn.scenario.Scenario
@@ -399,6 +403,7 @@ object Prologue : Scenario() {
         val spawnPosition = spawnRangeStart.clone().add(Vector(3.5, 0.0, 2.5))
         val spawnLocation = spawnPosition.toLocation(WorldRegistry.SNOW_LAND)
         spawnLocation.pitch = 50.0F
+        PlayerDataRegistry[player].respawnLocation = spawnLocation.clone()
 
         MainThread.sync {
             for (y in 0..WorldRegistry.SNOW_LAND.maxHeight) {
@@ -558,6 +563,58 @@ object Prologue : Scenario() {
             Text.BENE[player],
             1,
             Text.TUTORIAL_20[player]
+        ).play().await()
+
+        CoroutineFlagRegistry.CAMPFIRE_PLACE[player].future().await()
+
+        TextBox(
+            player,
+            DEFAULT_TEXT_BOX,
+            Text.BENE[player],
+            1,
+            Text.TUTORIAL_21[player]
+        ).play().await()
+
+        CoroutineFlagRegistry.CAMPFIRE_CLICK[player].future().await()
+
+        TextBox(
+            player,
+            DEFAULT_TEXT_BOX,
+            Text.BENE[player],
+            1,
+            Text.TUTORIAL_22[player]
+        ).play().await()
+
+        player.inventory.addItem(ItemRegistry.SCRAP.createItemStack().also { item -> item.amount = 8 })
+        player.inventory.addItem(ItemRegistry.COAL.createItemStack().also { item -> item.amount = 4 })
+        player.inventory.addItem(ItemStack(Material.BREAD, 10))
+
+        InventoryListener.closeCheck.add(player)
+
+        TextBox(
+            player,
+            DEFAULT_TEXT_BOX,
+            Text.BENE[player],
+            1,
+            Text.TUTORIAL_23[player]
+        ).play().await()
+
+        TextBox(
+            player,
+            DEFAULT_TEXT_BOX,
+            Text.BENE[player],
+            1,
+            Text.TUTORIAL_24[player]
+        ).play().await()
+
+        CoroutineFlagRegistry.CLOSE_CRAFT_UI[player].future().await()
+
+        TextBox(
+            player,
+            DEFAULT_TEXT_BOX,
+            Text.BENE[player],
+            1,
+            Text.TUTORIAL_25[player]
         ).play().await()
     }
 

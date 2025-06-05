@@ -1,7 +1,9 @@
 package com.github.bea4dev.snowDawn.listeners
 
+import com.github.bea4dev.snowDawn.coroutine.CoroutineFlagRegistry
 import com.github.bea4dev.snowDawn.coroutine.PlayerCoroutineFlag
 import com.github.bea4dev.snowDawn.item.ItemRegistry
+import com.github.bea4dev.snowDawn.save.PlayerDataRegistry
 import com.github.bea4dev.snowDawn.text.Text
 import net.kyori.adventure.text.Component
 import org.bukkit.GameMode
@@ -11,9 +13,9 @@ import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockFadeEvent
+import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.player.PlayerInteractEvent
-
-val CAMPFIRE_CLICK = PlayerCoroutineFlag()
+import org.bukkit.inventory.EquipmentSlot
 
 class BlockListener : Listener {
     @EventHandler
@@ -36,11 +38,19 @@ class BlockListener : Listener {
     fun onClickCampfire(event: PlayerInteractEvent) {
         val player = event.player
 
-        if (event.action == Action.RIGHT_CLICK_BLOCK && event.clickedBlock?.type == Material.CAMPFIRE) {
-            player.respawnLocation = player.location
+        if (event.action == Action.RIGHT_CLICK_BLOCK && event.clickedBlock?.type == Material.CAMPFIRE && event.hand == EquipmentSlot.HAND) {
             player.sendMessage(Component.translatable(Text.MESSAGE_SET_RESPAWN.toString()))
+            PlayerDataRegistry[player].respawnLocation = player.location.clone()
 
-            CAMPFIRE_CLICK.onComplete(player)
+            CoroutineFlagRegistry.CAMPFIRE_CLICK.onComplete(player)
+        }
+    }
+
+    @EventHandler
+    fun onPlaceCampfire(event: BlockPlaceEvent) {
+        val player = event.player
+        if (event.block.type == Material.CAMPFIRE) {
+            CoroutineFlagRegistry.CAMPFIRE_PLACE.onComplete(player)
         }
     }
 }
