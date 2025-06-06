@@ -5,6 +5,7 @@ import com.github.bea4dev.snowDawn.coroutine.CoroutineFlagRegistry
 import com.github.bea4dev.snowDawn.coroutine.MainThread
 import com.github.bea4dev.snowDawn.coroutine.async
 import com.github.bea4dev.snowDawn.coroutine.play
+import com.github.bea4dev.snowDawn.craft.CraftGUIManager
 import com.github.bea4dev.snowDawn.generator.GeneratorRegistry
 import com.github.bea4dev.snowDawn.item.ItemRegistry
 import com.github.bea4dev.snowDawn.listeners.InventoryListener
@@ -589,6 +590,7 @@ object Prologue : Scenario() {
         player.inventory.addItem(ItemRegistry.COAL.createItemStack().also { item -> item.amount = 4 })
         player.inventory.addItem(ItemStack(Material.BREAD, 10))
 
+        CraftGUIManager.update(player)
         InventoryListener.closeCheck.add(player)
 
         TextBox(

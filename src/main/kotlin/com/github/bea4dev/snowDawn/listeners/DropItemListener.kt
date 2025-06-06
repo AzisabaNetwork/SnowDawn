@@ -17,6 +17,7 @@ class DropItemListener : Listener {
         val item = when (event.item.itemStack.type) {
             Material.TORCH -> ItemRegistry.TORCH
             Material.COAL -> ItemRegistry.COAL
+            Material.COBBLESTONE -> ItemRegistry.STONE
             else -> return
         }
 

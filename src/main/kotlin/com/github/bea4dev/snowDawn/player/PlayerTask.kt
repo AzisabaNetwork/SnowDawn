@@ -5,6 +5,7 @@ import com.github.bea4dev.vanilla_source.api.VanillaSourceAPI
 import com.github.bea4dev.vanilla_source.api.entity.TickBase
 import org.bukkit.GameMode
 import org.bukkit.Material
+import org.bukkit.Particle
 import org.bukkit.block.data.type.Campfire
 import org.bukkit.entity.Player
 import kotlin.math.abs
@@ -71,6 +72,18 @@ class PlayerTask(private val player: Player) : TickBase {
             if (this@PlayerTask.temperature <= 0) {
                 player.freezeTicks = abs(this@PlayerTask.temperature)
             }
+        }
+
+        if (temperature < 0 && tick % 50 < 25) {
+            player.spawnParticle(
+                Particle.SNOWFLAKE,
+                player.eyeLocation.add(player.eyeLocation.direction.multiply(0.5)).add(0.0, -0.2, 0.0),
+                1,
+                0.01,
+                0.01,
+                0.01,
+                0.01,
+            )
         }
     }
 

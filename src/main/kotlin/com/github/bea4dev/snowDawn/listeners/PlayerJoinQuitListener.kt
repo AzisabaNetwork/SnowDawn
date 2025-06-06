@@ -39,10 +39,10 @@ internal class PlayerJoinQuitListener : Listener {
         PlayerWeaponTask(player).runTaskTimer(SnowDawn.plugin, 0, 1)
         PlayerTask(player).start()
 
-        player.teleport(LOGIN_POSITION.toLocation(WorldRegistry.PROLOGUE))
+        //player.teleport(LOGIN_POSITION.toLocation(WorldRegistry.PROLOGUE))
         //player.teleport(Location(world, 0.5, 240.0, 0.5))
 
-        Prologue.start(player)
+        //Prologue.start(player)
     }
 
     @EventHandler

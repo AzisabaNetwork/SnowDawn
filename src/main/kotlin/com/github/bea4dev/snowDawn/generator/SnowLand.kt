@@ -105,6 +105,23 @@ private class SnowLandGeneratorVariables(seed: Long) {
         .scale(0.007)
         .build()
 
+    val coalNoise1 = JNoise.newBuilder()
+        .fastSimplex(FastSimplexNoiseGenerator.newBuilder().setSeed(seed + 16).build())
+        .scale(0.1)
+        .build()
+    val coalNoise2 = JNoise.newBuilder()
+        .fastSimplex(FastSimplexNoiseGenerator.newBuilder().setSeed(seed + 17).build())
+        .scale(0.12)
+        .build()
+    val copperNoise1 = JNoise.newBuilder()
+        .fastSimplex(FastSimplexNoiseGenerator.newBuilder().setSeed(seed + 18).build())
+        .scale(0.1)
+        .build()
+    val copperNoise2 = JNoise.newBuilder()
+        .fastSimplex(FastSimplexNoiseGenerator.newBuilder().setSeed(seed + 19).build())
+        .scale(0.12)
+        .build()
+
     fun evaluateLowerHeight(x: Double, z: Double): Double {
         return baseNoise.evaluateNoise(x, z) * 16 + 128
     }
@@ -180,14 +197,14 @@ class SnowLand internal constructor(seed: Long) : ChunkGenerator() {
     private val surfaceStructures = SurfaceStructures(
         { minX, surfaceY, minZ, asset -> true },
         listOf(
-            WorldAssetsRegistry.getAsset("bridge_0")!! to 0.05,
+            WorldAssetsRegistry.getAsset("bridge_0")!! to 0.08,
             WorldAssetsRegistry.getAsset("bridge_1")!! to 0.1,
             WorldAssetsRegistry.getAsset("bridge_2")!! to 0.1,
             WorldAssetsRegistry.getAsset("bridge_3")!! to 0.1,
-            WorldAssetsRegistry.getAsset("bridge_4")!! to 0.05,
+            WorldAssetsRegistry.getAsset("bridge_4")!! to 0.08,
             WorldAssetsRegistry.getAsset("bridge_mini_0")!! to 0.2,
             WorldAssetsRegistry.getAsset("bridge_mini_1")!! to 0.2,
-            WorldAssetsRegistry.getAsset("ant_0")!! to 0.05,
+            WorldAssetsRegistry.getAsset("ant_0")!! to 0.08,
         ),
         ThreadLocal.withInitial {
             val variables = variables.get()
@@ -201,10 +218,9 @@ class SnowLand internal constructor(seed: Long) : ChunkGenerator() {
         ItemChest(
             listOf(
                 listOf(
-                    ItemRegistry.COAL.createItemStack().also { item -> item.amount = 3 },
                     ItemRegistry.COAL.createItemStack().also { item -> item.amount = 1 },
                     ItemRegistry.SCRAP.createItemStack().also { item -> item.amount = 2 },
-                    ItemRegistry.TORCH.createItemStack().also { item -> item.amount = 5 },
+                    ItemRegistry.TORCH.createItemStack().also { item -> item.amount = 1 },
                 ),
                 listOf(
                     ItemRegistry.COAL.createItemStack().also { item -> item.amount = 1 },
@@ -218,10 +234,13 @@ class SnowLand internal constructor(seed: Long) : ChunkGenerator() {
                     ItemStack(Material.POTATO, 1),
                     ItemStack(Material.POISONOUS_POTATO, 1),
                     ItemStack(Material.CARROT, 15),
-                    ItemRegistry.COAL.createItemStack().also { item -> item.amount = 3 },
-                    ItemRegistry.TORCH.createItemStack().also { item -> item.amount = 5 },
+                    ItemRegistry.COAL.createItemStack().also { item -> item.amount = 1 },
+                    ItemRegistry.TORCH.createItemStack().also { item -> item.amount = 2 },
                     ItemRegistry.SCRAP.createItemStack().also { item -> item.amount = 2 },
-                )
+                ),
+                listOf(
+                    ItemRegistry.COAL.createItemStack().also { item -> item.amount = 1 },
+                ),
             )
         ),
         seed,
@@ -235,9 +254,12 @@ class SnowLand internal constructor(seed: Long) : ChunkGenerator() {
         ItemChest(
             listOf(
                 listOf(
-                    ItemRegistry.COAL.createItemStack().also { item -> item.amount = 3 },
-                    ItemRegistry.SCRAP.createItemStack().also { item -> item.amount = 2 },
-                    ItemRegistry.TORCH.createItemStack().also { item -> item.amount = 5 },
+                    ItemRegistry.COAL.createItemStack().also { item -> item.amount = 2 },
+                    ItemRegistry.SCRAP.createItemStack().also { item -> item.amount = 1 },
+                    ItemRegistry.TORCH.createItemStack().also { item -> item.amount = 2 },
+                ),
+                listOf(
+                    ItemRegistry.COAL.createItemStack().also { item -> item.amount = 1 },
                 ),
             )
         ),
@@ -254,9 +276,12 @@ class SnowLand internal constructor(seed: Long) : ChunkGenerator() {
         ItemChest(
             listOf(
                 listOf(
-                    ItemRegistry.COAL.createItemStack().also { item -> item.amount = 3 },
-                    ItemRegistry.SCRAP.createItemStack().also { item -> item.amount = 2 },
-                    ItemRegistry.TORCH.createItemStack().also { item -> item.amount = 5 },
+                    ItemRegistry.COAL.createItemStack().also { item -> item.amount = 2 },
+                    ItemRegistry.SCRAP.createItemStack().also { item -> item.amount = 1 },
+                    ItemRegistry.TORCH.createItemStack().also { item -> item.amount = 2 },
+                ),
+                listOf(
+                    ItemRegistry.COAL.createItemStack().also { item -> item.amount = 1 },
                 ),
             )
         ),
@@ -363,7 +388,7 @@ class SnowLand internal constructor(seed: Long) : ChunkGenerator() {
                                 }
 
                                 else -> {
-                                    chunkData.setBlock(x, y, z, Material.STONE)
+                                    this.generateStone(variables, x, y, z, chunkData)
                                 }
                             }
                         } else if (y == floor(landHeight).toInt()) {
@@ -374,6 +399,22 @@ class SnowLand internal constructor(seed: Long) : ChunkGenerator() {
                     }
                 }
             }
+        }
+    }
+
+    private fun generateStone(variables: SnowLandGeneratorVariables, x: Int, y: Int, z: Int, chunkData: ChunkData) {
+        val coalNoise1 = variables.coalNoise1.evaluateNoise(x.toDouble(), y.toDouble(), z.toDouble())
+        val coalNoise2 = variables.coalNoise2.evaluateNoise(x.toDouble(), y.toDouble(), z.toDouble())
+
+        val copperNoise1 = variables.copperNoise1.evaluateNoise(x.toDouble(), y.toDouble(), z.toDouble())
+        val copperNoise2 = variables.copperNoise2.evaluateNoise(x.toDouble(), y.toDouble(), z.toDouble())
+
+        if (coalNoise1 * coalNoise2 > 0.45) {
+            chunkData.setBlock(x, y, z, Material.COAL_ORE)
+        } else if (copperNoise1 * copperNoise2 > 0.5) {
+            chunkData.setBlock(x, y, z, Material.COPPER_ORE)
+        } else {
+            chunkData.setBlock(x, y, z, Material.STONE)
         }
     }
 

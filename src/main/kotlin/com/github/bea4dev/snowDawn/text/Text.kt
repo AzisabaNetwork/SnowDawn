@@ -27,10 +27,12 @@ enum class Text(val jp: String) {
     ITEM_SCRAP_PIPE_LORE_4("パリィ！"),
 
     ITEM_SCRAP_PICKAXE("スクラップのピッケル"),
+    ITEM_STONE_PICKAXE("石のピッケル"),
 
     ITEM_ICE("氷"),
     ITEM_COAL("石炭"),
     ITEM_TORCH("松明"),
+    ITEM_STONE("丸石"),
 
     MESSAGE_SET_RESPAWN("リスポーン地点を設定しました"),
 
