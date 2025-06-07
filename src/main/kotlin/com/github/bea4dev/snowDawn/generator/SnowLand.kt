@@ -223,23 +223,20 @@ class SnowLand internal constructor(seed: Long) : ChunkGenerator() {
                     ItemRegistry.TORCH.createItemStack().also { item -> item.amount = 1 },
                 ),
                 listOf(
-                    ItemRegistry.COAL.createItemStack().also { item -> item.amount = 1 },
                     ItemStack(Material.POTATO, 3),
                     ItemStack(Material.POISONOUS_POTATO, 2),
-                    ItemStack(Material.CARROT, 10),
+                    ItemStack(Material.CARROT, 1),
                     ItemStack(Material.BAKED_POTATO, 3),
                 ),
                 listOf(
                     ItemRegistry.COAL.createItemStack().also { item -> item.amount = 1 },
                     ItemStack(Material.POTATO, 1),
                     ItemStack(Material.POISONOUS_POTATO, 1),
-                    ItemStack(Material.CARROT, 15),
-                    ItemRegistry.COAL.createItemStack().also { item -> item.amount = 1 },
-                    ItemRegistry.TORCH.createItemStack().also { item -> item.amount = 2 },
+                    ItemStack(Material.CARROT, 2),
                     ItemRegistry.SCRAP.createItemStack().also { item -> item.amount = 2 },
                 ),
                 listOf(
-                    ItemRegistry.COAL.createItemStack().also { item -> item.amount = 1 },
+                    ItemRegistry.SCRAP.createItemStack().also { item -> item.amount = 3 },
                 ),
             )
         ),
@@ -248,23 +245,29 @@ class SnowLand internal constructor(seed: Long) : ChunkGenerator() {
     private val roomStructures = UnderGroundStructures(
         { minX, surfaceY, minZ, asset -> true },
         listOf(
-            WorldAssetsRegistry.getAsset("room_0")!! to 0.03,
-            WorldAssetsRegistry.getAsset("room_1")!! to 0.08,
+            WorldAssetsRegistry.getAsset("room_0")!! to 0.1,
+            WorldAssetsRegistry.getAsset("room_1")!! to 0.15,
         ),
         ItemChest(
             listOf(
                 listOf(
-                    ItemRegistry.COAL.createItemStack().also { item -> item.amount = 2 },
+                    ItemRegistry.SCRAP.createItemStack().also { item -> item.amount = 4 },
                     ItemRegistry.SCRAP.createItemStack().also { item -> item.amount = 1 },
-                    ItemRegistry.TORCH.createItemStack().also { item -> item.amount = 2 },
                 ),
                 listOf(
                     ItemRegistry.COAL.createItemStack().also { item -> item.amount = 1 },
+                    ItemRegistry.SCRAP.createItemStack().also { item -> item.amount = 1 },
+                    ItemRegistry.SCRAP.createItemStack().also { item -> item.amount = 2 },
+                ),
+                listOf(
+                    ItemStack(Material.POTATO, 3),
+                    ItemStack(Material.POISONOUS_POTATO, 2),
+                    ItemStack(Material.CARROT, 1),
                 ),
             )
         ),
         seed,
-        16,
+        0,
         merge = false,
     )
     private val miniRoomStructures = UnderGroundStructures(
@@ -282,6 +285,12 @@ class SnowLand internal constructor(seed: Long) : ChunkGenerator() {
                 ),
                 listOf(
                     ItemRegistry.COAL.createItemStack().also { item -> item.amount = 1 },
+                ),
+                listOf(
+                    ItemStack(Material.POTATO, 3),
+                    ItemStack(Material.POISONOUS_POTATO, 2),
+                    ItemStack(Material.CARROT, 1),
+                    ItemStack(Material.POTATO, 1),
                 ),
             )
         ),

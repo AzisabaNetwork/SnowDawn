@@ -1,13 +1,12 @@
 package com.github.bea4dev.snowDawn
 
 import com.github.bea4dev.snowDawn.biome.BiomeRegistry
-import com.github.bea4dev.snowDawn.craft.CraftGUIManager
 import com.github.bea4dev.snowDawn.dimension.DimensionRegistry
 import com.github.bea4dev.snowDawn.generator.GeneratorRegistry
 import com.github.bea4dev.snowDawn.listeners.BlockListener
 import com.github.bea4dev.snowDawn.listeners.ChunkListener
 import com.github.bea4dev.snowDawn.listeners.CraftListener
-import com.github.bea4dev.snowDawn.listeners.DropItemListener
+import com.github.bea4dev.snowDawn.listeners.ItemReplaceListener
 import com.github.bea4dev.snowDawn.listeners.InventoryListener
 import com.github.bea4dev.snowDawn.listeners.PlayerJoinQuitListener
 import com.github.bea4dev.snowDawn.listeners.PlayerRespawnListener
@@ -55,7 +54,7 @@ class SnowDawn : JavaPlugin() {
         pluginManager.registerEvents(WeaponListener(), this)
         pluginManager.registerEvents(CraftListener(), this)
         pluginManager.registerEvents(BlockListener(), this)
-        pluginManager.registerEvents(DropItemListener(), this)
+        pluginManager.registerEvents(ItemReplaceListener(), this)
         pluginManager.registerEvents(PlayerRespawnListener(), this)
         pluginManager.registerEvents(InventoryListener(), this)
 

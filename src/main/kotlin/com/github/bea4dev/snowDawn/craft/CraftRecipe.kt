@@ -16,6 +16,11 @@ object CraftRecipeRegistry {
         CraftRecipe(listOf(RequiredItem(ItemRegistry.SCRAP, 3)), ItemRegistry.SCRAP_PICKAXE),
         CraftRecipe(listOf(RequiredItem(ItemRegistry.COAL, 1)), ItemRegistry.TORCH, 2),
         CraftRecipe(listOf(RequiredItem(ItemRegistry.STONE, 5)), ItemRegistry.STONE_PICKAXE),
+        CraftRecipe(listOf(RequiredItem(ItemRegistry.STONE, 8)), ItemRegistry.FURNACE),
+        CraftRecipe(listOf(RequiredItem(ItemRegistry.COPPER_INGOT, 6)), ItemRegistry.COPPER_HELMET),
+        CraftRecipe(listOf(RequiredItem(ItemRegistry.COPPER_INGOT, 8)), ItemRegistry.COPPER_CHESTPLATE),
+        CraftRecipe(listOf(RequiredItem(ItemRegistry.COPPER_INGOT, 6)), ItemRegistry.COPPER_LEGGINGS),
+        CraftRecipe(listOf(RequiredItem(ItemRegistry.COPPER_INGOT, 4)), ItemRegistry.COPPER_BOOTS),
     )
 }
 

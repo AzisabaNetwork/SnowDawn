@@ -27,7 +27,9 @@ class CraftListener : Listener {
 
     @EventHandler
     fun onPlayerClickInventory(event: InventoryClickEvent) {
-        CraftGUIManager.update(event.whoClicked as Player)
+        Bukkit.getScheduler().runTaskLater(SnowDawn.plugin, Runnable {
+            CraftGUIManager.update(event.whoClicked as Player)
+        }, 1)
     }
 
     @EventHandler

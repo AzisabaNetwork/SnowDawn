@@ -33,7 +33,7 @@ class SurfaceStructures(
     val noise: ThreadLocal<JNoise> = ThreadLocal.withInitial {
         JNoise.newBuilder()
             .fastSimplex(FastSimplexNoiseGenerator.newBuilder().setSeed(seed).build())
-            .scale(0.1)
+            .scale(10.0)
             .build()
     }
 

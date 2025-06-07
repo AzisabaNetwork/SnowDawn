@@ -29,6 +29,14 @@ object ItemRegistry {
     val STONE = Item("stone", Material.COBBLESTONE, 0, 1, Text.ITEM_STONE, listOf())
     val SCRAP_PICKAXE = Item("scrap_pickaxe", Material.WOODEN_PICKAXE, 1, 2, Text.ITEM_SCRAP_PICKAXE, listOf())
     val STONE_PICKAXE = Item("stone_pickaxe", Material.STONE_PICKAXE, 0, 1, Text.ITEM_STONE_PICKAXE, listOf())
+    val FURNACE = Item("furnace", Material.FURNACE, 0, 1, Text.ITEM_FURNACE, listOf())
+    val COPPER_INGOT = Item("copper_ingot", Material.COPPER_INGOT, 0, 1, Text.ITEM_COPPER_INGOT, listOf())
+    val COPPER_HELMET = Item("copper_helmet", Material.CHAINMAIL_HELMET, 0, 1, Text.ITEM_COPPER_HELMET, listOf())
+    val COPPER_CHESTPLATE =
+        Item("copper_chestplate", Material.CHAINMAIL_CHESTPLATE, 0, 1, Text.ITEM_COPPER_CHEST_PLATE, listOf())
+    val COPPER_LEGGINGS =
+        Item("copper_leggings", Material.CHAINMAIL_LEGGINGS, 0, 1, Text.ITEM_COPPER_LEGGINGS, listOf())
+    val COPPER_BOOTS = Item("copper_boots", Material.CHAINMAIL_BOOTS, 0, 1, Text.ITEM_COPPER_BOOTS, listOf())
 
     operator fun get(id: String): Item? {
         return itemIdMap[id]

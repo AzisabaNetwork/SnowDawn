@@ -16,6 +16,7 @@ import org.bukkit.event.block.BlockFadeEvent
 import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.EquipmentSlot
+import org.bukkit.inventory.ItemStack
 
 class BlockListener : Listener {
     @EventHandler
@@ -32,6 +33,15 @@ class BlockListener : Listener {
 
         val world = event.block.world
         world.dropItem(event.block.location.add(0.5, 0.5, 0.5), ItemRegistry.ICE.createItemStack())
+    }
+
+    @EventHandler
+    fun onCopperBreak(event: BlockBreakEvent) {
+        if (event.block.type != Material.COPPER_ORE || event.player.gameMode != GameMode.SURVIVAL) return
+        event.isDropItems = false
+
+        val world = event.block.world
+        world.dropItem(event.block.location.add(0.5, 0.5, 0.5), ItemStack(Material.RAW_COPPER))
     }
 
     @EventHandler
