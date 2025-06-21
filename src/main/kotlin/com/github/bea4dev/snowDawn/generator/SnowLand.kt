@@ -121,34 +121,39 @@ private class SnowLandGeneratorVariables(seed: Long) {
         .fastSimplex(FastSimplexNoiseGenerator.newBuilder().setSeed(seed + 19).build())
         .scale(0.12)
         .build()
+    val holeRadius = 1000
 
     fun evaluateLowerHeight(x: Double, z: Double): Double {
         return baseNoise.evaluateNoise(x, z) * 16 + 128
     }
 
     fun evaluateHeight(x: Double, z: Double): Double {
-        val lowerLandHeight = this.evaluateLowerHeight(x, z)
-        var landHeight = lowerLandHeight
+        if (x * x + z * z > holeRadius * holeRadius) {
+            return 256 + detailNoise2.evaluateNoise(x, z)
+        } else {
+            val lowerLandHeight = this.evaluateLowerHeight(x, z)
+            var landHeight = lowerLandHeight
 
-        val shapeValue1 = shapeNoise1.evaluateNoise(x, z) * 8 + 8
-        if (shapeValue1 > 8) {
-            landHeight += shapeValue1
+            val shapeValue1 = shapeNoise1.evaluateNoise(x, z) * 8 + 8
+            if (shapeValue1 > 8) {
+                landHeight += shapeValue1
+            }
+
+            val shapeValue2 = shapeNoise2.evaluateNoise(x, z) * 4
+            if (shapeValue2 < -2 && shapeValue1 <= 8) {
+                landHeight += shapeValue2
+            }
+
+            val detailValue1 = detailNoise1.evaluateNoise(x, z) * 1.5
+            if (shapeValue1 > 8) {
+                landHeight += detailValue1
+            }
+
+            val detailValue = detailNoise2.evaluateNoise(x, z) * 1.5
+            landHeight += detailValue
+
+            return landHeight
         }
-
-        val shapeValue2 = shapeNoise2.evaluateNoise(x, z) * 4
-        if (shapeValue2 < -2 && shapeValue1 <= 8) {
-            landHeight += shapeValue2
-        }
-
-        val detailValue1 = detailNoise1.evaluateNoise(x, z) * 1.5
-        if (shapeValue1 > 8) {
-            landHeight += detailValue1
-        }
-
-        val detailValue = detailNoise2.evaluateNoise(x, z) * 1.5
-        landHeight += detailValue
-
-        return landHeight
     }
 
     fun getSpawnAssetRange(): Pair<Vector, Vector> {
