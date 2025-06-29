@@ -1,5 +1,6 @@
 package com.github.bea4dev.snowDawn.generator
 
+import com.github.bea4dev.snowDawn.generator.structure.FixedPositionStructure
 import com.github.bea4dev.snowDawn.generator.structure.ItemChest
 import com.github.bea4dev.snowDawn.generator.structure.SurfaceStructures
 import com.github.bea4dev.snowDawn.generator.structure.UnderGroundStructures
@@ -303,11 +304,37 @@ class SnowLand internal constructor(seed: Long) : ChunkGenerator() {
         72,
         merge = false,
     )
+    private val sisetuStructure = FixedPositionStructure(
+        { minX, surfaceY, minZ, asset -> true },
+        WorldAssetsRegistry.getAsset("sisetu")!!,
+        Vector(1200, 255, 0),
+        ItemChest(
+            listOf(
+                listOf(
+                    ItemRegistry.COAL.createItemStack().also { item -> item.amount = 2 },
+                    ItemRegistry.SCRAP.createItemStack().also { item -> item.amount = 1 },
+                    ItemRegistry.TORCH.createItemStack().also { item -> item.amount = 2 },
+                ),
+                listOf(
+                    ItemRegistry.COAL.createItemStack().also { item -> item.amount = 1 },
+                ),
+                listOf(
+                    ItemStack(Material.POTATO, 3),
+                    ItemStack(Material.POISONOUS_POTATO, 2),
+                    ItemStack(Material.CARROT, 1),
+                    ItemStack(Material.POTATO, 1),
+                ),
+            )
+        ),
+        seed,
+        merge = true,
+    )
 
     private val populators = listOf(
         surfaceStructures,
         roomStructures,
         miniRoomStructures,
+        sisetuStructure
     )
 
     override fun generateNoise(worldInfo: WorldInfo, random: Random, chunkX: Int, chunkZ: Int, chunkData: ChunkData) {

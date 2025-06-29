@@ -64,7 +64,7 @@ abstract class Scenario {
 fun getPlayerSkin(uuid: UUID): Pair<String, String> {
     try {
         val url =
-            URL(("https://sessionserver.mojang.com/session/minecraft/profile/$uuid").toString() + "?unsigned=false")
+            URL(("https://sessionserver.mojang.com/session/minecraft/profile/$uuid") + "?unsigned=false")
         val reader = InputStreamReader(url.openStream())
         val property = JsonParser().parse(reader).asJsonObject.get("properties").asJsonArray.get(0).asJsonObject
         val texture = property["value"].asString

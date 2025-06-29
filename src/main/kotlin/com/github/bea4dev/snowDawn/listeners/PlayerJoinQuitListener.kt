@@ -6,6 +6,7 @@ import com.github.bea4dev.snowDawn.item.weapon.PlayerWeaponTask
 import com.github.bea4dev.snowDawn.item.weapon.Weapon
 import com.github.bea4dev.snowDawn.player.PlayerTask
 import com.github.bea4dev.snowDawn.scenario.script.Prologue
+import com.github.bea4dev.snowDawn.scenario.script.Sisetu
 import com.github.bea4dev.snowDawn.text.Text
 import com.github.bea4dev.snowDawn.world.WorldRegistry
 import org.bukkit.Bukkit
@@ -43,6 +44,7 @@ internal class PlayerJoinQuitListener : Listener {
         //player.teleport(Location(world, 0.5, 240.0, 0.5))
 
         //Prologue.start(player)
+        Sisetu.start(player)
     }
 
     @EventHandler

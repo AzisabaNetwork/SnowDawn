@@ -70,6 +70,8 @@ enum class Text(val jp: String) {
     TUTORIAL_23("スクラップをクラフトして\n即席の道具を作りましょう。\n"),
     TUTORIAL_24("クラフトはインベントリから行えます\n\n"),
     TUTORIAL_25("装備を整えるためにも、\n周辺を探索しませんか？\n"),
+
+    SISETU_0("%0さん、この裏に書き置きを見つけました！\nおそらく、先に行った調査隊のものでしょう\n")
     ;
 
     companion object {
