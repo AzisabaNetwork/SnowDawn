@@ -18,6 +18,8 @@ import com.github.bea4dev.vanilla_source.api.player.EnginePlayer
 import com.github.bea4dev.vanilla_source.api.text.TextBox
 import com.mojang.authlib.GameProfile
 import com.mojang.authlib.properties.Property
+import java.time.Duration
+import java.util.UUID
 import kotlinx.coroutines.time.delay
 import net.kyori.adventure.sound.Sound
 import org.bukkit.GameMode
@@ -26,22 +28,18 @@ import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.util.Vector
-import java.time.Duration
-import java.util.UUID
 
 private val PLAYER_POSITION = Vector(1206.0, 257.0, 5.5)
 private val CAMERA_POSITION = Vector(1206.5, 257.0, 5.5)
-private val MODEL_POSITION = Vector(1207.7, 258.0, 7.6)
+private val MODEL_POSITION = Vector(1207.7, 258.3, 7.6)
 
 object Sisetu : Scenario() {
     override suspend fun run(player: Player) {
         val enginePlayer = EnginePlayer.getEnginePlayer(player)
 
-        blackFeedOut(player, 500)
+        blackFeedOut(player, 1000)
 
-        val playerSkin = async {
-            getPlayerSkin(player.uniqueId)
-        }.await()
+        val playerSkin = async { getPlayerSkin(player.uniqueId) }.await()
 
         val camera0 = createCamera(player)
         val camera0Positions = CameraPositionsManager.getCameraPositionsByName("sisetu")
@@ -49,44 +47,55 @@ object Sisetu : Scenario() {
         camera0.setLookAtPositions(CameraPositionAt(CAMERA_POSITION))
         camera0.prepare()
         camera0.shake(false)
+        camera0.autoEnd(false)
+
+        delay(Duration.ofSeconds(1))
 
         MainThread.sync {
             player.gameMode = GameMode.SPECTATOR
             player.inventory.helmet = ItemStack(Material.CARVED_PUMPKIN)
+            player.teleport(CAMERA_POSITION.toLocation(player.world))
         }.await()
 
         val nmsHandler = VanillaSourceAPI.getInstance().nmsHandler
 
         val profile = GameProfile(UUID.randomUUID(), player.name)
-        profile.properties.put("textures", Property("textures", playerSkin.first, playerSkin.second))
-        val npc = nmsHandler.createNMSEntityController(
-            player.world,
-            PLAYER_POSITION.x,
-            PLAYER_POSITION.y,
-            PLAYER_POSITION.z,
-            EntityType.PLAYER,
-            profile
+        profile.properties.put(
+                "textures",
+                Property("textures", playerSkin.first, playerSkin.second)
         )
+        val npc =
+                nmsHandler.createNMSEntityController(
+                        player.world,
+                        PLAYER_POSITION.x,
+                        PLAYER_POSITION.y,
+                        PLAYER_POSITION.z,
+                        EntityType.PLAYER,
+                        profile
+                )
         npc.bukkitEntity.isSneaking = true
         npc.setRotation(-39.5F, -7.0F)
         npc.show(null, enginePlayer)
 
-        val modelEntity = EngineEntity(
-            SCENARIO_TICK_THREAD.threadLocalCache.getGlobalWorld(WorldRegistry.SNOW_LAND.name),
-            nmsHandler.createNMSEntityController(
-                WorldRegistry.SNOW_LAND,
-                MODEL_POSITION.x,
-                MODEL_POSITION.y,
-                MODEL_POSITION.z,
-                EntityType.ITEM_DISPLAY,
-                null
-            ),
-            SCENARIO_TICK_THREAD,
-            null
-        )
+        val modelEntity =
+                EngineEntity(
+                        SCENARIO_TICK_THREAD.threadLocalCache.getGlobalWorld(
+                                WorldRegistry.SNOW_LAND.name
+                        ),
+                        nmsHandler.createNMSEntityController(
+                                WorldRegistry.SNOW_LAND,
+                                MODEL_POSITION.x,
+                                MODEL_POSITION.y,
+                                MODEL_POSITION.z,
+                                EntityType.ITEM_DISPLAY,
+                                null
+                        ),
+                        SCENARIO_TICK_THREAD,
+                        null
+                )
         modelEntity.setGravity(false)
         modelEntity.setModel("benevo_1")
-        modelEntity.setRotationLookAt(PLAYER_POSITION.x, PLAYER_POSITION.y + 1.5, PLAYER_POSITION.z)
+        modelEntity.setRotationLookAt(PLAYER_POSITION.x, PLAYER_POSITION.y + 1, PLAYER_POSITION.z)
 
         val animationHandler = modelEntity.animationHandler!!
         animationHandler.playAnimation("idle", 0.3, 0.3, 1.0, true)
@@ -95,17 +104,24 @@ object Sisetu : Scenario() {
 
         delay(Duration.ofSeconds(1))
 
-        player.playSound(Sound.sound(org.bukkit.Sound.BLOCK_IRON_DOOR_OPEN, Sound.Source.MASTER, Float.MAX_VALUE, 1.0F))
+        player.playSound(
+                Sound.sound(
+                        org.bukkit.Sound.BLOCK_IRON_DOOR_OPEN,
+                        Sound.Source.MASTER,
+                        Float.MAX_VALUE,
+                        1.0F
+                )
+        )
 
         delay(Duration.ofSeconds(1))
 
         player.playSound(
-            Sound.sound(
-                org.bukkit.Sound.BLOCK_IRON_DOOR_CLOSE,
-                Sound.Source.MASTER,
-                Float.MAX_VALUE,
-                1.0F
-            )
+                Sound.sound(
+                        org.bukkit.Sound.BLOCK_IRON_DOOR_CLOSE,
+                        Sound.Source.MASTER,
+                        Float.MAX_VALUE,
+                        1.0F
+                )
         )
 
         delay(Duration.ofSeconds(1))
@@ -116,13 +132,9 @@ object Sisetu : Scenario() {
 
         delay(Duration.ofSeconds(1))
 
-        TextBox(
-            player,
-            DEFAULT_TEXT_BOX,
-            Text.BENE[player],
-            1,
-            Text.SISETU_0[player]
-        ).play().await()
+        TextBox(player, DEFAULT_TEXT_BOX, Text.BENE[player], 1, Text.SISETU_0[player, player.name])
+                .play()
+                .await()
 
         camera0.end()
     }

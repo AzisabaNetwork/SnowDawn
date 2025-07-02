@@ -6,8 +6,8 @@ import com.github.bea4dev.snowDawn.generator.GeneratorRegistry
 import com.github.bea4dev.snowDawn.listeners.BlockListener
 import com.github.bea4dev.snowDawn.listeners.ChunkListener
 import com.github.bea4dev.snowDawn.listeners.CraftListener
-import com.github.bea4dev.snowDawn.listeners.ItemReplaceListener
 import com.github.bea4dev.snowDawn.listeners.InventoryListener
+import com.github.bea4dev.snowDawn.listeners.ItemReplaceListener
 import com.github.bea4dev.snowDawn.listeners.PlayerJoinQuitListener
 import com.github.bea4dev.snowDawn.listeners.PlayerRespawnListener
 import com.github.bea4dev.snowDawn.listeners.WeaponListener
@@ -18,6 +18,7 @@ import com.github.bea4dev.vanilla_source.api.entity.tick.TickThread
 import com.github.shynixn.mccoroutine.bukkit.ShutdownStrategy
 import com.github.shynixn.mccoroutine.bukkit.mcCoroutineConfiguration
 import com.github.shynixn.mccoroutine.bukkit.scope
+import java.time.Duration
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
@@ -26,7 +27,6 @@ import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 import org.spigotmc.SpigotConfig
-import java.time.Duration
 
 class SnowDawn : JavaPlugin() {
 
@@ -68,8 +68,11 @@ class SnowDawn : JavaPlugin() {
 
         for (player in Bukkit.getOnlinePlayers()) {
             player.sendMessage(
-                Component.text("[Server] ")
-                    .append(Component.text("Starting shutdown...").color(NamedTextColor.YELLOW))
+                    Component.text("[Server] ")
+                            .append(
+                                    Component.text("Starting shutdown...")
+                                            .color(NamedTextColor.YELLOW)
+                            )
             )
         }
 
