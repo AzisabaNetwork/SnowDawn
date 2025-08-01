@@ -14,6 +14,7 @@ import com.github.bea4dev.snowDawn.scenario.DEFAULT_TEXT_BOX
 import com.github.bea4dev.snowDawn.scenario.SCENARIO_TICK_THREAD
 import com.github.bea4dev.snowDawn.scenario.Scenario
 import com.github.bea4dev.snowDawn.scenario.getPlayerSkin
+import com.github.bea4dev.snowDawn.scenario.lowSound
 import com.github.bea4dev.snowDawn.text.Text
 import com.github.bea4dev.snowDawn.world.WorldRegistry
 import com.github.bea4dev.vanilla_source.api.VanillaSourceAPI
@@ -52,26 +53,6 @@ private val PLAYER_POSITION = Vector(-0.5, 295.5, 0.5)
 private val BEAM_START = Vector(32, 267, 28)
 private val BEAM_END = Vector(-25, 338, -23)
 private val CAMERA3_EXPLOSION_POSITION = Vector(0, 304, 0)
-
-private fun TextBox.lowSound(): TextBox {
-    this.setLowerSound(
-        net.kyori.adventure.sound.Sound.sound(
-            Sound.BLOCK_NOTE_BLOCK_BIT,
-            net.kyori.adventure.sound.Sound.Source.NEUTRAL,
-            Float.MAX_VALUE,
-            0.9F
-        )
-    )
-    this.setHigherSound(
-        net.kyori.adventure.sound.Sound.sound(
-            Sound.BLOCK_NOTE_BLOCK_BIT,
-            net.kyori.adventure.sound.Sound.Source.NEUTRAL,
-            Float.MAX_VALUE,
-            0.95F
-        )
-    )
-    return this
-}
 
 object Prologue : Scenario() {
     override suspend fun run(player: Player) {

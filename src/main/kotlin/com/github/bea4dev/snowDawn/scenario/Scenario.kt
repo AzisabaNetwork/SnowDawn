@@ -3,9 +3,11 @@ package com.github.bea4dev.snowDawn.scenario
 import com.github.bea4dev.snowDawn.coroutine.launch
 import com.github.bea4dev.vanilla_source.api.VanillaSourceAPI
 import com.github.bea4dev.vanilla_source.api.entity.tick.TickThread
+import com.github.bea4dev.vanilla_source.api.text.TextBox
 import com.google.gson.JsonParser
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.title.Title
+import org.bukkit.Sound
 import org.bukkit.entity.Player
 import java.io.InputStreamReader
 import java.net.URL
@@ -59,6 +61,26 @@ abstract class Scenario {
     fun clearBlack(player: Player) {
         player.resetTitle()
     }
+}
+
+fun TextBox.lowSound(): TextBox {
+    this.setLowerSound(
+        net.kyori.adventure.sound.Sound.sound(
+            Sound.BLOCK_NOTE_BLOCK_BIT,
+            net.kyori.adventure.sound.Sound.Source.NEUTRAL,
+            Float.MAX_VALUE,
+            0.9F
+        )
+    )
+    this.setHigherSound(
+        net.kyori.adventure.sound.Sound.sound(
+            Sound.BLOCK_NOTE_BLOCK_BIT,
+            net.kyori.adventure.sound.Sound.Source.NEUTRAL,
+            Float.MAX_VALUE,
+            0.95F
+        )
+    )
+    return this
 }
 
 fun getPlayerSkin(uuid: UUID): Pair<String, String> {

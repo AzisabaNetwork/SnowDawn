@@ -5,6 +5,7 @@ import com.github.bea4dev.snowDawn.item.ItemRegistry
 import com.github.bea4dev.snowDawn.item.weapon.PlayerWeaponTask
 import com.github.bea4dev.snowDawn.item.weapon.Weapon
 import com.github.bea4dev.snowDawn.player.PlayerTask
+import com.github.bea4dev.snowDawn.scenario.MoviePlayerManager
 import com.github.bea4dev.snowDawn.scenario.script.Prologue
 import com.github.bea4dev.snowDawn.scenario.script.Sisetu
 import com.github.bea4dev.snowDawn.text.Text
@@ -17,6 +18,7 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerAnimationEvent
 import org.bukkit.event.player.PlayerJoinEvent
+import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.util.Vector
 
 private val LOGIN_POSITION = Vector(0.5, 0.0, 0.5)
@@ -44,7 +46,13 @@ internal class PlayerJoinQuitListener : Listener {
         //player.teleport(Location(world, 0.5, 240.0, 0.5))
 
         //Prologue.start(player)
-        Sisetu.start(player)
+        //Sisetu.start(player)
+    }
+
+    @EventHandler
+    fun onQuit(event: PlayerQuitEvent) {
+        val player = event.player
+        MoviePlayerManager.onStopPlaying(player)
     }
 
     @EventHandler

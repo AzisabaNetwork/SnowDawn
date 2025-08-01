@@ -14,4 +14,5 @@ object PlayerDataRegistry {
 
 class PlayerData(player: Player) {
     var respawnLocation = player.location.clone()
+    var finishedSisetuMovie = false
 }

@@ -1,6 +1,9 @@
 package com.github.bea4dev.snowDawn.player
 
 import com.github.bea4dev.snowDawn.coroutine.MainThread
+import com.github.bea4dev.snowDawn.save.PlayerDataRegistry
+import com.github.bea4dev.snowDawn.scenario.script.Sisetu
+import com.github.bea4dev.snowDawn.world.WorldRegistry
 import com.github.bea4dev.vanilla_source.api.VanillaSourceAPI
 import com.github.bea4dev.vanilla_source.api.entity.TickBase
 import org.bukkit.GameMode
@@ -8,6 +11,7 @@ import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.block.data.type.Campfire
 import org.bukkit.entity.Player
+import org.bukkit.util.Vector
 import kotlin.math.abs
 
 private const val TEMPERATURE_CHECK_RADIUS = 16
@@ -17,12 +21,20 @@ private const val MAX_TEMPERATURE = 100
 private val thread = VanillaSourceAPI.getInstance().tickThreadPool.nextTickThread
 
 class PlayerTask(private val player: Player) : TickBase {
+    private val playerData = PlayerDataRegistry[player]
     private var tick = 0
     private var temperature = MAX_TEMPERATURE
+    private var startedPlayingSisetuMovie = false
 
     override fun tick() {
         tick++
 
+        freezeTick()
+
+        sisetuMovieTick()
+    }
+
+    private fun freezeTick() {
         if (player.gameMode != GameMode.SURVIVAL) {
             player.freezeTicks = 0
             return
@@ -84,6 +96,22 @@ class PlayerTask(private val player: Player) : TickBase {
                 0.01,
                 0.01,
             )
+        }
+    }
+
+    private fun sisetuMovieTick() {
+        // 施設に近づいたときにムービーを再生する
+        val location = player.location
+
+        val sisetuPosition = Vector(1200, 255, 0)
+
+        // 半径20ブロック以内
+        if (location.toVector().distance(sisetuPosition) < 20 && player.world == WorldRegistry.SNOW_LAND) {
+            if (!playerData.finishedSisetuMovie && !startedPlayingSisetuMovie) {
+                startedPlayingSisetuMovie = true
+
+                Sisetu.start(player)
+            }
         }
     }
 

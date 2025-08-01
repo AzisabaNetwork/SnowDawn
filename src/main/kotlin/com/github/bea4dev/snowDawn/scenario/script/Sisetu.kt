@@ -4,10 +4,13 @@ import com.github.bea4dev.snowDawn.camera.createCamera
 import com.github.bea4dev.snowDawn.coroutine.MainThread
 import com.github.bea4dev.snowDawn.coroutine.async
 import com.github.bea4dev.snowDawn.coroutine.play
+import com.github.bea4dev.snowDawn.save.PlayerDataRegistry
 import com.github.bea4dev.snowDawn.scenario.DEFAULT_TEXT_BOX
+import com.github.bea4dev.snowDawn.scenario.MoviePlayerManager
 import com.github.bea4dev.snowDawn.scenario.SCENARIO_TICK_THREAD
 import com.github.bea4dev.snowDawn.scenario.Scenario
 import com.github.bea4dev.snowDawn.scenario.getPlayerSkin
+import com.github.bea4dev.snowDawn.scenario.lowSound
 import com.github.bea4dev.snowDawn.text.Text
 import com.github.bea4dev.snowDawn.world.WorldRegistry
 import com.github.bea4dev.vanilla_source.api.VanillaSourceAPI
@@ -24,6 +27,7 @@ import kotlinx.coroutines.time.delay
 import net.kyori.adventure.sound.Sound
 import net.minecraft.network.protocol.game.ClientboundAnimatePacket
 import org.bukkit.GameMode
+import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.block.data.type.Switch
 import org.bukkit.entity.EntityType
@@ -35,10 +39,11 @@ private val PLAYER_POSITION = Vector(1206.0, 257.0, 5.5)
 private val CAMERA_POSITION = Vector(1206.5, 257.0, 5.5)
 private val MODEL_POSITION = Vector(1207.7, 258.3, 7.6)
 private val BUTTON_POSITION = Vector(1206, 258, 5)
-private val ANT_POSITION = Vector(1207, 281, 5)
 
 object Sisetu : Scenario() {
     override suspend fun run(player: Player) {
+        MoviePlayerManager.onStartPlaying(player)
+
         val enginePlayer = EnginePlayer.getEnginePlayer(player)
 
         blackFeedOut(player, 1000)
@@ -157,9 +162,14 @@ object Sisetu : Scenario() {
             .play()
             .await()
 
-        TextBox(player, DEFAULT_TEXT_BOX, Text.BENE[player], 1, Text.SISETU_1[player, player.name])
+        delay(Duration.ofSeconds(1))
+
+        TextBox(player, DEFAULT_TEXT_BOX, "", 1, Text.SISETU_1[player, player.name])
+            .lowSound()
             .play()
             .await()
+
+        delay(Duration.ofSeconds(1))
 
         TextBox(player, DEFAULT_TEXT_BOX, Text.BENE[player], 1, Text.SISETU_2[player, player.name])
             .play()
@@ -292,8 +302,206 @@ object Sisetu : Scenario() {
 
         blackFeedIn(player, 1000)
 
-        delay(Duration.ofSeconds(3))
+        delay(Duration.ofSeconds(2))
+
+        TextBox(player, DEFAULT_TEXT_BOX, "？？？", 1, Text.SISETU_6[player, player.name])
+            .lowSound()
+            .play()
+            .await()
+
+        TextBox(player, DEFAULT_TEXT_BOX, "？？？", 1, Text.SISETU_7[player, player.name])
+            .lowSound()
+            .play()
+            .await()
+
+        TextBox(player, DEFAULT_TEXT_BOX, "？？？", 1, Text.SISETU_8[player, player.name])
+            .lowSound()
+            .play()
+            .await()
+
+        TextBox(player, DEFAULT_TEXT_BOX, "？？？", 1, Text.SISETU_9[player, player.name])
+            .lowSound()
+            .play()
+            .await()
+
+        // スイッチの方へ向く
+        delay(Duration.ofMillis(50))
+        modelEntity.setRotation(148.0F, 12.0F)
+        delay(Duration.ofMillis(50))
+        modelEntity.setRotation(155.0F, 12.0F)
+        delay(Duration.ofMillis(50))
+        modelEntity.setRotation(163.0F, 10.0F)
+
+        delay(Duration.ofMillis(500))
+
+        animationHandler.playAnimation("point", 0.3, 0.3, 1.0, true)
+
+        TextBox(player, DEFAULT_TEXT_BOX, Text.BENE[player], 1, Text.SISETU_10[player, player.name])
+            .play()
+            .await()
+
+        delay(Duration.ofMillis(500))
+
+        TextBox(player, DEFAULT_TEXT_BOX, Text.LUCAS[player], 1, Text.SISETU_11[player, player.name])
+            .lowSound()
+            .play()
+            .await()
+
+        TextBox(player, DEFAULT_TEXT_BOX, Text.LUCAS[player], 1, Text.SISETU_12[player, player.name])
+            .lowSound()
+            .play()
+            .await()
+
+        delay(Duration.ofMillis(500))
+
+        animationHandler.playAnimation("talk", 0.3, 0.3, 1.0, true)
+
+        TextBox(player, DEFAULT_TEXT_BOX, Text.BENE[player], 1, Text.SISETU_13[player, player.name])
+            .play()
+            .await()
+
+        animationHandler.stopAnimation("talk")
+
+        delay(Duration.ofMillis(500))
+
+        TextBox(player, DEFAULT_TEXT_BOX, Text.LUCAS[player], 1, Text.SISETU_14[player, player.name])
+            .lowSound()
+            .play()
+            .await()
+
+        delay(Duration.ofMillis(1000))
+
+        TextBox(player, DEFAULT_TEXT_BOX, Text.LUCAS[player], 1, Text.SISETU_15[player, player.name])
+            .lowSound()
+            .play()
+            .await()
+
+        delay(Duration.ofMillis(500))
+
+        animationHandler.playAnimation("talk", 0.3, 0.3, 1.0, true)
+
+        TextBox(player, DEFAULT_TEXT_BOX, Text.BENE[player], 1, Text.SISETU_16[player, player.name])
+            .play()
+            .await()
+
+        TextBox(player, DEFAULT_TEXT_BOX, Text.BENE[player], 1, Text.SISETU_17[player, player.name])
+            .play()
+            .await()
+
+        animationHandler.stopAnimation("talk")
+
+        delay(Duration.ofMillis(500))
+
+        TextBox(player, DEFAULT_TEXT_BOX, Text.LUCAS[player], 1, Text.SISETU_18[player, player.name])
+            .lowSound()
+            .play()
+            .await()
+
+        TextBox(player, DEFAULT_TEXT_BOX, Text.LUCAS[player], 1, Text.SISETU_19[player, player.name])
+            .lowSound()
+            .play()
+            .await()
+
+        delay(Duration.ofMillis(1000))
+
+        TextBox(player, DEFAULT_TEXT_BOX, Text.BENE[player], 1, Text.SISETU_20[player, player.name])
+            .play()
+            .await()
+
+        delay(Duration.ofMillis(1000))
+
+        // プレイヤーの方を向く
+        delay(Duration.ofMillis(50))
+        modelEntity.setRotation(155.0F, 15.0F)
+        delay(Duration.ofMillis(50))
+        modelEntity.setRotation(148.0F, 14.5F)
+        delay(Duration.ofMillis(50))
+        modelEntity.setRotation(141.0F, 14.0F)
+
+        delay(Duration.ofMillis(500))
+
+        animationHandler.playAnimation("talk", 0.3, 0.3, 1.0, true)
+
+        TextBox(player, DEFAULT_TEXT_BOX, Text.BENE[player], 1, Text.SISETU_21[player, player.name])
+            .play()
+            .await()
+
+        animationHandler.stopAnimation("talk")
+
+        // ベネの方を見る
+        delay(Duration.ofMillis(50))
+        npc.setRotation(-78.0F, 4.0F)
+        npc.playTickResult(null, enginePlayer, true)
+        delay(Duration.ofMillis(50))
+        npc.setRotation(-66.0F, 3.0F)
+        npc.playTickResult(null, enginePlayer, true)
+        delay(Duration.ofMillis(50))
+        npc.setRotation(-54.0F, 2.0F)
+        npc.playTickResult(null, enginePlayer, true)
+        delay(Duration.ofMillis(50))
+        npc.setRotation(-38.0F, -5.0F)
+        npc.playTickResult(null, enginePlayer, true)
+
+        delay(Duration.ofMillis(500))
+
+        animationHandler.playAnimation("talk", 0.3, 0.3, 1.0, true)
+
+        TextBox(player, DEFAULT_TEXT_BOX, Text.BENE[player], 1, Text.SISETU_22[player, player.name])
+            .play()
+            .await()
+
+        animationHandler.stopAnimation("talk")
+
+        delay(Duration.ofMillis(500))
+
+        // 頷く
+        delay(Duration.ofMillis(50))
+        npc.setRotation(-38.0F, -7.0F)
+        npc.playTickResult(null, enginePlayer, true)
+        delay(Duration.ofMillis(50))
+        npc.setRotation(-38.0F, 10.0F)
+        npc.playTickResult(null, enginePlayer, true)
+        delay(Duration.ofMillis(50))
+        npc.setRotation(-38.0F, 15.0F)
+        npc.playTickResult(null, enginePlayer, true)
+        delay(Duration.ofMillis(50))
+        npc.setRotation(-38.0F, 20.0F)
+        npc.playTickResult(null, enginePlayer, true)
+        delay(Duration.ofMillis(50))
+        npc.setRotation(-38.0F, 20.0F)
+        npc.playTickResult(null, enginePlayer, true)
+        delay(Duration.ofMillis(50))
+        npc.setRotation(-38.0F, 15.0F)
+        npc.playTickResult(null, enginePlayer, true)
+        delay(Duration.ofMillis(50))
+        npc.setRotation(-38.0F, 10.0F)
+        npc.playTickResult(null, enginePlayer, true)
+        delay(Duration.ofMillis(50))
+        npc.setRotation(-38.0F, -7.0F)
+        npc.playTickResult(null, enginePlayer, true)
+
+        delay(Duration.ofSeconds(2))
+
+        blackFeedOut(player, 1000)
+
+        delay(Duration.ofSeconds(2))
+
+        modelEntity.kill()
+        npc.hide(null, enginePlayer)
+
+        blackFeedIn(player, 1000)
 
         camera2.end()
+
+        MainThread.sync {
+            player.gameMode = GameMode.SURVIVAL
+            MoviePlayerManager.onStopPlaying(player)
+
+            val nextLocation = Location(player.world, 1205.5, 257.0, 5.5)
+            nextLocation.yaw = -90.0F
+            player.teleport(nextLocation)
+        }.await()
+
+        PlayerDataRegistry[player].finishedSisetuMovie = true
     }
 }
