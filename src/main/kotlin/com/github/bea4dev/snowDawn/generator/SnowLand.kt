@@ -350,6 +350,11 @@ class SnowLand internal constructor(seed: Long) : ChunkGenerator() {
                     worldZ.toDouble()
                 ) * 3.0 + variables.detailNoise.evaluateNoise(worldX.toDouble(), worldZ.toDouble()) * 1.5
                 val hardBlockRange = (hardBlockHeight.toInt() - 5)..<hardBlockHeight.toInt()
+                val bedrockHeight = (variables.hardBlockNoise.evaluateNoise(
+                    worldX.toDouble(),
+                    worldZ.toDouble()
+                ) + 1.0) * 2.0 + (variables.detailNoise.evaluateNoise(worldX.toDouble(), worldZ.toDouble()) + 1.0) * 1.0
+                val bedrockRange = -64..<(-64 + bedrockHeight.toInt())
 
                 for (y in chunkData.minHeight until chunkData.maxHeight) {
                     if (worldX in spawnAssetRange.first.blockX..spawnAssetRange.second.blockX) {
@@ -370,6 +375,12 @@ class SnowLand internal constructor(seed: Long) : ChunkGenerator() {
                         chunkData.setBlock(x, y, z, Material.DEEPSLATE)
                         continue
                     }
+
+                    if (y in bedrockRange || y == -64) {
+                        chunkData.setBlock(x, y, z, Material.BEDROCK)
+                        continue
+                    }
+
                     val detailNoise =
                         variables.detailNoise.evaluateNoise(worldX.toDouble(), y.toDouble(), worldZ.toDouble())
 
