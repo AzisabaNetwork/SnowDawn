@@ -2,6 +2,7 @@ package com.github.bea4dev.snowDawn.generator
 
 import com.github.bea4dev.snowDawn.generator.structure.placeAsset
 import com.github.bea4dev.vanilla_source.api.asset.WorldAssetsRegistry
+import de.articdive.jnoise.generators.noisegen.opensimplex.FastSimplexNoiseGenerator
 import de.articdive.jnoise.generators.noisegen.perlin.PerlinNoiseGenerator
 import de.articdive.jnoise.pipeline.JNoise
 import net.minecraft.core.SectionPos.x
@@ -17,7 +18,23 @@ private class Variables(seed: Long) {
     val populateNoise: JNoise =
         JNoise.newBuilder().perlin(PerlinNoiseGenerator.newBuilder().setSeed(seed).build()).scale(0.1).build()
     val populateDetailNoise: JNoise =
-        JNoise.newBuilder().perlin(PerlinNoiseGenerator.newBuilder().setSeed(seed).build()).scale(0.05).build()
+        JNoise.newBuilder().perlin(PerlinNoiseGenerator.newBuilder().setSeed(seed + 100).build()).scale(0.05).build()
+    val coalNoise1 = JNoise.newBuilder()
+        .fastSimplex(FastSimplexNoiseGenerator.newBuilder().setSeed(seed + 16).build())
+        .scale(0.1)
+        .build()
+    val coalNoise2 = JNoise.newBuilder()
+        .fastSimplex(FastSimplexNoiseGenerator.newBuilder().setSeed(seed + 17).build())
+        .scale(0.12)
+        .build()
+    val copperNoise1 = JNoise.newBuilder()
+        .fastSimplex(FastSimplexNoiseGenerator.newBuilder().setSeed(seed + 18).build())
+        .scale(0.1)
+        .build()
+    val copperNoise2 = JNoise.newBuilder()
+        .fastSimplex(FastSimplexNoiseGenerator.newBuilder().setSeed(seed + 19).build())
+        .scale(0.12)
+        .build()
 }
 
 class SecondMegaStructure(private val seed: Long) : ChunkGenerator() {
@@ -49,28 +66,58 @@ class SecondMegaStructure(private val seed: Long) : ChunkGenerator() {
 
         val generatePillar = isGeneratePillar(chunkX, chunkZ)
 
-        generatePillarAndCeil(generatePillar, chunkData)
+        generatePillarAndCeil(chunkX, chunkZ, variables, generatePillar, chunkData)
         generateChain(variables, generatePillar, chunkX, chunkZ, chunkData)
         generateFan(variables, isGeneratePillar, chunkX, chunkZ, chunkData)
         generateHiddenRoom(variables, generatePillar, isGeneratePillar, chunkX, chunkZ, chunkData)
         generateStairs(variables, isGeneratePillar, chunkX, chunkZ, chunkData)
+
+        if (chunkX == 0 && chunkZ == 0) {
+            // 出入り口を生成
+            chunkData.placeAsset(WorldAssetsRegistry.getAsset("ent_door_1")!!, 0, 319 - 14, 0)
+        }
     }
 
     private fun generatePillarAndCeil(
-        generatePillar: Boolean, chunkData: ChunkData
+        chunkX: Int,
+        chunkZ: Int,
+        variables: Variables,
+        generatePillar: Boolean,
+        chunkData: ChunkData
     ) {
         for (x in 0 until 16) {
             for (z in 0 until 16) {
                 for (y in 310 until 320) {
-                    chunkData.setBlock(x, y, z, Material.STONE)
+                    setStone(chunkX, chunkZ, x, y, z, variables, chunkData)
                 }
 
                 if (generatePillar) {
                     for (y in -64 until 320) {
-                        chunkData.setBlock(x, y, z, Material.STONE)
+                        setStone(chunkX, chunkZ, x, y, z, variables, chunkData)
                     }
                 }
+
+                chunkData.setBlock(x, 319, z, Material.BEDROCK)
             }
+        }
+    }
+
+    private fun setStone(chunkX: Int, chunkZ: Int, x: Int, y: Int, z: Int, variables: Variables, chunkData: ChunkData) {
+        val worldX = chunkX * 16 + x
+        val worldZ = chunkZ * 16 + z
+
+        val coalNoise1 = variables.coalNoise1.evaluateNoise(worldX.toDouble(), y.toDouble(), worldZ.toDouble())
+        val coalNoise2 = variables.coalNoise2.evaluateNoise(worldX.toDouble(), y.toDouble(), worldZ.toDouble())
+
+        val copperNoise1 = variables.copperNoise1.evaluateNoise(worldX.toDouble(), y.toDouble(), worldZ.toDouble())
+        val copperNoise2 = variables.copperNoise2.evaluateNoise(worldX.toDouble(), y.toDouble(), worldZ.toDouble())
+
+        if (coalNoise1 * coalNoise2 > 0.45) {
+            chunkData.setBlock(x, y, z, Material.COAL_ORE)
+        } else if (copperNoise1 * copperNoise2 > 0.5) {
+            chunkData.setBlock(x, y, z, Material.COPPER_ORE)
+        } else {
+            chunkData.setBlock(x, y, z, Material.STONE)
         }
     }
 

@@ -5,6 +5,7 @@ import org.bukkit.GameMode
 import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitRunnable
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.atomic.AtomicBoolean
 import java.util.function.Function
 
 private val map = ConcurrentHashMap<Player, PlayerWeaponTask>()
@@ -20,7 +21,7 @@ class PlayerWeaponTask(private val player: Player) : BukkitRunnable() {
         map[player] = this
     }
 
-    var enableBar = true
+    var enableBar = AtomicBoolean(true)
 
     override fun run() {
         if (!player.isOnline) {
@@ -35,8 +36,10 @@ class PlayerWeaponTask(private val player: Player) : BukkitRunnable() {
 
         val mainHandItem = player.inventory.itemInMainHand
 
-        if (mainHandItem.isEmpty && enableBar) {
-            player.resetTitle()
+        if (mainHandItem.isEmpty) {
+            if (enableBar.get()) {
+                player.resetTitle()
+            }
             return
         }
 
@@ -45,7 +48,7 @@ class PlayerWeaponTask(private val player: Player) : BukkitRunnable() {
             Function { nbt -> nbt.getOrNull<Int>(WeaponTag.MAX_ATTACK_TICK.key, Int::class.java) })
 
         if (maxAttackTick == null) {
-            if (enableBar) {
+            if (enableBar.get()) {
                 player.resetTitle()
             }
             return

@@ -1,14 +1,19 @@
 package com.github.bea4dev.snowDawn.player
 
+import com.github.bea4dev.snowDawn.SnowDawn
 import com.github.bea4dev.snowDawn.coroutine.MainThread
 import com.github.bea4dev.snowDawn.save.PlayerDataRegistry
+import com.github.bea4dev.snowDawn.scenario.script.EnterMegaStructure
 import com.github.bea4dev.snowDawn.scenario.script.Sisetu
 import com.github.bea4dev.snowDawn.world.WorldRegistry
 import com.github.bea4dev.vanilla_source.api.VanillaSourceAPI
 import com.github.bea4dev.vanilla_source.api.entity.TickBase
+import org.bukkit.Bukkit
 import org.bukkit.GameMode
+import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.Particle
+import org.bukkit.block.BlockFace
 import org.bukkit.block.data.type.Campfire
 import org.bukkit.entity.Player
 import org.bukkit.util.Vector
@@ -32,6 +37,8 @@ class PlayerTask(private val player: Player) : TickBase {
         freezeTick()
 
         sisetuMovieTick()
+
+        entranceTick()
     }
 
     private fun freezeTick() {
@@ -112,6 +119,35 @@ class PlayerTask(private val player: Player) : TickBase {
 
                 Sisetu.start(player)
             }
+        }
+    }
+
+    private fun entranceTick() {
+        // 岩盤上にあるエントランスのワープ処理
+        val block = player.location.block.getRelative(BlockFace.DOWN)
+
+        if (block.type == Material.BLACK_CONCRETE && block.getRelative(BlockFace.NORTH).type == Material.BEDROCK) {
+            Bukkit.getScheduler().runTask(SnowDawn.plugin, Runnable {
+                if (block.world == WorldRegistry.SNOW_LAND) {
+                    val dist = Location(WorldRegistry.SECOND_MEGA_STRUCTURE, 2.5, 306.0, 2.5)
+                    dist.yaw = 90.0F
+                    player.teleport(dist)
+                    playerData.prevSnowLandEntrance = block.location
+
+                    if (!playerData.secondMegaStructureEnterFlag) {
+                        playerData.secondMegaStructureEnterFlag = true
+                        // 初めて足を踏み入れたときには演出を再生する
+                        EnterMegaStructure.start(player)
+                    }
+                } else if (block.world == WorldRegistry.SECOND_MEGA_STRUCTURE) {
+                    val dist = playerData.prevSnowLandEntrance?.clone()
+                    if (dist != null) {
+                        dist.add(-1.5, 1.0, 0.5)
+                        dist.yaw = 90.0F
+                        player.teleport(dist)
+                    }
+                }
+            })
         }
     }
 

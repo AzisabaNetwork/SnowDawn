@@ -4,6 +4,7 @@ import com.github.bea4dev.snowDawn.camera.createCamera
 import com.github.bea4dev.snowDawn.coroutine.MainThread
 import com.github.bea4dev.snowDawn.coroutine.async
 import com.github.bea4dev.snowDawn.coroutine.play
+import com.github.bea4dev.snowDawn.item.weapon.WeaponTaskManager
 import com.github.bea4dev.snowDawn.save.PlayerDataRegistry
 import com.github.bea4dev.snowDawn.scenario.DEFAULT_TEXT_BOX
 import com.github.bea4dev.snowDawn.scenario.MoviePlayerManager
@@ -42,6 +43,11 @@ private val BUTTON_POSITION = Vector(1206, 258, 5)
 
 object Sisetu : Scenario() {
     override suspend fun run(player: Player) {
+        WeaponTaskManager[player]?.enableBar?.set(false)
+
+        // enableBarの変更反映のために少し待つ
+        delay(Duration.ofMillis(500))
+
         MoviePlayerManager.onStartPlaying(player)
 
         val enginePlayer = EnginePlayer.getEnginePlayer(player)
@@ -503,5 +509,7 @@ object Sisetu : Scenario() {
         }.await()
 
         PlayerDataRegistry[player].finishedSisetuMovie = true
+
+        WeaponTaskManager[player]?.enableBar?.set(true)
     }
 }

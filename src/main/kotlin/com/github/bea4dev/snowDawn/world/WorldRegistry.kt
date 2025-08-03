@@ -30,9 +30,8 @@ object WorldRegistry {
             PROLOGUE = Bukkit.createWorld(voidWorldCreator)!!
             VanillaSourceAPI.getInstance().nmsHandler.setDimensionType(PROLOGUE, DimensionRegistry.SNOW_LAND)
 
-
-            val directory = Paths.get("snow_land")
-            deleteDirectory(directory)
+            //deleteDirectory(Paths.get("snow_land"))
+            deleteDirectory(Paths.get("second_mega_structure"))
 
             val slCreator = WorldCreator("snow_land")
             slCreator.generator(GeneratorRegistry.SNOW_LAND)

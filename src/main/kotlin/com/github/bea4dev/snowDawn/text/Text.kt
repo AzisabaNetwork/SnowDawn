@@ -94,6 +94,9 @@ enum class Text(val jp: String) {
     SISETU_20(".............\n\n"),
     SISETU_21("地下空間は非常に危険です。\n連絡が途絶えているとあれば何か身に\n危険が及んでいてもおかしくありません。"),
     SISETU_22("地下空間へ向かうべきです。\n\n命令を無視してでも――"),
+
+    SECOND_MEGA_STRUCTURE_TITLE("地下空間"),
+    SECOND_MEGA_STRUCTURE_SUB_TITLE("標高 : -1200m"),
     ;
 
     companion object {

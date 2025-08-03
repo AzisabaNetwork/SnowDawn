@@ -4,6 +4,7 @@ import com.github.bea4dev.snowDawn.generator.structure.FixedPositionStructure
 import com.github.bea4dev.snowDawn.generator.structure.ItemChest
 import com.github.bea4dev.snowDawn.generator.structure.SurfaceStructures
 import com.github.bea4dev.snowDawn.generator.structure.UnderGroundStructures
+import com.github.bea4dev.snowDawn.generator.structure.placeAsset
 import com.github.bea4dev.snowDawn.item.ItemRegistry
 import com.github.bea4dev.vanilla_source.api.asset.WorldAssetsRegistry
 import de.articdive.jnoise.generators.noisegen.opensimplex.FastSimplexNoiseGenerator
@@ -350,11 +351,6 @@ class SnowLand internal constructor(seed: Long) : ChunkGenerator() {
                     worldZ.toDouble()
                 ) * 3.0 + variables.detailNoise.evaluateNoise(worldX.toDouble(), worldZ.toDouble()) * 1.5
                 val hardBlockRange = (hardBlockHeight.toInt() - 5)..<hardBlockHeight.toInt()
-                val bedrockHeight = (variables.hardBlockNoise.evaluateNoise(
-                    worldX.toDouble(),
-                    worldZ.toDouble()
-                ) + 1.0) * 2.0 + (variables.detailNoise.evaluateNoise(worldX.toDouble(), worldZ.toDouble()) + 1.0) * 1.0
-                val bedrockRange = -64..<(-64 + bedrockHeight.toInt())
 
                 for (y in chunkData.minHeight until chunkData.maxHeight) {
                     if (worldX in spawnAssetRange.first.blockX..spawnAssetRange.second.blockX) {
@@ -376,7 +372,7 @@ class SnowLand internal constructor(seed: Long) : ChunkGenerator() {
                         continue
                     }
 
-                    if (y in bedrockRange || y == -64) {
+                    if (y == -64) {
                         chunkData.setBlock(x, y, z, Material.BEDROCK)
                         continue
                     }
@@ -452,6 +448,8 @@ class SnowLand internal constructor(seed: Long) : ChunkGenerator() {
                 }
             }
         }
+
+        chunkData.placeAsset(WorldAssetsRegistry.getAsset("ent_door_0")!!, 0, -64, 0, true)
     }
 
     private fun generateStone(variables: SnowLandGeneratorVariables, x: Int, y: Int, z: Int, chunkData: ChunkData) {
