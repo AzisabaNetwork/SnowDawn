@@ -58,6 +58,8 @@ class SecondMegaStructure(private val seed: Long) : ChunkGenerator() {
     override fun generateNoise(worldInfo: WorldInfo, random: Random, chunkX: Int, chunkZ: Int, chunkData: ChunkData) {
         val variables = this.variables.get()
 
+        generateIce(variables, chunkX, chunkZ, chunkData)
+
         val isGeneratePillar = { chunkX: Int, chunkZ: Int ->
             (chunkX.mod(interval) in -thickness until thickness) && (chunkZ.mod(interval) in -thickness until thickness) && variables.populateNoise.evaluateNoise(
                 (chunkX / interval).toDouble(), (chunkZ / interval).toDouble()
@@ -316,6 +318,27 @@ class SecondMegaStructure(private val seed: Long) : ChunkGenerator() {
                 val y = xFunction(x - chunkZ * 16)
 
                 chunkData.setBlock(x, y, 0, Material.STONE)
+            }
+        }
+    }
+
+    private fun generateIce(variables: Variables, chunkX: Int, chunkZ: Int, chunkData: ChunkData) {
+        for (x in 0 until 16) {
+            for (z in 0 until 16) {
+                val worldX = chunkX * 16 + x
+                val worldZ = chunkZ * 16 + z
+
+                for (y in -64 until -32) {
+                    if (variables.populateNoise.evaluateNoise(
+                            (worldX.toDouble() / 16.0) / interval.toDouble(),
+                            (worldZ.toDouble() / 16.0) / interval.toDouble()
+                        ) < 0.3
+                    ) {
+                        chunkData.setBlock(x, y, z, Material.PACKED_ICE)
+                    } else {
+                        chunkData.setBlock(x, y, z, Material.ICE)
+                    }
+                }
             }
         }
     }
