@@ -1,18 +1,21 @@
 package com.github.bea4dev.snowDawn.generator
 
+import com.github.bea4dev.snowDawn.generator.structure.ItemChest
 import com.github.bea4dev.snowDawn.generator.structure.placeAsset
+import com.github.bea4dev.snowDawn.item.ItemRegistry
 import com.github.bea4dev.vanilla_source.api.asset.WorldAssetsRegistry
 import de.articdive.jnoise.generators.noisegen.opensimplex.FastSimplexNoiseGenerator
 import de.articdive.jnoise.generators.noisegen.perlin.PerlinNoiseGenerator
 import de.articdive.jnoise.pipeline.JNoise
-import net.minecraft.core.SectionPos.x
 import org.bukkit.Material
+import org.bukkit.World
+import org.bukkit.generator.BlockPopulator
 import org.bukkit.generator.ChunkGenerator
+import org.bukkit.generator.LimitedRegion
 import org.bukkit.generator.WorldInfo
 import org.bukkit.util.Vector
 import java.util.Random
 import kotlin.math.min
-import kotlin.math.pow
 
 private class Variables(seed: Long) {
     val populateNoise: JNoise =
@@ -35,6 +38,14 @@ private class Variables(seed: Long) {
         .fastSimplex(FastSimplexNoiseGenerator.newBuilder().setSeed(seed + 19).build())
         .scale(0.12)
         .build()
+    val ironNoise1 = JNoise.newBuilder()
+        .fastSimplex(FastSimplexNoiseGenerator.newBuilder().setSeed(seed + 20).build())
+        .scale(0.1)
+        .build()
+    val ironNoise2 = JNoise.newBuilder()
+        .fastSimplex(FastSimplexNoiseGenerator.newBuilder().setSeed(seed + 21).build())
+        .scale(0.12)
+        .build()
 }
 
 class SecondMegaStructure(private val seed: Long) : ChunkGenerator() {
@@ -54,6 +65,7 @@ class SecondMegaStructure(private val seed: Long) : ChunkGenerator() {
     private val hideOutZP = WorldAssetsRegistry.getAsset("hide_out_zp")
     private val hideInZN = WorldAssetsRegistry.getAsset("hide_in_zn")
     private val hideOutZN = WorldAssetsRegistry.getAsset("hide_out_zn")
+    private val populators = listOf(ItemChestProcessor(seed))
 
     override fun generateNoise(worldInfo: WorldInfo, random: Random, chunkX: Int, chunkZ: Int, chunkData: ChunkData) {
         val variables = this.variables.get()
@@ -63,7 +75,7 @@ class SecondMegaStructure(private val seed: Long) : ChunkGenerator() {
         val isGeneratePillar = { chunkX: Int, chunkZ: Int ->
             (chunkX.mod(interval) in -thickness until thickness) && (chunkZ.mod(interval) in -thickness until thickness) && variables.populateNoise.evaluateNoise(
                 (chunkX / interval).toDouble(), (chunkZ / interval).toDouble()
-            ) < 0.3
+            ) in -0.3..0.3
         }
 
         val generatePillar = isGeneratePillar(chunkX, chunkZ)
@@ -78,6 +90,9 @@ class SecondMegaStructure(private val seed: Long) : ChunkGenerator() {
             // 出入り口を生成
             chunkData.placeAsset(WorldAssetsRegistry.getAsset("ent_door_1")!!, 0, 319 - 14, 0)
         }
+
+        generateBedrock(chunkData)
+        generateEntrance(variables, chunkX, chunkZ, chunkData)
     }
 
     private fun generatePillarAndCeil(
@@ -114,10 +129,15 @@ class SecondMegaStructure(private val seed: Long) : ChunkGenerator() {
         val copperNoise1 = variables.copperNoise1.evaluateNoise(worldX.toDouble(), y.toDouble(), worldZ.toDouble())
         val copperNoise2 = variables.copperNoise2.evaluateNoise(worldX.toDouble(), y.toDouble(), worldZ.toDouble())
 
+        val ironNoise1 = variables.ironNoise1.evaluateNoise(worldX.toDouble(), y.toDouble(), worldZ.toDouble())
+        val ironNoise2 = variables.ironNoise2.evaluateNoise(worldX.toDouble(), y.toDouble(), worldZ.toDouble())
+
         if (coalNoise1 * coalNoise2 > 0.45) {
             chunkData.setBlock(x, y, z, Material.COAL_ORE)
         } else if (copperNoise1 * copperNoise2 > 0.5) {
             chunkData.setBlock(x, y, z, Material.COPPER_ORE)
+        } else if (ironNoise1 * ironNoise2 > 0.6) {
+            chunkData.setBlock(x, y, z, Material.IRON_ORE)
         } else {
             chunkData.setBlock(x, y, z, Material.STONE)
         }
@@ -138,17 +158,17 @@ class SecondMegaStructure(private val seed: Long) : ChunkGenerator() {
         val chainStartZ = min(
             variables.populateDetailNoise.evaluateNoise(chunkX * 2.0, chunkZ * 2.0) * 8.0 + 8.0, 16.0 - chainSize.z
         ).toInt()
-        val chainRepeat = (chunkStartPopulateNoise * 16.0 + 16.0).toInt()
+        val chainRepeat = (chunkStartPopulateNoise * 16.0 + 32.0).toInt()
 
         if (!generatePillar) {
             if (generateChain) {
                 for (i in 0 until chainRepeat) {
                     if (i < chainRepeat - 1) {
                         val startY = 310 - 1 - (chainSize.blockY * i) - chainSize.blockY
-                        chunkData.placeAsset(chain, chainStartX, startY + 1, chainStartZ)
+                        chunkData.placeAsset(chain, chainStartX, startY + 1, chainStartZ, true)
                     } else {
                         val startY = 310 - 1 - (chainSize.blockY * i) - chainEndSize.blockY
-                        chunkData.placeAsset(chainEnd, chainStartX, startY + 1, chainStartZ)
+                        chunkData.placeAsset(chainEnd, chainStartX, startY + 1, chainStartZ, true)
                     }
                 }
             }
@@ -185,7 +205,7 @@ class SecondMegaStructure(private val seed: Long) : ChunkGenerator() {
         chunkData: ChunkData
     ) {
         val isGenerateHiddenRoom = { chunkX: Int, chunkZ: Int ->
-            variables.populateNoise.evaluateNoise(chunkX * 16.0, chunkZ * 16.0) > 0.3
+            variables.populateNoise.evaluateNoise(chunkX * 16.0, chunkZ * 16.0) in -0.3..0.3
         }
 
         val isCenterOfPillar = { chunkX: Int, chunkZ: Int ->
@@ -196,7 +216,7 @@ class SecondMegaStructure(private val seed: Long) : ChunkGenerator() {
             ) && isGeneratePillar(chunkX, chunkZ + 1) && isGeneratePillar(chunkX, chunkZ - 1)
         }
 
-        val waterHeight = 200
+        val waterHeight = 100
         val enterHeight = 24
 
         if (!generatePillar) {
@@ -244,6 +264,7 @@ class SecondMegaStructure(private val seed: Long) : ChunkGenerator() {
                     }
                 }
             }
+            chunkData.setBlock(8, 0, 8, Material.CHEST)
         } else {
             if (isCenterOfPillar(chunkX + 1, chunkZ)) {
                 chunkData.placeAsset(hideOutXN, -1, waterHeight + enterHeight, 5)
@@ -332,11 +353,96 @@ class SecondMegaStructure(private val seed: Long) : ChunkGenerator() {
                     if (variables.populateNoise.evaluateNoise(
                             (worldX.toDouble() / 16.0) / interval.toDouble(),
                             (worldZ.toDouble() / 16.0) / interval.toDouble()
-                        ) < 0.3
+                        ) in -0.3..0.3
                     ) {
                         chunkData.setBlock(x, y, z, Material.PACKED_ICE)
                     } else {
                         chunkData.setBlock(x, y, z, Material.ICE)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun generateEntrance(variables: Variables, chunkX: Int, chunkZ: Int, chunkData: ChunkData) {
+        if (variables.populateNoise.evaluateNoise(
+                chunkX.toDouble() / interval.toDouble(),
+                chunkZ.toDouble() / interval.toDouble()
+            ) !in -0.3..0.3 && variables.populateDetailNoise.evaluateNoise(
+                chunkX.toDouble() * 16.0,
+                chunkZ.toDouble() * 16.0
+            ) > 0.3
+        ) {
+            chunkData.placeAsset(WorldAssetsRegistry.getAsset("ent_door_0")!!, 0, -64, 0)
+        }
+    }
+
+    private fun generateBedrock(chunkData: ChunkData) {
+        for (x in 0 until 16) {
+            for (z in 0 until 16) {
+                chunkData.setBlock(x, -64, z, Material.BEDROCK)
+            }
+        }
+    }
+
+    override fun getDefaultPopulators(world: World): List<BlockPopulator?> {
+        return populators
+    }
+}
+
+private class ItemChestProcessor(seed: Long) : BlockPopulator() {
+    private val normalItemChest = ItemChest(
+        listOf(
+            listOf(
+                ItemRegistry.COPPER_INGOT.createItemStack().also { item -> item.amount = 2 },
+                ItemRegistry.COAL.createItemStack(),
+                ItemRegistry.SCRAP_PIPE.createItemStack()
+            )
+        )
+    )
+    private val specialItemChest = ItemChest(
+        listOf(
+            listOf(
+                ItemRegistry.COPPER_INGOT.createItemStack().also { item -> item.amount = 3 },
+                ItemRegistry.COPPER_INGOT.createItemStack().also { item -> item.amount = 2 },
+                ItemRegistry.COPPER_CHESTPLATE.createItemStack(),
+                ItemRegistry.SCRAP.createItemStack().also { item -> item.amount = 2 },
+                ItemRegistry.COAL.createItemStack()
+            )
+        )
+    )
+    private val noise = ThreadLocal.withInitial {
+        JNoise.newBuilder()
+            .fastSimplex(FastSimplexNoiseGenerator.newBuilder().setSeed(seed).build())
+            .scale(1.0)
+            .build()
+    }
+
+    override fun populate(
+        worldInfo: WorldInfo,
+        random: Random,
+        chunkX: Int,
+        chunkZ: Int,
+        limitedRegion: LimitedRegion
+    ) {
+        val noise = noise.get()
+
+        for (x in 0 until 16) {
+            for (z in 0 until 16) {
+                val worldX = chunkX * 16 + x
+                val worldZ = chunkZ * 16 + z
+
+                for (y in worldInfo.minHeight until worldInfo.maxHeight) {
+                    val block = limitedRegion.getBlockData(worldX, y, worldZ)
+                    if (block.material != Material.CHEST) {
+                        continue
+                    }
+
+                    if (limitedRegion.getBlockData(worldX, y + 1, worldZ).material == Material.WATER) {
+                        // in water
+                        specialItemChest.populate(worldX, y, worldZ, limitedRegion, noise)
+                    } else {
+                        normalItemChest.populate(worldX, y, worldZ, limitedRegion, noise)
                     }
                 }
             }

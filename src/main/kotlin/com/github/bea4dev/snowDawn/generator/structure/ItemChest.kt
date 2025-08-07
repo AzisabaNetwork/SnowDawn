@@ -8,7 +8,7 @@ import org.bukkit.inventory.ItemStack
 import kotlin.math.floor
 import kotlin.math.min
 
-class ItemChest(private val table: List<List<ItemStack>>): BlockPopulator() {
+class ItemChest(private val table: List<List<ItemStack>>) {
     fun getItems(random: Double): List<ItemStack> {
         val index = random * table.size
         return table[min(index.toInt(), table.size - 1)]

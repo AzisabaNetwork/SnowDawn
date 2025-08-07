@@ -97,6 +97,7 @@ enum class Text(val jp: String) {
 
     SECOND_MEGA_STRUCTURE_TITLE("地下空間"),
     SECOND_MEGA_STRUCTURE_SUB_TITLE("標高 : -1200m"),
+    SECOND_MEGA_STRUCTURE_MESSAGE_0("この空間は非常に危険です。\n足を滑らせないように気をつけてください。\n"),
     ;
 
     companion object {

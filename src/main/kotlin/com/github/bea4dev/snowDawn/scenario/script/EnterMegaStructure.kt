@@ -1,10 +1,13 @@
 package com.github.bea4dev.snowDawn.scenario.script
 
 import com.github.bea4dev.snowDawn.coroutine.MainThread
+import com.github.bea4dev.snowDawn.coroutine.play
 import com.github.bea4dev.snowDawn.item.weapon.WeaponTaskManager
+import com.github.bea4dev.snowDawn.scenario.DEFAULT_TEXT_BOX
 import com.github.bea4dev.snowDawn.scenario.Scenario
 import com.github.bea4dev.snowDawn.text.Text
 import com.github.bea4dev.snowDawn.world.WorldRegistry
+import com.github.bea4dev.vanilla_source.api.text.TextBox
 import kotlinx.coroutines.time.delay
 import net.kyori.adventure.sound.Sound
 import net.kyori.adventure.text.Component
@@ -74,6 +77,10 @@ object EnterMegaStructure : Scenario() {
         )
 
         delay(Duration.ofSeconds(6))
+
+        TextBox(player, DEFAULT_TEXT_BOX, Text.BENE[player], 1, Text.SECOND_MEGA_STRUCTURE_MESSAGE_0[player, player.name])
+            .play()
+            .await()
 
         WeaponTaskManager[player]?.enableBar?.set(true)
     }
