@@ -48,6 +48,10 @@ enum class Text(val jp: String) {
     ITEM_COPPER_INGOT("銅のインゴット"),
     ITEM_IRON_INGOT("鉄のインゴット"),
 
+    ITEM_COMPASS("追跡機"),
+    ITEM_COMPASS_LORE_0("施設への方角を示してくれる"),
+    ITEM_COMPASS_LORE_1("手に持って右クリック！"),
+
     ITEM_COPPER_HELMET("銅のヘルメット"),
     ITEM_COPPER_CHEST_PLATE("銅のチェストプレート"),
     ITEM_COPPER_LEGGINGS("銅のレギンス"),

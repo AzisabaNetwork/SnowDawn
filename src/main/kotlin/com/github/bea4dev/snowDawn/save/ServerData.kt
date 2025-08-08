@@ -7,6 +7,7 @@ object ServerData {
         "scrap_pickaxe",
         "stone_pickaxe",
         "torch",
-        "furnace"
+        "furnace",
+        "compass"
     )
 }

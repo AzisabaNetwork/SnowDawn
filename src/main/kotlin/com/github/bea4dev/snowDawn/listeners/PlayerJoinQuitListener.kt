@@ -2,6 +2,7 @@ package com.github.bea4dev.snowDawn.listeners
 
 import com.github.bea4dev.snowDawn.SnowDawn
 import com.github.bea4dev.snowDawn.item.ItemRegistry
+import com.github.bea4dev.snowDawn.item.compass.PlayerCompassTask
 import com.github.bea4dev.snowDawn.item.weapon.PlayerWeaponTask
 import com.github.bea4dev.snowDawn.item.weapon.Weapon
 import com.github.bea4dev.snowDawn.player.PlayerTask
@@ -40,6 +41,7 @@ internal class PlayerJoinQuitListener : Listener {
         player.inventory.addItem(ItemRegistry.SCRAP.createItemStack())
 
         PlayerWeaponTask(player).runTaskTimer(SnowDawn.plugin, 0, 1)
+        PlayerCompassTask(player).runTaskTimer(SnowDawn.plugin, 0, 1)
         PlayerTask(player).start()
 
         //player.teleport(LOGIN_POSITION.toLocation(WorldRegistry.PROLOGUE))

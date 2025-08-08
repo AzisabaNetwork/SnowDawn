@@ -11,6 +11,7 @@ import com.github.bea4dev.snowDawn.listeners.CraftListener
 import com.github.bea4dev.snowDawn.listeners.EntranceDoorListener
 import com.github.bea4dev.snowDawn.listeners.InventoryListener
 import com.github.bea4dev.snowDawn.listeners.ItemReplaceListener
+import com.github.bea4dev.snowDawn.listeners.PlayerCompassListener
 import com.github.bea4dev.snowDawn.listeners.PlayerJoinQuitListener
 import com.github.bea4dev.snowDawn.listeners.PlayerRespawnListener
 import com.github.bea4dev.snowDawn.listeners.WeaponListener
@@ -63,6 +64,7 @@ class SnowDawn : JavaPlugin() {
         pluginManager.registerEvents(EntranceDoorListener(), this)
         pluginManager.registerEvents(ChestOpenListener(), this)
         pluginManager.registerEvents(BluePrintListener(), this)
+        pluginManager.registerEvents(PlayerCompassListener(), this)
 
         SpigotConfig.disabledAdvancements.add("*")
 

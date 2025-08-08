@@ -1,5 +1,6 @@
 package com.github.bea4dev.snowDawn.item
 
+import com.github.bea4dev.snowDawn.item.compass.Compass
 import com.github.bea4dev.snowDawn.item.weapon.BluePrint
 import com.github.bea4dev.snowDawn.item.weapon.Weapon
 import com.github.bea4dev.snowDawn.text.Text
@@ -120,6 +121,14 @@ object ItemRegistry {
         Text.ITEM_BLUE_PRINT_IRON_AXE,
         listOf(),
         listOf(IRON_AXE)
+    )
+    val COMPASS = Compass(
+        "compass",
+        Material.BOOK,
+        1,
+        2,
+        Text.ITEM_COMPASS,
+        listOf(Text.ITEM_COMPASS_LORE_0, Text.ITEM_COMPASS_LORE_1)
     )
 
     operator fun get(id: String): Item? {
