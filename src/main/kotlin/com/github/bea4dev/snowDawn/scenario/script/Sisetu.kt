@@ -4,8 +4,10 @@ import com.github.bea4dev.snowDawn.camera.createCamera
 import com.github.bea4dev.snowDawn.coroutine.MainThread
 import com.github.bea4dev.snowDawn.coroutine.async
 import com.github.bea4dev.snowDawn.coroutine.play
+import com.github.bea4dev.snowDawn.item.ItemRegistry
 import com.github.bea4dev.snowDawn.item.weapon.WeaponTaskManager
 import com.github.bea4dev.snowDawn.save.PlayerDataRegistry
+import com.github.bea4dev.snowDawn.save.ServerData
 import com.github.bea4dev.snowDawn.scenario.DEFAULT_TEXT_BOX
 import com.github.bea4dev.snowDawn.scenario.MoviePlayerManager
 import com.github.bea4dev.snowDawn.scenario.SCENARIO_TICK_THREAD
@@ -13,6 +15,9 @@ import com.github.bea4dev.snowDawn.scenario.Scenario
 import com.github.bea4dev.snowDawn.scenario.getPlayerSkin
 import com.github.bea4dev.snowDawn.scenario.lowSound
 import com.github.bea4dev.snowDawn.text.Text
+import com.github.bea4dev.snowDawn.toast.ToastKind
+import com.github.bea4dev.snowDawn.toast.ToastNotification
+import com.github.bea4dev.snowDawn.toast.sendToast
 import com.github.bea4dev.snowDawn.world.WorldRegistry
 import com.github.bea4dev.vanilla_source.api.VanillaSourceAPI
 import com.github.bea4dev.vanilla_source.api.camera.CameraPositionAt
@@ -26,6 +31,9 @@ import java.time.Duration
 import java.util.UUID
 import kotlinx.coroutines.time.delay
 import net.kyori.adventure.sound.Sound
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.text.format.TextDecoration
 import net.minecraft.network.protocol.game.ClientboundAnimatePacket
 import org.bukkit.GameMode
 import org.bukkit.Location
@@ -507,6 +515,40 @@ object Sisetu : Scenario() {
             nextLocation.yaw = -90.0F
             player.teleport(nextLocation)
         }.await()
+
+        delay(Duration.ofSeconds(1))
+
+        TextBox(player, DEFAULT_TEXT_BOX, Text.BENE[player], 1, Text.SISETU_23[player, player.name])
+            .play()
+            .await()
+
+        MainThread.sync {
+            player.playSound(
+                player.location,
+                org.bukkit.Sound.ENTITY_ARROW_HIT_PLAYER,
+                Float.MAX_VALUE,
+                1.5F
+            )
+
+            player.sendToast(
+                ToastNotification(
+                    Component.translatable(Text.RECIPE_UNLOCKED.toString())
+                        .color(NamedTextColor.GOLD)
+                        .decoration(TextDecoration.ITALIC, false)
+                        .decorate(TextDecoration.BOLD),
+                    ItemRegistry.IRON_PICKAXE.createItemStack(),
+                    ToastKind.GOAL
+                )
+            )
+
+            if (!ServerData.craftableItems.contains(ItemRegistry.IRON_PICKAXE.id)) {
+                ServerData.craftableItems.add(ItemRegistry.IRON_PICKAXE.id)
+            }
+        }.await()
+
+        TextBox(player, DEFAULT_TEXT_BOX, Text.BENE[player], 1, Text.SISETU_24[player, player.name])
+            .play()
+            .await()
 
         PlayerDataRegistry[player].finishedSisetuMovie = true
 

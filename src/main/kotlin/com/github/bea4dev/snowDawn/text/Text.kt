@@ -8,6 +8,8 @@ import java.text.MessageFormat
 import java.util.Locale
 
 enum class Text(val jp: String) {
+    EMPTY(""),
+
     CLOSE("閉じる"),
     BACK("戻る"),
 
@@ -15,6 +17,8 @@ enum class Text(val jp: String) {
     CRAFT_UI_CLICK_TO_OPEN("クリックで開く"),
     CRAFT_REQUIRED("> 必要なアイテム"),
     CANNOT_CRAFT("材料が足りません"),
+    UNCRAFTABLE("未解放のレシピ"),
+    RECIPE_UNLOCKED("新レシピ解放！"),
 
     ITEM_SCRAP("スクラップ"),
     ITEM_SCRAP_LORE_0("何らかの残骸、クラフトに使用する。"),
@@ -28,6 +32,13 @@ enum class Text(val jp: String) {
 
     ITEM_SCRAP_PICKAXE("スクラップのピッケル"),
     ITEM_STONE_PICKAXE("石のピッケル"),
+    ITEM_STONE_HOE("石のくわ"),
+    ITEM_STONE_SHOVEL("石のシャベル"),
+    ITEM_STONE_AXE("石の斧"),
+    ITEM_IRON_PICKAXE("鉄のピッケル"),
+    ITEM_IRON_HOE("鉄のくわ"),
+    ITEM_IRON_SHOVEL("鉄のシャベル"),
+    ITEM_IRON_AXE("鉄の斧"),
     ITEM_FURNACE("かまど"),
 
     ITEM_ICE("氷"),
@@ -35,11 +46,27 @@ enum class Text(val jp: String) {
     ITEM_TORCH("松明"),
     ITEM_STONE("丸石"),
     ITEM_COPPER_INGOT("銅のインゴット"),
+    ITEM_IRON_INGOT("鉄のインゴット"),
 
     ITEM_COPPER_HELMET("銅のヘルメット"),
     ITEM_COPPER_CHEST_PLATE("銅のチェストプレート"),
     ITEM_COPPER_LEGGINGS("銅のレギンス"),
     ITEM_COPPER_BOOTS("銅のブーツ"),
+
+    ITEM_IRON_HELMET("鉄のヘルメット"),
+    ITEM_IRON_CHEST_PLATE("鉄のチェストプレート"),
+    ITEM_IRON_LEGGINGS("鉄のレギンス"),
+    ITEM_IRON_BOOTS("鉄のブーツ"),
+
+    ITEM_BLUE_PRINT_COPPER_EQUIPMENTS("銅装備の設計図"),
+    ITEM_BLUE_PRINT_IRON_EQUIPMENTS("鉄装備の設計図"),
+    ITEM_BLUE_PRINT_STONE_HOE("石のくわの設計図"),
+    ITEM_BLUE_PRINT_STONE_SHOVEL("石のシャベルの設計図"),
+    ITEM_BLUE_PRINT_STONE_AXE("石の斧の設計図"),
+    ITEM_BLUE_PRINT_IRON_HOE("鉄のくわの設計図"),
+    ITEM_BLUE_PRINT_IRON_SHOVEL("鉄のシャベルの設計図"),
+    ITEM_BLUE_PRINT_IRON_AXE("鉄の斧の設計図"),
+    ITEM_BLUE_PRINT_CLICK("クリックでレシピを解放"),
 
     MESSAGE_SET_RESPAWN("リスポーン地点を設定しました"),
 
@@ -94,10 +121,13 @@ enum class Text(val jp: String) {
     SISETU_20(".............\n\n"),
     SISETU_21("地下空間は非常に危険です。\n連絡が途絶えているとあれば何か身に\n危険が及んでいてもおかしくありません。"),
     SISETU_22("地下空間へ向かうべきです。\n\n命令を無視してでも――"),
+    SISETU_23("そういえば、\n書き置きとともにこれが置いてありました。\n"),
+    SISETU_24("このピッケルがあれば\n岩盤層を突破できるかもしれません。\n"),
 
     SECOND_MEGA_STRUCTURE_TITLE("地下空間"),
     SECOND_MEGA_STRUCTURE_SUB_TITLE("標高 : -1200m"),
     SECOND_MEGA_STRUCTURE_MESSAGE_0("この空間は非常に危険です。\n足を滑らせないように気をつけてください。\n"),
+    SECOND_MEGA_STRUCTURE_MESSAGE_1("特に調査隊の容態が心配です。\n早く探しに行きましょう。\n"),
     ;
 
     companion object {

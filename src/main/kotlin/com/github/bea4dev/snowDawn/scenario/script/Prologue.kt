@@ -567,7 +567,7 @@ object Prologue : Scenario() {
             Text.TUTORIAL_22[player]
         ).play().await()
 
-        player.inventory.addItem(ItemRegistry.SCRAP.createItemStack().also { item -> item.amount = 8 })
+        player.inventory.addItem(ItemRegistry.SCRAP.createItemStack().also { item -> item.amount = 3 })
         player.inventory.addItem(ItemRegistry.COAL.createItemStack().also { item -> item.amount = 4 })
         player.inventory.addItem(ItemStack(Material.BREAD, 10))
 

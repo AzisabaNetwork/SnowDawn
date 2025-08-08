@@ -4,6 +4,8 @@ import com.github.bea4dev.snowDawn.biome.BiomeRegistry
 import com.github.bea4dev.snowDawn.dimension.DimensionRegistry
 import com.github.bea4dev.snowDawn.generator.GeneratorRegistry
 import com.github.bea4dev.snowDawn.listeners.BlockListener
+import com.github.bea4dev.snowDawn.listeners.BluePrintListener
+import com.github.bea4dev.snowDawn.listeners.ChestOpenListener
 import com.github.bea4dev.snowDawn.listeners.ChunkListener
 import com.github.bea4dev.snowDawn.listeners.CraftListener
 import com.github.bea4dev.snowDawn.listeners.EntranceDoorListener
@@ -59,6 +61,8 @@ class SnowDawn : JavaPlugin() {
         pluginManager.registerEvents(PlayerRespawnListener(), this)
         pluginManager.registerEvents(InventoryListener(), this)
         pluginManager.registerEvents(EntranceDoorListener(), this)
+        pluginManager.registerEvents(ChestOpenListener(), this)
+        pluginManager.registerEvents(BluePrintListener(), this)
 
         SpigotConfig.disabledAdvancements.add("*")
 

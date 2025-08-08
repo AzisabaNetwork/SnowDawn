@@ -22,7 +22,7 @@ class BlockListener : Listener {
     @EventHandler
     fun onIceMelt(event: BlockFadeEvent) {
         if (event.block.type != Material.ICE) return
-        event.isCancelled = true
+        //event.isCancelled = true
     }
 
     @EventHandler

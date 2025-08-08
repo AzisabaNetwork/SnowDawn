@@ -82,6 +82,10 @@ object EnterMegaStructure : Scenario() {
             .play()
             .await()
 
+        TextBox(player, DEFAULT_TEXT_BOX, Text.BENE[player], 1, Text.SECOND_MEGA_STRUCTURE_MESSAGE_1[player, player.name])
+            .play()
+            .await()
+
         WeaponTaskManager[player]?.enableBar?.set(true)
     }
 }

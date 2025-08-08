@@ -128,7 +128,7 @@ class CraftGUI(private val player: Player) : InventoryHolder {
 
         dropItem.forEach { item -> player.world.dropItemNaturally(player.eyeLocation, item) }
 
-        player.playSound(Sound.sound(org.bukkit.Sound.BLOCK_BEEHIVE_EXIT, Sound.Source.PLAYER, 1.0F, 1.2F))
+        player.playSound(Sound.sound(org.bukkit.Sound.ENTITY_ITEM_PICKUP, Sound.Source.PLAYER, 1.0F, 1.2F))
 
         update()
     }

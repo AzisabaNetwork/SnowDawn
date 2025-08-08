@@ -22,7 +22,10 @@ fun registerPacketListener(player: Player) {
 class PacketListener(private val player: Player) : ChannelDuplexHandler() {
     override fun channelRead(ctx: ChannelHandlerContext?, packet: Any?) {
         if (packet is ServerboundContainerClickPacket && packet.containerId == 0 && packet.slotNum in 1..4) {
-            MainThread.launch { CraftGUIManager.open(player) }
+            MainThread.launch {
+                CraftGUIManager.update(player)
+                CraftGUIManager.open(player)
+            }
             player.updateInventory()
             return
         }

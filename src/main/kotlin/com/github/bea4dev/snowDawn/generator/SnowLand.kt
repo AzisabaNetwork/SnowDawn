@@ -228,6 +228,7 @@ class SnowLand internal constructor(seed: Long) : ChunkGenerator() {
                     ItemRegistry.COAL.createItemStack().also { item -> item.amount = 1 },
                     ItemRegistry.SCRAP.createItemStack().also { item -> item.amount = 2 },
                     ItemRegistry.TORCH.createItemStack().also { item -> item.amount = 1 },
+                    ItemRegistry.BLUE_PRINT_COPPER_EQUIPMENTS.createItemStack()
                 ),
                 listOf(
                     ItemStack(Material.POTATO, 3),
@@ -241,10 +242,21 @@ class SnowLand internal constructor(seed: Long) : ChunkGenerator() {
                     ItemStack(Material.POISONOUS_POTATO, 1),
                     ItemStack(Material.CARROT, 2),
                     ItemRegistry.SCRAP.createItemStack().also { item -> item.amount = 2 },
+                    ItemRegistry.STORY_MEMO.createItemStack()
                 ),
                 listOf(
                     ItemRegistry.SCRAP.createItemStack().also { item -> item.amount = 3 },
                 ),
+                listOf(
+                    ItemRegistry.BLUE_PRINT_STONE_HOE.createItemStack(),
+                    ItemRegistry.COAL.createItemStack().also { item -> item.amount = 1 },
+                    ItemRegistry.COAL.createItemStack().also { item -> item.amount = 2 },
+                    ItemRegistry.STORY_MEMO.createItemStack()
+                ),
+                listOf(
+                    ItemRegistry.BLUE_PRINT_STONE_SHOVEL.createItemStack(),
+                    ItemRegistry.COPPER_INGOT.createItemStack().also { item -> item.amount = 1 },
+                )
             )
         ),
         seed,
@@ -260,17 +272,35 @@ class SnowLand internal constructor(seed: Long) : ChunkGenerator() {
                 listOf(
                     ItemRegistry.SCRAP.createItemStack().also { item -> item.amount = 4 },
                     ItemRegistry.SCRAP.createItemStack().also { item -> item.amount = 1 },
+                    ItemRegistry.BLUE_PRINT_COPPER_EQUIPMENTS.createItemStack()
                 ),
                 listOf(
                     ItemRegistry.COAL.createItemStack().also { item -> item.amount = 1 },
                     ItemRegistry.SCRAP.createItemStack().also { item -> item.amount = 1 },
                     ItemRegistry.SCRAP.createItemStack().also { item -> item.amount = 2 },
+                    ItemRegistry.STORY_MEMO.createItemStack()
                 ),
                 listOf(
                     ItemStack(Material.POTATO, 3),
                     ItemStack(Material.POISONOUS_POTATO, 2),
                     ItemStack(Material.CARROT, 1),
+                    ItemRegistry.STORY_MEMO.createItemStack()
                 ),
+                listOf(
+                    ItemRegistry.SCRAP.createItemStack().also { item -> item.amount = 3 },
+                    ItemRegistry.BLUE_PRINT_COPPER_EQUIPMENTS.createItemStack()
+                ),
+                listOf(
+                    ItemRegistry.BLUE_PRINT_STONE_AXE.createItemStack(),
+                    ItemRegistry.COAL.createItemStack().also { item -> item.amount = 1 },
+                    ItemRegistry.STORY_MEMO.createItemStack(),
+                    ItemRegistry.BLUE_PRINT_COPPER_EQUIPMENTS.createItemStack()
+                ),
+                listOf(
+                    ItemRegistry.BLUE_PRINT_STONE_SHOVEL.createItemStack(),
+                    ItemRegistry.COPPER_INGOT.createItemStack().also { item -> item.amount = 1 },
+                    ItemRegistry.STORY_MEMO.createItemStack()
+                )
             )
         ),
         seed,
@@ -292,13 +322,31 @@ class SnowLand internal constructor(seed: Long) : ChunkGenerator() {
                 ),
                 listOf(
                     ItemRegistry.COAL.createItemStack().also { item -> item.amount = 1 },
+                    ItemRegistry.STORY_MEMO.createItemStack(),
+                    ItemRegistry.BLUE_PRINT_COPPER_EQUIPMENTS.createItemStack()
                 ),
                 listOf(
                     ItemStack(Material.POTATO, 3),
                     ItemStack(Material.POISONOUS_POTATO, 2),
                     ItemStack(Material.CARROT, 1),
                     ItemStack(Material.POTATO, 1),
+                    ItemRegistry.STORY_MEMO.createItemStack(),
+                    ItemRegistry.BLUE_PRINT_COPPER_EQUIPMENTS.createItemStack()
                 ),
+                listOf(
+                    ItemRegistry.SCRAP.createItemStack().also { item -> item.amount = 3 },
+                    ItemRegistry.BLUE_PRINT_COPPER_EQUIPMENTS.createItemStack()
+                ),
+                listOf(
+                    ItemRegistry.BLUE_PRINT_STONE_AXE.createItemStack(),
+                    ItemRegistry.COAL.createItemStack().also { item -> item.amount = 1 },
+                    ItemRegistry.STORY_MEMO.createItemStack()
+                ),
+                listOf(
+                    ItemRegistry.BLUE_PRINT_STONE_SHOVEL.createItemStack(),
+                    ItemRegistry.COPPER_INGOT.createItemStack().also { item -> item.amount = 1 },
+                    ItemRegistry.STORY_MEMO.createItemStack()
+                )
             )
         ),
         seed,
@@ -315,16 +363,41 @@ class SnowLand internal constructor(seed: Long) : ChunkGenerator() {
                     ItemRegistry.COAL.createItemStack().also { item -> item.amount = 2 },
                     ItemRegistry.SCRAP.createItemStack().also { item -> item.amount = 1 },
                     ItemRegistry.TORCH.createItemStack().also { item -> item.amount = 2 },
+                    ItemRegistry.BLUE_PRINT_COPPER_EQUIPMENTS.createItemStack(),
+                    ItemRegistry.STORY_MEMO.createItemStack(),
+                    ItemRegistry.STORY_MEMO.createItemStack(),
+                    ItemRegistry.IRON_INGOT.createItemStack().also { item -> item.amount = 1 },
                 ),
                 listOf(
                     ItemRegistry.COAL.createItemStack().also { item -> item.amount = 1 },
+                    ItemRegistry.BLUE_PRINT_COPPER_EQUIPMENTS.createItemStack(),
+                    ItemRegistry.STORY_MEMO.createItemStack(),
+                    ItemRegistry.IRON_INGOT.createItemStack().also { item -> item.amount = 2 },
                 ),
                 listOf(
                     ItemStack(Material.POTATO, 3),
                     ItemStack(Material.POISONOUS_POTATO, 2),
                     ItemStack(Material.CARROT, 1),
                     ItemStack(Material.POTATO, 1),
+                    ItemStack(Material.BAKED_POTATO, 2),
+                    ItemRegistry.BLUE_PRINT_COPPER_EQUIPMENTS.createItemStack(),
+                    ItemRegistry.STORY_MEMO.createItemStack(),
+                    ItemRegistry.STORY_MEMO.createItemStack(),
+                    ItemRegistry.COPPER_INGOT.createItemStack().also { item -> item.amount = 3 },
+                    ItemRegistry.SCRAP.createItemStack().also { item -> item.amount = 2 },
+                    ItemRegistry.IRON_INGOT.createItemStack().also { item -> item.amount = 1 },
                 ),
+                listOf(
+                    ItemRegistry.BLUE_PRINT_STONE_AXE.createItemStack(),
+                    ItemRegistry.COAL.createItemStack().also { item -> item.amount = 1 },
+                    ItemRegistry.STORY_MEMO.createItemStack(),
+                    ItemRegistry.COAL.createItemStack().also { item -> item.amount = 2 },
+                    ItemRegistry.BLUE_PRINT_STONE_SHOVEL.createItemStack(),
+                    ItemRegistry.STORY_MEMO.createItemStack(),
+                    ItemRegistry.BLUE_PRINT_COPPER_EQUIPMENTS.createItemStack(),
+                    ItemRegistry.IRON_INGOT.createItemStack().also { item -> item.amount = 3 },
+                    ItemStack(Material.COPPER_ORE, 2),
+                )
             )
         ),
         seed,

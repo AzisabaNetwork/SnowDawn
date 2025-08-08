@@ -3,10 +3,12 @@ package com.github.bea4dev.snowDawn.craft
 import com.github.bea4dev.snowDawn.item.Item
 import com.github.bea4dev.snowDawn.item.ItemRegistry
 import com.github.bea4dev.snowDawn.item.getItem
+import com.github.bea4dev.snowDawn.save.ServerData
 import com.github.bea4dev.snowDawn.text.Text
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
+import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
@@ -21,6 +23,38 @@ object CraftRecipeRegistry {
         CraftRecipe(listOf(RequiredItem(ItemRegistry.COPPER_INGOT, 8)), ItemRegistry.COPPER_CHESTPLATE),
         CraftRecipe(listOf(RequiredItem(ItemRegistry.COPPER_INGOT, 6)), ItemRegistry.COPPER_LEGGINGS),
         CraftRecipe(listOf(RequiredItem(ItemRegistry.COPPER_INGOT, 4)), ItemRegistry.COPPER_BOOTS),
+        CraftRecipe(listOf(RequiredItem(ItemRegistry.IRON_INGOT, 6)), ItemRegistry.IRON_HELMET),
+        CraftRecipe(listOf(RequiredItem(ItemRegistry.IRON_INGOT, 8)), ItemRegistry.IRON_CHESTPLATE),
+        CraftRecipe(listOf(RequiredItem(ItemRegistry.IRON_INGOT, 6)), ItemRegistry.IRON_LEGGINGS),
+        CraftRecipe(listOf(RequiredItem(ItemRegistry.IRON_INGOT, 4)), ItemRegistry.IRON_BOOTS),
+        CraftRecipe(
+            listOf(RequiredItem(ItemRegistry.IRON_INGOT, 3), RequiredItem(ItemRegistry.SCRAP, 2)),
+            ItemRegistry.IRON_PICKAXE
+        ),
+        CraftRecipe(
+            listOf(RequiredItem(ItemRegistry.STONE, 2), RequiredItem(ItemRegistry.SCRAP, 2)),
+            ItemRegistry.STONE_HOE
+        ),
+        CraftRecipe(
+            listOf(RequiredItem(ItemRegistry.STONE, 1), RequiredItem(ItemRegistry.SCRAP, 2)),
+            ItemRegistry.STONE_SHOVEL
+        ),
+        CraftRecipe(
+            listOf(RequiredItem(ItemRegistry.STONE, 3), RequiredItem(ItemRegistry.SCRAP, 2)),
+            ItemRegistry.STONE_AXE
+        ),
+        CraftRecipe(
+            listOf(RequiredItem(ItemRegistry.IRON_INGOT, 2), RequiredItem(ItemRegistry.SCRAP, 2)),
+            ItemRegistry.IRON_HOE
+        ),
+        CraftRecipe(
+            listOf(RequiredItem(ItemRegistry.IRON_INGOT, 1), RequiredItem(ItemRegistry.SCRAP, 2)),
+            ItemRegistry.IRON_SHOVEL
+        ),
+        CraftRecipe(
+            listOf(RequiredItem(ItemRegistry.IRON_INGOT, 3), RequiredItem(ItemRegistry.SCRAP, 2)),
+            ItemRegistry.IRON_AXE
+        ),
     )
 }
 
@@ -34,6 +68,10 @@ class CraftRecipe(
     }
 
     fun canCraft(player: Player): Boolean {
+        if (!ServerData.craftableItems.contains(craftItem.id)) {
+            return false
+        }
+
         root@ for (requiredItem in requiredItems) {
             var amount = 0
             for (itemStack in player.inventory.iterator()) {
@@ -53,6 +91,19 @@ class CraftRecipe(
     }
 
     fun createCraftIconFor(player: Player): ItemStack {
+        if (!ServerData.craftableItems.contains(craftItem.id)) {
+            val item = ItemStack(Material.IRON_BARS)
+            val meta = item.itemMeta
+            meta.displayName(
+                Component.translatable(Text.UNCRAFTABLE.toString())
+                    .color(NamedTextColor.GRAY)
+                    .decoration(TextDecoration.ITALIC, false)
+                    .decorate(TextDecoration.BOLD)
+            )
+            item.itemMeta = meta
+            return item
+        }
+
         val canCraft = this.canCraft(player)
         val item = if (canCraft) {
             craftItem.createItemStack().also { item -> item.amount = craftItemAmount }
