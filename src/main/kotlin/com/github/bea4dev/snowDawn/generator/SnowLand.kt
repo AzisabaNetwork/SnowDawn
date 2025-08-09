@@ -211,7 +211,7 @@ class SnowLand internal constructor(seed: Long) : ChunkGenerator() {
             WorldAssetsRegistry.getAsset("bridge_4")!! to 0.08,
             WorldAssetsRegistry.getAsset("bridge_mini_0")!! to 0.2,
             WorldAssetsRegistry.getAsset("bridge_mini_1")!! to 0.2,
-            WorldAssetsRegistry.getAsset("ant_0")!! to 0.08,
+            WorldAssetsRegistry.getAsset("ant_0")!! to 0.1,
         ),
         ThreadLocal.withInitial {
             val variables = variables.get()
@@ -246,6 +246,7 @@ class SnowLand internal constructor(seed: Long) : ChunkGenerator() {
                 ),
                 listOf(
                     ItemRegistry.SCRAP.createItemStack().also { item -> item.amount = 3 },
+                    ItemRegistry.BLUE_PRINT_COMPASS.createItemStack()
                 ),
                 listOf(
                     ItemRegistry.BLUE_PRINT_STONE_HOE.createItemStack(),
@@ -265,7 +266,7 @@ class SnowLand internal constructor(seed: Long) : ChunkGenerator() {
         { minX, surfaceY, minZ, asset -> true },
         listOf(
             WorldAssetsRegistry.getAsset("room_0")!! to 0.1,
-            WorldAssetsRegistry.getAsset("room_1")!! to 0.15,
+            WorldAssetsRegistry.getAsset("room_1")!! to 0.2,
         ),
         ItemChest(
             listOf(
@@ -284,7 +285,8 @@ class SnowLand internal constructor(seed: Long) : ChunkGenerator() {
                     ItemStack(Material.POTATO, 3),
                     ItemStack(Material.POISONOUS_POTATO, 2),
                     ItemStack(Material.CARROT, 1),
-                    ItemRegistry.STORY_MEMO.createItemStack()
+                    ItemRegistry.STORY_MEMO.createItemStack(),
+                    ItemRegistry.BLUE_PRINT_COMPASS.createItemStack()
                 ),
                 listOf(
                     ItemRegistry.SCRAP.createItemStack().also { item -> item.amount = 3 },
@@ -299,7 +301,8 @@ class SnowLand internal constructor(seed: Long) : ChunkGenerator() {
                 listOf(
                     ItemRegistry.BLUE_PRINT_STONE_SHOVEL.createItemStack(),
                     ItemRegistry.COPPER_INGOT.createItemStack().also { item -> item.amount = 1 },
-                    ItemRegistry.STORY_MEMO.createItemStack()
+                    ItemRegistry.STORY_MEMO.createItemStack(),
+                    ItemRegistry.BLUE_PRINT_COMPASS.createItemStack()
                 )
             )
         ),
@@ -311,7 +314,7 @@ class SnowLand internal constructor(seed: Long) : ChunkGenerator() {
         { minX, surfaceY, minZ, asset -> true },
         listOf(
             WorldAssetsRegistry.getAsset("room_0")!! to 0.1,
-            WorldAssetsRegistry.getAsset("room_1")!! to 0.03,
+            WorldAssetsRegistry.getAsset("room_1")!! to 0.1,
         ),
         ItemChest(
             listOf(
@@ -335,7 +338,8 @@ class SnowLand internal constructor(seed: Long) : ChunkGenerator() {
                 ),
                 listOf(
                     ItemRegistry.SCRAP.createItemStack().also { item -> item.amount = 3 },
-                    ItemRegistry.BLUE_PRINT_COPPER_EQUIPMENTS.createItemStack()
+                    ItemRegistry.BLUE_PRINT_COPPER_EQUIPMENTS.createItemStack(),
+                    ItemRegistry.BLUE_PRINT_COMPASS.createItemStack()
                 ),
                 listOf(
                     ItemRegistry.BLUE_PRINT_STONE_AXE.createItemStack(),
@@ -345,7 +349,8 @@ class SnowLand internal constructor(seed: Long) : ChunkGenerator() {
                 listOf(
                     ItemRegistry.BLUE_PRINT_STONE_SHOVEL.createItemStack(),
                     ItemRegistry.COPPER_INGOT.createItemStack().also { item -> item.amount = 1 },
-                    ItemRegistry.STORY_MEMO.createItemStack()
+                    ItemRegistry.STORY_MEMO.createItemStack(),
+                    ItemRegistry.BLUE_PRINT_COMPASS.createItemStack()
                 )
             )
         ),

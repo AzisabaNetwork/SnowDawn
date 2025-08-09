@@ -70,6 +70,8 @@ enum class Text(val jp: String) {
     ITEM_BLUE_PRINT_IRON_HOE("鉄のくわの設計図"),
     ITEM_BLUE_PRINT_IRON_SHOVEL("鉄のシャベルの設計図"),
     ITEM_BLUE_PRINT_IRON_AXE("鉄の斧の設計図"),
+    ITEM_BLUE_PRINT_COMPASS("追跡機の設計図"),
+
     ITEM_BLUE_PRINT_CLICK("クリックでレシピを解放"),
 
     MESSAGE_SET_RESPAWN("リスポーン地点を設定しました"),
@@ -132,6 +134,9 @@ enum class Text(val jp: String) {
     SECOND_MEGA_STRUCTURE_SUB_TITLE("標高 : -1200m"),
     SECOND_MEGA_STRUCTURE_MESSAGE_0("この空間は非常に危険です。\n足を滑らせないように気をつけてください。\n"),
     SECOND_MEGA_STRUCTURE_MESSAGE_1("特に調査隊の容態が心配です。\n早く探しに行きましょう。\n"),
+
+    GET_BLUE_PRINT_COMPASS_0("これは追跡機の設計図ですね。\n追跡機を使えば施設への方角がわかります。\n"),
+    GET_BLUE_PRINT_COMPASS_1("施設までは距離があるので、\n食料や物資を整えてから出発しましょう！\n"),
     ;
 
     companion object {

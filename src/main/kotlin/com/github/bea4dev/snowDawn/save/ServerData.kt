@@ -8,6 +8,5 @@ object ServerData {
         "stone_pickaxe",
         "torch",
         "furnace",
-        "compass"
     )
 }

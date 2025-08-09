@@ -130,6 +130,15 @@ object ItemRegistry {
         Text.ITEM_COMPASS,
         listOf(Text.ITEM_COMPASS_LORE_0, Text.ITEM_COMPASS_LORE_1)
     )
+    val BLUE_PRINT_COMPASS = BluePrint(
+        "blue_print_compass",
+        Material.PAPER,
+        2,
+        3,
+        Text.ITEM_BLUE_PRINT_COMPASS,
+        listOf(Text.ITEM_COMPASS_LORE_0),
+        listOf(COMPASS)
+    )
 
     operator fun get(id: String): Item? {
         return itemIdMap[id]
