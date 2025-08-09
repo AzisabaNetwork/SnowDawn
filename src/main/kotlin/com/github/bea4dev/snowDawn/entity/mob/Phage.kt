@@ -11,10 +11,13 @@ import com.github.bea4dev.vanilla_source.api.entity.ai.pathfinding.BlockPosition
 import com.github.bea4dev.vanilla_source.api.entity.tick.TickThread
 import com.github.bea4dev.vanilla_source.api.util.collision.EngineBoundingBox
 import net.kyori.adventure.sound.Sound
+import net.minecraft.world.entity.LivingEntity
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.Particle
+import org.bukkit.craftbukkit.entity.CraftPlayer
+import org.bukkit.damage.DamageSource
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
@@ -55,6 +58,15 @@ class Phage(
     private val height = 1.6
     private val width = 0.9
 
+    private val dummyLivingEntity = VanillaSourceAPI.getInstance().nmsHandler.createNMSEntityController(
+        location.world,
+        0.0,
+        0.0,
+        0.0,
+        EntityType.ARMOR_STAND,
+        null
+    ) as LivingEntity
+
     var block: Material = Material.AIR
 
     init {
@@ -87,8 +99,13 @@ class Phage(
 
     @Synchronized
     override fun tick() {
+        if (!chunk.isLoaded || super.y < 0) {
+            super.kill()
+        }
+
         tick++
         super.tick()
+        dummyLivingEntity.setPosRaw(super.x, super.y, super.z)
 
         if (noDamageTick > 0) {
             noDamageTick--
@@ -169,11 +186,15 @@ class Phage(
                 } else {
                     PlayerManager.ONLINE_PLAYERS
                         .filter { it.boundingBox.overlaps(super.getBoundingBox()!!) }
-                        .forEach {
+                        .forEach { player ->
                             Bukkit.getScheduler()
                                 .runTaskLater(SnowDawn.plugin, Runnable {
                                     if (state == PhageState.ATTACK) {
-                                        it.damage(attackDamage.toDouble())
+                                        val entityPlayer = (player as CraftPlayer).handle
+                                        entityPlayer.hurt(
+                                            entityPlayer.damageSources().mobAttack(dummyLivingEntity),
+                                            this.attackDamage
+                                        )
                                     }
                                 }, 1)
                         }
@@ -319,6 +340,19 @@ class Phage(
         }
 
         if (critical) {
+            // effect
+            for (i in 0..<20) {
+                val size = 1.5
+                val x = Random.nextDouble(size) - (size / 2.0)
+                val y = Random.nextDouble(size) - (size / 2.0)
+                val z = Random.nextDouble(size) - (size / 2.0)
+                PlayerManager.ONLINE_PLAYERS.forEach {
+                    it.spawnParticle(Particle.CRIT, super.x, super.y, super.z, 0, x, y, z, 1.5)
+                }
+            }
+        }
+
+        if (critical) {
             player.playSound(Sound.sound(org.bukkit.Sound.ENTITY_PLAYER_ATTACK_WEAK, Sound.Source.PLAYER, 1.0F, 1.0F))
         } else {
             player.playSound(Sound.sound(org.bukkit.Sound.ENTITY_PLAYER_ATTACK_STRONG, Sound.Source.PLAYER, 1.0F, 1.0F))
@@ -417,9 +451,9 @@ private class PhageStateVariables {
 }
 
 private class PhageAIGoal(private val phage: Phage) : PathfindingGoal {
-    private val maxTargetFollowTick = TickThread.TPS * 30
+    private val maxTargetFollowTick = TickThread.TPS * 10
     private val targetSearchInterval = TickThread.TPS * 2
-    private val maxPlayerDetectionRange = 50.0
+    private val maxPlayerDetectionRange = 30.0
 
     private var tick = 0
     private var targetFollowTick = maxTargetFollowTick
@@ -438,6 +472,8 @@ private class PhageAIGoal(private val phage: Phage) : PathfindingGoal {
                     .distanceSquared(phage.position) < maxPlayerDetectionRange.pow(2)
             ) {
                 phage.target = target
+            } else {
+                phage.target = null
             }
         }
 

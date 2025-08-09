@@ -105,7 +105,7 @@ class Weapon(
         player.velocity = location.direction.multiply(-0.8)
 
         // effect
-        for (i in 0..<10) {
+        for (i in 0..<20) {
             val size = 2.5
             val x = Random.nextDouble(size) - (size / 2.0)
             val y = Random.nextDouble(size) - (size / 2.0)
