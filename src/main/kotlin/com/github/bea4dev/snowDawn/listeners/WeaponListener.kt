@@ -29,7 +29,7 @@ class WeaponListener : Listener {
             if (result != null) {
                 val hitEntity = result.hitEntity
                 if (hitEntity != null && hitEntity is Phage) {
-                    hitEntity.damage(player, 2.0F, false)
+                    hitEntity.damage(player, 1.0F, false)
                 }
             }
         } else {

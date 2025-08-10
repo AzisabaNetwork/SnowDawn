@@ -11,13 +11,15 @@ import com.github.bea4dev.vanilla_source.api.entity.ai.pathfinding.BlockPosition
 import com.github.bea4dev.vanilla_source.api.entity.tick.TickThread
 import com.github.bea4dev.vanilla_source.api.util.collision.EngineBoundingBox
 import net.kyori.adventure.sound.Sound
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.text.format.TextDecoration
 import net.minecraft.world.entity.LivingEntity
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.craftbukkit.entity.CraftPlayer
-import org.bukkit.damage.DamageSource
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
@@ -336,7 +338,31 @@ class Phage(
                     it.spawnParticle(Particle.ENCHANTED_HIT, super.x, super.y + 1.0, super.z, 0, x, y, z, 1.5)
                 }
             }
+
+            val damageIndicator = DamageIndicator(
+                Component.text(0.0).color(NamedTextColor.WHITE),
+                super.position.clone().add(Vector(0.0, 1.0, 0.0)),
+                player.world
+            )
+            SnowDawn.ENTITY_THREAD.addEntity(damageIndicator)
+
             return
+        }
+
+        if (critical) {
+            val damageIndicator = DamageIndicator(
+                Component.text(damage).color(NamedTextColor.AQUA).decorate(TextDecoration.BOLD),
+                super.position.clone().add(Vector(0.0, 1.0, 0.0)),
+                player.world
+            )
+            SnowDawn.ENTITY_THREAD.addEntity(damageIndicator)
+        } else {
+            val damageIndicator = DamageIndicator(
+                Component.text(damage).color(NamedTextColor.WHITE),
+                super.position.clone().add(Vector(0.0, 1.0, 0.0)),
+                player.world
+            )
+            SnowDawn.ENTITY_THREAD.addEntity(damageIndicator)
         }
 
         if (critical) {
