@@ -2,6 +2,7 @@ package com.github.bea4dev.snowDawn
 
 import com.github.bea4dev.snowDawn.biome.BiomeRegistry
 import com.github.bea4dev.snowDawn.dimension.DimensionRegistry
+import com.github.bea4dev.snowDawn.entity.mob.MobSpawnProcessor
 import com.github.bea4dev.snowDawn.generator.GeneratorRegistry
 import com.github.bea4dev.snowDawn.listeners.BlockListener
 import com.github.bea4dev.snowDawn.listeners.BluePrintListener
@@ -50,6 +51,7 @@ class SnowDawn : JavaPlugin() {
         BiomeRegistry.init()
         GeneratorRegistry.init(0)
         WorldRegistry.init()
+        MobSpawnProcessor.init()
 
         val pluginManager = Bukkit.getPluginManager()
         pluginManager.registerEvents(PlayerJoinQuitListener(), this)

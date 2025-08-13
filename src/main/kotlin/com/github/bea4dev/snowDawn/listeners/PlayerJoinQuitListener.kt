@@ -63,9 +63,9 @@ internal class PlayerJoinQuitListener : Listener {
         val player = event.player
 
         if (player.isSneaking) {
-            val phage = Phage(player.location, 20.0F, 5.0F)
-            phage.block = Material.DEEPSLATE
-            phage.spawn()
+            //val phage = Phage(player.location, 20.0F, 5.0F)
+            //phage.block = Material.DEEPSLATE
+            //phage.spawn()
         }
     }
 

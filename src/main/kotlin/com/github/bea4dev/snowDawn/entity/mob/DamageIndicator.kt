@@ -2,7 +2,6 @@ package com.github.bea4dev.snowDawn.entity.mob
 
 import com.github.bea4dev.vanilla_source.api.entity.TickBase
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.format.TextColor
 import net.minecraft.network.protocol.Packet
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket
 import net.minecraft.network.protocol.game.ClientboundMoveEntityPacket
@@ -86,6 +85,6 @@ class DamageIndicator(text: Component, private var position: Vector, private val
     }
 
     override fun shouldRemove(): Boolean {
-        return tick >= lastTick
+        return tick > lastTick
     }
 }

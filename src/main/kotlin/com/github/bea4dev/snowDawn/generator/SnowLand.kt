@@ -257,6 +257,16 @@ class SnowLand internal constructor(seed: Long) : ChunkGenerator() {
                 listOf(
                     ItemRegistry.BLUE_PRINT_STONE_SHOVEL.createItemStack(),
                     ItemRegistry.COPPER_INGOT.createItemStack().also { item -> item.amount = 1 },
+                ),
+                listOf(
+                    ItemRegistry.SAPLING.createItemStack().also { item -> item.amount = 2 },
+                    ItemRegistry.DIRT.createItemStack().also { item -> item.amount = 3 },
+                ),
+                listOf(
+                    ItemRegistry.SAPLING.createItemStack().also { item -> item.amount = 1 },
+                    ItemRegistry.DIRT.createItemStack().also { item -> item.amount = 4 },
+                    ItemStack(Material.POTATO, 1),
+                    ItemStack(Material.POTATO, 2),
                 )
             )
         ),

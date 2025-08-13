@@ -44,22 +44,25 @@ class Phage(
     SnowDawn.ENTITY_THREAD,
     null
 ) {
-    internal val bukkitWorld = location.world
+    val bukkitWorld = location.world
     private var state = PhageState.IDLE
     private var stateVariables = PhageStateVariables()
-    internal var target: Player? = null
+    var target: Player? = null
     private var tick = 0
     private var noDamageTick = 0
 
     private val attackRange = 4.0
     private val attackJumpTick = 20
-    private val parryBufferTick = 3
     private val maxStuck = TickThread.TPS * 5
     private val maxDamageTick = 10
+
+    private val maxInactiveTick = 400
+    private var inactiveTick = 0
 
     private val height = 1.6
     private val width = 0.9
 
+    // 攻撃判定用
     private val dummyLivingEntity = VanillaSourceAPI.getInstance().nmsHandler.createNMSEntityController(
         location.world,
         0.0,
@@ -101,8 +104,15 @@ class Phage(
 
     @Synchronized
     override fun tick() {
-        if (!chunk.isLoaded || super.y < 0) {
-            super.kill()
+        if (!chunk.isLoaded || super.y < 0 || inactiveTick > maxInactiveTick) {
+            kill()
+            return
+        }
+
+        if (target == null) {
+            inactiveTick++
+        } else {
+            inactiveTick = 0
         }
 
         tick++
@@ -228,7 +238,7 @@ class Phage(
                 stateVariables.deathTick++
 
                 if (stateVariables.deathTick == 13) {
-                    super.kill()
+                    kill()
 
                     PlayerManager.ONLINE_PLAYERS.forEach {
                         it.spawnParticle(
@@ -263,7 +273,7 @@ class Phage(
 
     @Synchronized
     fun tryParry(): Boolean {
-        return state == PhageState.ATTACK && stateVariables.attackTick in attackJumpTick until (attackJumpTick + parryBufferTick)
+        return state == PhageState.ATTACK && stateVariables.attackTick >= attackJumpTick
     }
 
     @Synchronized
@@ -443,6 +453,11 @@ class Phage(
                 )
             }
         }
+    }
+
+    override fun kill() {
+        MobSpawnProcessor.mobCount--
+        super.kill()
     }
 }
 

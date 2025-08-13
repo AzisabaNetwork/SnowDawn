@@ -58,13 +58,22 @@ class Weapon(
 
         if (result != null) {
             val hitEntity = result.hitEntity
-            if (hitEntity != null && hitEntity is Phage) {
+            if (hitEntity != null) {
                 val damage = if (attackTick == maxAttackTick) {
                     attackDamage
                 } else {
                     attackDamage / 2.0F
                 }
-                hitEntity.damage(player, damage, attackTick == maxAttackTick)
+                for (entity in world.getNearbyEntities(
+                    result.hitPosition.x,
+                    result.hitPosition.y,
+                    result.hitPosition.z,
+                    2.0
+                )) {
+                    if (entity is Phage) {
+                        entity.damage(player, damage, attackTick == maxAttackTick)
+                    }
+                }
             }
         }
 

@@ -47,6 +47,8 @@ enum class Text(val jp: String) {
     ITEM_STONE("丸石"),
     ITEM_COPPER_INGOT("銅のインゴット"),
     ITEM_IRON_INGOT("鉄のインゴット"),
+    ITEM_SAPLING("苗木"),
+    ITEM_DIRT("土"),
 
     ITEM_COMPASS("追跡機"),
     ITEM_COMPASS_LORE_0("施設への方角を示してくれる"),

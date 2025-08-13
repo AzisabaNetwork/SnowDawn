@@ -9,6 +9,7 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.EntityPickupItemEvent
 import org.bukkit.event.inventory.InventoryClickEvent
+import org.bukkit.inventory.ItemStack
 
 class ItemReplaceListener : Listener {
     @EventHandler
@@ -16,7 +17,7 @@ class ItemReplaceListener : Listener {
         if (event.entity !is Player) {
             return
         }
-        val item = replace(event.item.itemStack.type) ?: return
+        val item = replace(event.item.itemStack) ?: return
         event.item.itemStack = item.createItemStack().also { item -> item.amount = event.item.itemStack.amount }
     }
 
@@ -26,18 +27,24 @@ class ItemReplaceListener : Listener {
             return
         }
         val item = event.currentItem ?: return
-        val newItem = replace(item.type) ?: return
+        val newItem = replace(item) ?: return
         event.currentItem = newItem.createItemStack().also { newItem -> newItem.amount = item.amount }
     }
 
-    private fun replace(material: Material): Item? {
-        return when (material) {
+    private fun replace(item: ItemStack): Item? {
+        if ((item.itemMeta?.customModelData ?: 0) != 0) {
+            return null
+        }
+
+        return when (item.type) {
             Material.TORCH -> ItemRegistry.TORCH
             Material.COAL -> ItemRegistry.COAL
             Material.COBBLESTONE -> ItemRegistry.STONE
             Material.FURNACE -> ItemRegistry.FURNACE
             Material.COPPER_INGOT -> ItemRegistry.COPPER_INGOT
             Material.IRON_INGOT -> ItemRegistry.IRON_INGOT
+            Material.SPRUCE_SAPLING -> ItemRegistry.SAPLING
+            Material.DIRT -> ItemRegistry.DIRT
             else -> null
         }
     }

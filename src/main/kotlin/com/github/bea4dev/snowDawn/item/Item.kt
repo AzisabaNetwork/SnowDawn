@@ -29,6 +29,8 @@ object ItemRegistry {
     val COAL = Item("coal", Material.COAL, 0, 0, Text.ITEM_COAL, listOf())
     val TORCH = Item("torch", Material.TORCH, 0, 1, Text.ITEM_TORCH, listOf())
     val STONE = Item("stone", Material.COBBLESTONE, 0, 1, Text.ITEM_STONE, listOf())
+    val SAPLING = Item("sampling", Material.SPRUCE_SAPLING, 0, 1, Text.ITEM_SAPLING, listOf())
+    val DIRT = Item("dirt", Material.DIRT, 0, 1, Text.ITEM_DIRT, listOf())
     val SCRAP_PICKAXE = Item("scrap_pickaxe", Material.WOODEN_PICKAXE, 1, 2, Text.ITEM_SCRAP_PICKAXE, listOf())
     val STONE_PICKAXE = Item("stone_pickaxe", Material.STONE_PICKAXE, 0, 1, Text.ITEM_STONE_PICKAXE, listOf())
     val STONE_HOE = Item("stone_hoe", Material.STONE_HOE, 0, 1, Text.ITEM_STONE_HOE, listOf())
