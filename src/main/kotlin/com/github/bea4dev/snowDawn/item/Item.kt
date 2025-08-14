@@ -27,10 +27,23 @@ object ItemRegistry {
     )
     val ICE = Item("ice", Material.ICE, 0, 0, Text.ITEM_ICE, listOf())
     val COAL = Item("coal", Material.COAL, 0, 0, Text.ITEM_COAL, listOf())
-    val TORCH = Item("torch", Material.TORCH, 0, 1, Text.ITEM_TORCH, listOf())
+    val TORCH = Item("torch", Material.TORCH, 0, 1, Text.ITEM_TORCH, listOf(Text.ITEM_TORCH_LORE_0))
     val STONE = Item("stone", Material.COBBLESTONE, 0, 1, Text.ITEM_STONE, listOf())
     val SAPLING = Item("sampling", Material.SPRUCE_SAPLING, 0, 1, Text.ITEM_SAPLING, listOf())
     val DIRT = Item("dirt", Material.DIRT, 0, 1, Text.ITEM_DIRT, listOf())
+    val CATALYST = Item("catalyst", Material.GUNPOWDER, 1, 2, Text.ITEM_CATALYST, listOf(Text.ITEM_CATALYST_LORE_0))
+    val BLUE_PRINT_CATALYST = BluePrint(
+        "blue_print_catalyst",
+        Material.PAPER,
+        2,
+        3,
+        Text.ITEM_BLUE_PRINT_CATALYST,
+        listOf(),
+        listOf(CATALYST)
+    )
+    val FERTILIZER =
+        Item("fertilizer", Material.BONE_MEAL, 0, 1, Text.ITEM_FERTILIZER, listOf(Text.ITEM_FERTILIZER_LORE_0))
+    val FUEL = Item("fuel", Material.CHARCOAL, 1, 2, Text.ITEM_FUEL, listOf(Text.ITEM_FUEL_LORE_0))
     val SCRAP_PICKAXE = Item("scrap_pickaxe", Material.WOODEN_PICKAXE, 1, 2, Text.ITEM_SCRAP_PICKAXE, listOf())
     val STONE_PICKAXE = Item("stone_pickaxe", Material.STONE_PICKAXE, 0, 1, Text.ITEM_STONE_PICKAXE, listOf())
     val STONE_HOE = Item("stone_hoe", Material.STONE_HOE, 0, 1, Text.ITEM_STONE_HOE, listOf())

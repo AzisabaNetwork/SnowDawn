@@ -32,7 +32,7 @@ class ItemReplaceListener : Listener {
     }
 
     private fun replace(item: ItemStack): Item? {
-        if ((item.itemMeta?.customModelData ?: 0) != 0) {
+        if (item.itemMeta?.hasCustomModelData() == true && (item.itemMeta?.customModelData != 0)) {
             return null
         }
 

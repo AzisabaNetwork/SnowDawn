@@ -68,7 +68,7 @@ class PlayerTask(private val player: Player) : TickBase {
                                 }
                             }
 
-                            if (temperature < 0 && (block.material == Material.TORCH || block.material == Material.WALL_TORCH)) {
+                            if (temperature < 0 && (block.material == Material.TORCH || block.material == Material.WALL_TORCH || block.material == Material.COPPER_BULB)) {
                                 temperature = +1
                             }
                         }

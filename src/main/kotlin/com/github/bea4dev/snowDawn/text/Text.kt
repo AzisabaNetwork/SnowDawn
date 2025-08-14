@@ -23,8 +23,17 @@ enum class Text(val jp: String) {
     ITEM_SCRAP("スクラップ"),
     ITEM_SCRAP_LORE_0("何らかの残骸、クラフトに使用する。"),
 
+    ITEM_CATALYST("肥料触媒"),
+    ITEM_CATALYST_LORE_0("かまどで熱すると肥料になる"),
+    ITEM_BLUE_PRINT_CATALYST("肥料触媒の設計図"),
+    ITEM_FERTILIZER("化学肥料"),
+    ITEM_FERTILIZER_LORE_0("植物に振りかけると成長を早める"),
+
+    ITEM_FUEL("合成燃料"),
+    ITEM_FUEL_LORE_0("化石燃料よりも高効率な燃料"),
+
     ITEM_SCRAP_PIPE("スクラップのパイプ"),
-    ITEM_SCRAP_PIPE_LORE_0("スクラップの寄せ集めでできたパイプ。"),
+    ITEM_SCRAP_PIPE_LORE_0("スクラップの寄せ集めでできた武器。"),
     ITEM_SCRAP_PIPE_LORE_1("敵の攻撃に合わせてクリックすると、"),
     ITEM_SCRAP_PIPE_LORE_2("相手の攻撃を弾くことができる。"),
     ITEM_SCRAP_PIPE_LORE_3(""),
@@ -44,6 +53,7 @@ enum class Text(val jp: String) {
     ITEM_ICE("氷"),
     ITEM_COAL("石炭"),
     ITEM_TORCH("松明"),
+    ITEM_TORCH_LORE_0("体を温めることができる"),
     ITEM_STONE("丸石"),
     ITEM_COPPER_INGOT("銅のインゴット"),
     ITEM_IRON_INGOT("鉄のインゴット"),
@@ -103,8 +113,8 @@ enum class Text(val jp: String) {
     TUTORIAL_21("キャンプファイアを右クリックすることで、\nリスポーン地点を固定することができます。"),
     TUTORIAL_22("それから、これをどうぞ。\n\n"),
     TUTORIAL_23("スクラップをクラフトして\n即席の道具を作りましょう。\n"),
-    TUTORIAL_24("クラフトはインベントリから行えます\n\n"),
-    TUTORIAL_25("装備を整えるためにも、\n周辺を探索しませんか？\n"),
+    TUTORIAL_24("クラフトはインベントリから行えます\n武器とツルハシをクラフトしてください\n"),
+    TUTORIAL_25("装備を整えるためにも、\n周辺を探索しましょう\n"),
 
     SISETU_0("%0さん、この裏に書き置きを見つけました！\nおそらく、先に行った調査隊のものでしょう\n"),
     SISETU_1("「我々を探している捜索者へ。\n我々は岩盤層を超えて地下空間へと向かう。\nもはや彼の言うことは信用ならない。」"),

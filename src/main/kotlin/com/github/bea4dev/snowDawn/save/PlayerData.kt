@@ -14,7 +14,9 @@ object PlayerDataRegistry {
 }
 
 class PlayerData(player: Player) {
+    var finishedTutorial = false
     var respawnLocation = player.location.clone()
+    var lastLocation = player.location.clone()
     var finishedSisetuMovie = false
     var prevSnowLandEntrance: Location? = null
     var secondMegaStructureEnterFlag = false

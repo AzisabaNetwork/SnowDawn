@@ -30,7 +30,7 @@ object WorldRegistry {
             PROLOGUE = Bukkit.createWorld(voidWorldCreator)!!
             VanillaSourceAPI.getInstance().nmsHandler.setDimensionType(PROLOGUE, DimensionRegistry.SNOW_LAND)
 
-            //deleteDirectory(Paths.get("snow_land"))
+            deleteDirectory(Paths.get("snow_land"))
             deleteDirectory(Paths.get("second_mega_structure"))
 
             val slCreator = WorldCreator("snow_land")
@@ -45,12 +45,18 @@ object WorldRegistry {
             nmsHandler.setDimensionType(SNOW_LAND, DimensionRegistry.SNOW_LAND)
             nmsHandler.setDimensionType(SECOND_MEGA_STRUCTURE, DimensionRegistry.SECOND_MEGA_STRUCTURE)
 
+            PROLOGUE.setGameRule(GameRule.DO_MOB_SPAWNING, false)
+            PROLOGUE.setGameRule(GameRule.DO_WEATHER_CYCLE, false)
+            PROLOGUE.setStorm(false)
+
             SNOW_LAND.setGameRule(GameRule.DO_MOB_SPAWNING, false)
             SNOW_LAND.setGameRule(GameRule.DO_WEATHER_CYCLE, false)
+            SNOW_LAND.setGameRule(GameRule.KEEP_INVENTORY, true)
             SNOW_LAND.setStorm(true)
 
             SECOND_MEGA_STRUCTURE.setGameRule(GameRule.DO_MOB_SPAWNING, false)
             SECOND_MEGA_STRUCTURE.setGameRule(GameRule.DO_WEATHER_CYCLE, false)
+            SECOND_MEGA_STRUCTURE.setGameRule(GameRule.KEEP_INVENTORY, true)
         })
     }
 

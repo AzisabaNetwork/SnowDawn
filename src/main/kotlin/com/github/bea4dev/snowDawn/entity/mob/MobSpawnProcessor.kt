@@ -40,12 +40,25 @@ object MobSpawnProcessor : TickBase {
                             val ground = block.getRelative(BlockFace.DOWN)
                             val up = block.getRelative(BlockFace.UP)
 
-                            if (mobCount < MAX_MOB_COUNT && block.lightFromBlocks.toInt() == 0 && block.isPassable && ground.isSolid && up.isPassable) {
-                                if (Random.nextInt(400) == 0) {
-                                    val phage = Phage(block.location.add(Vector(0.5, 0.0, 0.5)), 20.0F, 5.0F)
-                                    phage.block = Material.DEEPSLATE
-                                    phage.spawn()
-                                    mobCount++
+                            if (mobCount < MAX_MOB_COUNT
+                                && block.lightFromBlocks.toInt() == 0
+                                && block.lightFromSky.toInt() == 0
+                                && block.isPassable
+                                && ground.isSolid
+                                && up.isPassable
+                            ) {
+                                if (Random.nextInt(800) == 0) {
+                                    if (location.world == WorldRegistry.SNOW_LAND) {
+                                        val phage = Phage(block.location.add(Vector(0.5, 0.0, 0.5)), 10.0F, 2.0F)
+                                        phage.aiController.navigator.speed = 0.20F
+                                        phage.spawn()
+                                        mobCount++
+                                    } else {
+                                        val phage = Phage(block.location.add(Vector(0.5, 0.0, 0.5)), 20.0F, 5.0F)
+                                        phage.block = Material.DEEPSLATE
+                                        phage.spawn()
+                                        mobCount++
+                                    }
                                 }
                             }
                         }

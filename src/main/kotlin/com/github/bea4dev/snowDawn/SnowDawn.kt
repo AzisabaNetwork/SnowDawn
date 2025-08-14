@@ -3,6 +3,7 @@ package com.github.bea4dev.snowDawn
 import com.github.bea4dev.snowDawn.biome.BiomeRegistry
 import com.github.bea4dev.snowDawn.dimension.DimensionRegistry
 import com.github.bea4dev.snowDawn.entity.mob.MobSpawnProcessor
+import com.github.bea4dev.snowDawn.furnace.FurnaceRecipe
 import com.github.bea4dev.snowDawn.generator.GeneratorRegistry
 import com.github.bea4dev.snowDawn.listeners.BlockListener
 import com.github.bea4dev.snowDawn.listeners.BluePrintListener
@@ -10,6 +11,7 @@ import com.github.bea4dev.snowDawn.listeners.ChestOpenListener
 import com.github.bea4dev.snowDawn.listeners.ChunkListener
 import com.github.bea4dev.snowDawn.listeners.CraftListener
 import com.github.bea4dev.snowDawn.listeners.EntranceDoorListener
+import com.github.bea4dev.snowDawn.listeners.FurnaceListener
 import com.github.bea4dev.snowDawn.listeners.InventoryListener
 import com.github.bea4dev.snowDawn.listeners.ItemReplaceListener
 import com.github.bea4dev.snowDawn.listeners.PlayerCompassListener
@@ -52,6 +54,7 @@ class SnowDawn : JavaPlugin() {
         GeneratorRegistry.init(0)
         WorldRegistry.init()
         MobSpawnProcessor.init()
+        FurnaceRecipe.init()
 
         val pluginManager = Bukkit.getPluginManager()
         pluginManager.registerEvents(PlayerJoinQuitListener(), this)
@@ -67,6 +70,7 @@ class SnowDawn : JavaPlugin() {
         pluginManager.registerEvents(ChestOpenListener(), this)
         pluginManager.registerEvents(BluePrintListener(), this)
         pluginManager.registerEvents(PlayerCompassListener(), this)
+        pluginManager.registerEvents(FurnaceListener(), this)
 
         SpigotConfig.disabledAdvancements.add("*")
 

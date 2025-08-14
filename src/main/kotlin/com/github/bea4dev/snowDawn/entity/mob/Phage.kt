@@ -81,6 +81,7 @@ class Phage(
         super.aiController.navigator.pathfindingInterval = 20
 
         super.hasGravity = true
+        super.collideEntities = true
 
         super.setModel("phage_normal")
         super.getAnimationHandler().playAnimation(PhageAnimation.IDLE.key, 0.3, 0.3, 1.0, true)

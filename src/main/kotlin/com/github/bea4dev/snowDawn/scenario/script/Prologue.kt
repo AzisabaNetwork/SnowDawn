@@ -396,6 +396,9 @@ object Prologue : Scenario() {
             }
             spawnLocation.y += 2.2
 
+            val playerData = PlayerDataRegistry[player]
+            playerData.respawnLocation = spawnLocation.clone()
+            playerData.lastLocation = spawnLocation.clone()
             player.health = 5.0
             player.teleport(spawnLocation)
             player.inventory.clear()
@@ -567,9 +570,11 @@ object Prologue : Scenario() {
             Text.TUTORIAL_22[player]
         ).play().await()
 
-        player.inventory.addItem(ItemRegistry.SCRAP.createItemStack().also { item -> item.amount = 3 })
-        player.inventory.addItem(ItemRegistry.COAL.createItemStack().also { item -> item.amount = 4 })
-        player.inventory.addItem(ItemStack(Material.BREAD, 10))
+        MainThread.sync {
+            player.inventory.addItem(ItemRegistry.SCRAP.createItemStack().also { item -> item.amount = 5 })
+            player.inventory.addItem(ItemRegistry.COAL.createItemStack().also { item -> item.amount = 4 })
+            player.inventory.addItem(ItemStack(Material.BREAD, 10))
+        }.await()
 
         CraftGUIManager.update(player)
         InventoryListener.closeCheck.add(player)
@@ -599,6 +604,8 @@ object Prologue : Scenario() {
             1,
             Text.TUTORIAL_25[player]
         ).play().await()
+
+        PlayerDataRegistry[player].finishedTutorial = true
     }
 
 
