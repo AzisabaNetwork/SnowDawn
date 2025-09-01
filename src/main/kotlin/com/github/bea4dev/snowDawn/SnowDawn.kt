@@ -10,6 +10,7 @@ import com.github.bea4dev.snowDawn.listeners.BluePrintListener
 import com.github.bea4dev.snowDawn.listeners.ChestOpenListener
 import com.github.bea4dev.snowDawn.listeners.ChunkListener
 import com.github.bea4dev.snowDawn.listeners.CraftListener
+import com.github.bea4dev.snowDawn.listeners.DiggingListener
 import com.github.bea4dev.snowDawn.listeners.EntranceDoorListener
 import com.github.bea4dev.snowDawn.listeners.FurnaceListener
 import com.github.bea4dev.snowDawn.listeners.InventoryListener
@@ -71,6 +72,7 @@ class SnowDawn : JavaPlugin() {
         pluginManager.registerEvents(BluePrintListener(), this)
         pluginManager.registerEvents(PlayerCompassListener(), this)
         pluginManager.registerEvents(FurnaceListener(), this)
+        pluginManager.registerEvents(DiggingListener(), this)
 
         SpigotConfig.disabledAdvancements.add("*")
 
@@ -82,11 +84,11 @@ class SnowDawn : JavaPlugin() {
 
         for (player in Bukkit.getOnlinePlayers()) {
             player.sendMessage(
-                    Component.text("[Server] ")
-                            .append(
-                                    Component.text("Starting shutdown...")
-                                            .color(NamedTextColor.YELLOW)
-                            )
+                Component.text("[Server] ")
+                    .append(
+                        Component.text("Starting shutdown...")
+                            .color(NamedTextColor.YELLOW)
+                    )
             )
         }
 

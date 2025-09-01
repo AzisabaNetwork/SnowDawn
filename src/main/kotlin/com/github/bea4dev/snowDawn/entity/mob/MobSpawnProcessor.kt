@@ -47,7 +47,7 @@ object MobSpawnProcessor : TickBase {
                                 && ground.isSolid
                                 && up.isPassable
                             ) {
-                                if (Random.nextInt(800) == 0) {
+                                if (Random.nextInt(1000) == 0) {
                                     if (location.world == WorldRegistry.SNOW_LAND) {
                                         val phage = Phage(block.location.add(Vector(0.5, 0.0, 0.5)), 10.0F, 2.0F)
                                         phage.aiController.navigator.speed = 0.20F

@@ -24,7 +24,7 @@ object BiomeRegistry {
         snowLand.grassBlockColorRGB = Color.WHITE.asRGB()
         snowLand.foliageColorRGB = Color.WHITE.asRGB()
         snowLand.temperature = -100.0F
-        snowLand.music = Sound.MUSIC_NETHER_CRIMSON_FOREST.key().asString()
+        snowLand.music = "minecraft:none"
         SNOW_LAND = nmsHandler.createBiome("snow_land", snowLand)
 
         val noBGM = BiomeDataContainer()
@@ -37,7 +37,7 @@ object BiomeRegistry {
         secondMegaStructure.fogColorRGB = Color.GRAY.asRGB()
         secondMegaStructure.skyColorRGB = Color.GRAY.asRGB()
         secondMegaStructure.temperature = 5.0F
-        secondMegaStructure.music = Sound.MUSIC_END.key().asString()
+        secondMegaStructure.music = "minecraft:none"
         secondMegaStructure.particle = Particle.WHITE_ASH
         secondMegaStructure.particleAmount = 0.02F
         SECOND_MEGA_STRUCTURE = nmsHandler.createBiome("second_mega_structure", secondMegaStructure)

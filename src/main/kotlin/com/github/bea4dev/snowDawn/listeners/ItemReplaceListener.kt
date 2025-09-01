@@ -39,6 +39,7 @@ class ItemReplaceListener : Listener {
         return when (item.type) {
             Material.TORCH -> ItemRegistry.TORCH
             Material.COAL -> ItemRegistry.COAL
+            Material.CHARCOAL -> ItemRegistry.COAL
             Material.COBBLESTONE -> ItemRegistry.STONE
             Material.FURNACE -> ItemRegistry.FURNACE
             Material.COPPER_INGOT -> ItemRegistry.COPPER_INGOT

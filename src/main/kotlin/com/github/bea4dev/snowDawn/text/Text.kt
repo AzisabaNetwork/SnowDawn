@@ -51,7 +51,7 @@ enum class Text(val jp: String) {
     ITEM_FURNACE("かまど"),
 
     ITEM_ICE("氷"),
-    ITEM_COAL("石炭"),
+    ITEM_COAL("石炭・木炭"),
     ITEM_TORCH("松明"),
     ITEM_TORCH_LORE_0("体を温めることができる"),
     ITEM_STONE("丸石"),

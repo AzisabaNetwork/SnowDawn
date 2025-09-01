@@ -4,6 +4,8 @@ import com.github.bea4dev.snowDawn.item.ItemRegistry
 import com.github.bea4dev.snowDawn.item.getItem
 import com.github.bea4dev.snowDawn.text.StoryMemoText
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.Material
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -37,8 +39,11 @@ class ChestOpenListener : Listener {
                 continue
             }
 
-            val title = lines.getOrNull(0) ?: Component.empty()
+            val title = (lines.getOrNull(0) ?: Component.empty())
+                .color(NamedTextColor.AQUA)
+                .decoration(TextDecoration.ITALIC, false)
             val lore = lines.drop(1)
+                .map { component -> component.color(NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false) }
 
             val newItem = ItemStack(Material.PAPER, 1)
             val newMeta = newItem.itemMeta
