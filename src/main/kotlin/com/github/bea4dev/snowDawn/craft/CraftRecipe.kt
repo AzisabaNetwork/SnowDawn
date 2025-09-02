@@ -17,6 +17,8 @@ object CraftRecipeRegistry {
         CraftRecipe(listOf(RequiredItem(ItemRegistry.SCRAP, 2)), ItemRegistry.SCRAP_PIPE),
         CraftRecipe(listOf(RequiredItem(ItemRegistry.SCRAP, 3)), ItemRegistry.SCRAP_PICKAXE),
         CraftRecipe(listOf(RequiredItem(ItemRegistry.COAL, 1)), ItemRegistry.TORCH, 2),
+        CraftRecipe(listOf(RequiredItem(ItemRegistry.COAL, 4), RequiredItem(ItemRegistry.WOOD, 2)), ItemRegistry.CAMPFIRE),
+        CraftRecipe(listOf(RequiredItem(ItemRegistry.SCRAP, 1)), ItemRegistry.FLINT_AND_STEEL),
         CraftRecipe(listOf(RequiredItem(ItemRegistry.STONE, 5)), ItemRegistry.STONE_PICKAXE),
         CraftRecipe(listOf(RequiredItem(ItemRegistry.STONE, 8)), ItemRegistry.FURNACE),
         CraftRecipe(

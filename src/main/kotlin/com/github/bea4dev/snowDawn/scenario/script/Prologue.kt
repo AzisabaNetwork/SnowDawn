@@ -496,8 +496,8 @@ object Prologue : Scenario() {
 
         MainThread.sync {
             player.inventory.addItem(
-                ItemStack(Material.CAMPFIRE),
-                ItemStack(Material.FLINT_AND_STEEL)
+                ItemRegistry.CAMPFIRE.createItemStack(),
+                ItemRegistry.FLINT_AND_STEEL.createItemStack()
             )
             player.playSound(
                 net.kyori.adventure.sound.Sound.sound(

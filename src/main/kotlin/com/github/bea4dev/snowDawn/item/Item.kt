@@ -28,8 +28,24 @@ object ItemRegistry {
     val ICE = Item("ice", Material.ICE, 0, 0, Text.ITEM_ICE, listOf())
     val COAL = Item("coal", Material.COAL, 0, 0, Text.ITEM_COAL, listOf())
     val TORCH = Item("torch", Material.TORCH, 0, 1, Text.ITEM_TORCH, listOf(Text.ITEM_TORCH_LORE_0))
+    val CAMPFIRE = Item("campfire", Material.CAMPFIRE, 0, 1, Text.ITEM_CAMPFIRE, listOf())
+    val FLINT_AND_STEEL = Item("flint_and_steel", Material.FLINT_AND_STEEL, 0, 1, Text.ITEM_FLINT_AND_STEEL, listOf())
     val STONE = Item("stone", Material.COBBLESTONE, 0, 1, Text.ITEM_STONE, listOf())
-    val SAPLING = Item("sampling", Material.SPRUCE_SAPLING, 0, 1, Text.ITEM_SAPLING, listOf())
+    val SAPLING = Item("sapling", Material.SPRUCE_SAPLING, 0, 1, Text.ITEM_SAPLING, listOf())
+    val WOOD = Item("wood", Material.SPRUCE_LOG, 0, 1, Text.ITEM_WOOD, listOf())
+    val CHEST = Item("chest", Material.CHEST, 0, 1, Text.ITEM_CHEST, listOf())
+    val CRAFTING_TABLE = Item("crafting_table", Material.CRAFTING_TABLE, 0, 1, Text.ITEM_CRAFTING_TABLE, listOf())
+    val BLUE_PRINT_CHEST =
+        BluePrint("blue_print_chest", Material.PAPER, 0, 1, Text.ITEM_BLUE_PRINT_CHEST, listOf(), listOf(CHEST))
+    val BLUE_PRINT_CRAFTING_TABLE = BluePrint(
+        "blue_print_crafting_table",
+        Material.PAPER,
+        0,
+        1,
+        Text.ITEM_BLUE_PRINT_CRAFTING_TABLE,
+        listOf(),
+        listOf(CRAFTING_TABLE)
+    )
     val DIRT = Item("dirt", Material.DIRT, 0, 1, Text.ITEM_DIRT, listOf())
     val CATALYST = Item("catalyst", Material.GUNPOWDER, 1, 2, Text.ITEM_CATALYST, listOf(Text.ITEM_CATALYST_LORE_0))
     val BLUE_PRINT_CATALYST = BluePrint(
