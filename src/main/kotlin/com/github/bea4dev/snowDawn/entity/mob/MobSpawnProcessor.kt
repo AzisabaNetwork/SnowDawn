@@ -59,7 +59,11 @@ object MobSpawnProcessor : TickBase {
                                         mobCount++
                                     } else {
                                         val phage = Phage(block.location.add(Vector(0.5, 0.0, 0.5)), 20.0F, 5.0F)
-                                        phage.block = Material.DEEPSLATE
+
+                                        if (Random.nextInt(3) == 0) {
+                                            phage.block = Material.DEEPSLATE
+                                        }
+
                                         phage.spawn()
                                         mobCount++
                                     }

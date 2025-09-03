@@ -130,6 +130,22 @@ class Phage(
         activeModel.getBone("block").orElseThrow().model = ItemStack(block)
 
         tickState()
+
+        if (tick % 3 == 0 && state == PhageState.RUN && !super.getMoveDelta().isZero) {
+            PlayerManager.ONLINE_PLAYERS.forEach { player ->
+                player.playSound(
+                    Sound.sound(
+                        Material.COPPER_BLOCK.createBlockData().soundGroup.stepSound,
+                        Sound.Source.AMBIENT,
+                        0.5f,
+                        2f
+                    ),
+                    super.x,
+                    super.y,
+                    super.z
+                )
+            }
+        }
     }
 
     private fun tickState() {
@@ -308,6 +324,18 @@ class Phage(
                     0.5,
                     0.5,
                     block.createBlockData()
+                )
+                it.playSound(
+                    Sound.sound(block.createBlockData().soundGroup.breakSound, Sound.Source.AMBIENT, 1f, 1f),
+                    super.x,
+                    super.y,
+                    super.z
+                )
+                it.playSound(
+                    Sound.sound(block.createBlockData().soundGroup.breakSound, Sound.Source.AMBIENT, 1f, 1f),
+                    super.x,
+                    super.y,
+                    super.z
                 )
                 it.playSound(
                     Sound.sound(block.createBlockData().soundGroup.breakSound, Sound.Source.AMBIENT, 1f, 1f),
