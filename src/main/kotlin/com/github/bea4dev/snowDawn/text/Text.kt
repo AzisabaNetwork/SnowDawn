@@ -60,6 +60,8 @@ enum class Text(val jp: String) {
     ITEM_CRAFTING_TABLE("作業台"),
     ITEM_BLUE_PRINT_CHEST("チェストの設計図"),
     ITEM_BLUE_PRINT_CRAFTING_TABLE("作業台の設計図"),
+    ITEM_BOAT("トウヒのボート"),
+    ITEM_BLUE_PRINT_BOAT("ボートの設計図"),
     ITEM_TORCH_LORE_0("体を温めることができる"),
     ITEM_STONE("丸石"),
     ITEM_COPPER_INGOT("銅のインゴット"),

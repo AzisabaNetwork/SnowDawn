@@ -231,6 +231,7 @@ class SnowLand internal constructor(seed: Long) : ChunkGenerator() {
                     ItemRegistry.BLUE_PRINT_COPPER_EQUIPMENTS.createItemStack(),
                     ItemRegistry.FUEL.createItemStack().also { item -> item.amount = 2 },
                     ItemRegistry.STORY_MEMO.createItemStack(),
+                    ItemRegistry.SAPLING.createItemStack().also { item -> item.amount = 1 },
                 ),
                 listOf(
                     ItemStack(Material.POTATO, 5),
@@ -257,6 +258,7 @@ class SnowLand internal constructor(seed: Long) : ChunkGenerator() {
                     ItemRegistry.SCRAP.createItemStack().also { item -> item.amount = 3 },
                     ItemRegistry.BLUE_PRINT_COMPASS.createItemStack(),
                     ItemRegistry.FUEL.createItemStack().also { item -> item.amount = 3 },
+                    ItemRegistry.SAPLING.createItemStack().also { item -> item.amount = 1 },
                 ),
                 listOf(
                     ItemRegistry.BLUE_PRINT_STONE_HOE.createItemStack(),

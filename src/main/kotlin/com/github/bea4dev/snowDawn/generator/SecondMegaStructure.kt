@@ -412,6 +412,7 @@ private class ItemChestProcessor(seed: Long) : BlockPopulator() {
             listOf(
                 ItemRegistry.BLUE_PRINT_IRON_SHOVEL.createItemStack(),
                 ItemRegistry.STORY_MEMO.createItemStack(),
+                ItemRegistry.BLUE_PRINT_BOAT.createItemStack(),
             ),
             listOf(
                 ItemRegistry.STORY_MEMO.createItemStack(),
@@ -427,11 +428,15 @@ private class ItemChestProcessor(seed: Long) : BlockPopulator() {
                 ItemRegistry.BLUE_PRINT_IRON_EQUIPMENTS.createItemStack(),
                 ItemRegistry.SCRAP.createItemStack().also { item -> item.amount = 2 },
                 ItemRegistry.COAL.createItemStack().also { item -> item.amount = 3 },
+                ItemRegistry.IRON_INGOT.createItemStack().also { item -> item.amount = 5 },
+                ItemRegistry.BLUE_PRINT_BOAT.createItemStack(),
             ),
             listOf(
                 ItemRegistry.COPPER_INGOT.createItemStack().also { item -> item.amount = 3 },
                 ItemRegistry.COPPER_INGOT.createItemStack().also { item -> item.amount = 2 },
                 ItemRegistry.BLUE_PRINT_IRON_EQUIPMENTS.createItemStack(),
+                ItemRegistry.IRON_INGOT.createItemStack().also { item -> item.amount = 2 },
+                ItemRegistry.BLUE_PRINT_BOAT.createItemStack(),
             )
         )
     )

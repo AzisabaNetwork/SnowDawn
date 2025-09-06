@@ -9,8 +9,9 @@ import com.github.bea4dev.snowDawn.save.PlayerDataRegistry
 import com.github.bea4dev.snowDawn.scenario.MoviePlayerManager
 import com.github.bea4dev.snowDawn.scenario.script.Prologue
 import com.github.bea4dev.snowDawn.world.WorldRegistry
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.GameMode
-import org.bukkit.Location
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerAnimationEvent
@@ -24,6 +25,12 @@ internal class PlayerJoinQuitListener : Listener {
 
     @EventHandler
     fun onPlayerJoin(event: PlayerJoinEvent) {
+        // ロード前に参加するのをキャンセル
+        if (!SnowDawn.loaded) {
+            event.player.kick(Component.text("Plugin is not loaded yet. Please try again.").color(NamedTextColor.AQUA))
+            return
+        }
+
         val player = event.player
 
         registerPacketListener(player)
@@ -44,6 +51,8 @@ internal class PlayerJoinQuitListener : Listener {
         //player.teleport(Location(world, 0.5, 240.0, 0.5))
 
         val playerData = PlayerDataRegistry[player]
+        PlayerDataRegistry.load(playerData)
+
         if (playerData.finishedTutorial) {
             player.teleport(playerData.lastLocation)
         } else {

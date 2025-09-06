@@ -20,6 +20,8 @@ import com.github.bea4dev.snowDawn.listeners.PlayerJoinQuitListener
 import com.github.bea4dev.snowDawn.listeners.PlayerRespawnListener
 import com.github.bea4dev.snowDawn.listeners.WeaponListener
 import com.github.bea4dev.snowDawn.player.PlayerManagerListener
+import com.github.bea4dev.snowDawn.save.PlayerDataRegistry
+import com.github.bea4dev.snowDawn.save.ServerData
 import com.github.bea4dev.snowDawn.world.WorldRegistry
 import com.github.bea4dev.vanilla_source.api.VanillaSourceAPI
 import com.github.bea4dev.vanilla_source.api.entity.tick.TickThread
@@ -43,6 +45,8 @@ class SnowDawn : JavaPlugin() {
             private set
         lateinit var plugin: SnowDawn
             private set
+        var loaded: Boolean = false
+            private set
     }
 
     override fun onEnable() {
@@ -56,6 +60,14 @@ class SnowDawn : JavaPlugin() {
         WorldRegistry.init()
         MobSpawnProcessor.init()
         FurnaceRecipe.init()
+
+        // ワールドのロードがBukkitRunnableで行われるのでそれに合わせて少し実行を遅らせる
+        Bukkit.getScheduler().runTaskLater(this, Runnable {
+            ServerData.load()
+            PlayerDataRegistry.loadAll()
+
+            loaded = true
+        }, 1)
 
         val pluginManager = Bukkit.getPluginManager()
         pluginManager.registerEvents(PlayerJoinQuitListener(), this)
@@ -80,7 +92,8 @@ class SnowDawn : JavaPlugin() {
     }
 
     override fun onDisable() {
-        // Plugin shutdown logic
+        PlayerDataRegistry.saveAll()
+        ServerData.save()
 
         for (player in Bukkit.getOnlinePlayers()) {
             player.sendMessage(

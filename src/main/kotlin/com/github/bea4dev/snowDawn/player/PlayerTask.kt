@@ -39,6 +39,10 @@ class PlayerTask(private val player: Player) : TickBase {
         sisetuMovieTick()
 
         entranceTick()
+
+        updatePlayerInventory()
+
+        lastLocationUpdate()
     }
 
     private fun freezeTick() {
@@ -148,6 +152,18 @@ class PlayerTask(private val player: Player) : TickBase {
                     }
                 }
             })
+        }
+    }
+
+    private fun updatePlayerInventory() {
+        if (tick % 20 == 0) {
+            player.updateInventory()
+        }
+    }
+
+    private fun lastLocationUpdate() {
+        if (player.gameMode == GameMode.SURVIVAL && tick % 20 == 0) {
+            playerData.lastLocation = player.location
         }
     }
 

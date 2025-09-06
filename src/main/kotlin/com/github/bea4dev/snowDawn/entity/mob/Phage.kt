@@ -1,6 +1,7 @@
 package com.github.bea4dev.snowDawn.entity.mob
 
 import com.github.bea4dev.snowDawn.SnowDawn
+import com.github.bea4dev.snowDawn.item.ItemRegistry
 import com.github.bea4dev.snowDawn.player.PlayerManager
 import com.github.bea4dev.vanilla_source.api.VanillaSourceAPI
 import com.github.bea4dev.vanilla_source.api.entity.EngineEntity
@@ -63,14 +64,20 @@ class Phage(
     private val width = 0.9
 
     // 攻撃判定用
-    private val dummyLivingEntity = VanillaSourceAPI.getInstance().nmsHandler.createNMSEntityController(
+    private val dummyLivingEntity = (VanillaSourceAPI.getInstance().nmsHandler.createNMSEntityController(
         location.world,
         0.0,
         0.0,
         0.0,
         EntityType.ARMOR_STAND,
         null
-    ) as LivingEntity
+    ) as LivingEntity).also { entity -> entity.bukkitEntity.customName = "Phage" }
+
+    var dropItems = listOf(
+        listOf(
+            ItemRegistry.SCRAP.createItemStack()
+        )
+    )
 
     var block: Material = Material.AIR
 
@@ -256,6 +263,15 @@ class Phage(
 
                 if (stateVariables.deathTick == 13) {
                     kill()
+
+                    val dropItems = this.dropItems[Random.nextInt(this.dropItems.size)]
+                    val location = Location(bukkitWorld, super.x, super.y, super.z)
+
+                    Bukkit.getScheduler().runTask(SnowDawn.plugin, Runnable {
+                        for (item in dropItems) {
+                            bukkitWorld.dropItemNaturally(location, item)
+                        }
+                    })
 
                     PlayerManager.ONLINE_PLAYERS.forEach {
                         it.spawnParticle(

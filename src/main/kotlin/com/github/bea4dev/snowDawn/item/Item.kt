@@ -46,6 +46,8 @@ object ItemRegistry {
         listOf(),
         listOf(CRAFTING_TABLE)
     )
+    val BOAT = Item("boat", Material.SPRUCE_BOAT, 0, 1, Text.ITEM_BOAT, listOf())
+    val BLUE_PRINT_BOAT = BluePrint("blue_print_boat", Material.PAPER, 0, 1, Text.ITEM_BOAT, listOf(), listOf(BOAT))
     val DIRT = Item("dirt", Material.DIRT, 0, 1, Text.ITEM_DIRT, listOf())
     val CATALYST = Item("catalyst", Material.GUNPOWDER, 1, 2, Text.ITEM_CATALYST, listOf(Text.ITEM_CATALYST_LORE_0))
     val BLUE_PRINT_CATALYST = BluePrint(
