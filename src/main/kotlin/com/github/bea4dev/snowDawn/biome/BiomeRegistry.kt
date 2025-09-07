@@ -13,6 +13,8 @@ object BiomeRegistry {
         private set
     lateinit var SECOND_MEGA_STRUCTURE: Any
         private set
+    lateinit var THIRD_MEGA_STRUCTURE: Any
+        private set
 
     fun init() {
         val nmsHandler = VanillaSourceAPI.getInstance().nmsHandler
@@ -41,5 +43,15 @@ object BiomeRegistry {
         secondMegaStructure.particle = Particle.WHITE_ASH
         secondMegaStructure.particleAmount = 0.02F
         SECOND_MEGA_STRUCTURE = nmsHandler.createBiome("second_mega_structure", secondMegaStructure)
+
+        val thirdMegaStructure = BiomeDataContainer()
+        nmsHandler.setDefaultBiomeData(thirdMegaStructure)
+        thirdMegaStructure.fogColorRGB = Color.fromRGB(200, 218, 247).asRGB()
+        thirdMegaStructure.skyColorRGB = Color.fromRGB(200, 218, 247).asRGB()
+        thirdMegaStructure.grassBlockColorRGB = Color.WHITE.asRGB()
+        thirdMegaStructure.foliageColorRGB = Color.WHITE.asRGB()
+        thirdMegaStructure.temperature = -100.0F
+        thirdMegaStructure.music = "minecraft:none"
+        THIRD_MEGA_STRUCTURE = nmsHandler.createBiome("third_mega_structure", thirdMegaStructure)
     }
 }

@@ -20,6 +20,8 @@ object WorldRegistry {
         private set
     lateinit var SECOND_MEGA_STRUCTURE: World
         private set
+    lateinit var THIRD_MEGA_STRUCTURE: World
+        private set
 
     fun init() {
         Bukkit.getScheduler().runTask(VanillaSourceAPI.getInstance().plugin, Runnable {
@@ -41,9 +43,14 @@ object WorldRegistry {
             smCreator.generator(GeneratorRegistry.SECOND_MEGA_STRUCTURE)
             SECOND_MEGA_STRUCTURE = Bukkit.createWorld(smCreator)!!
 
+            val tmCreator = WorldCreator("third_mega_structure")
+            tmCreator.generator(GeneratorRegistry.VOID)
+            THIRD_MEGA_STRUCTURE = Bukkit.createWorld(tmCreator)!!
+
             val nmsHandler = VanillaSourceAPI.getInstance().nmsHandler
             nmsHandler.setDimensionType(SNOW_LAND, DimensionRegistry.SNOW_LAND)
             nmsHandler.setDimensionType(SECOND_MEGA_STRUCTURE, DimensionRegistry.SECOND_MEGA_STRUCTURE)
+            nmsHandler.setDimensionType(THIRD_MEGA_STRUCTURE, DimensionRegistry.SNOW_LAND)
 
             PROLOGUE.setGameRule(GameRule.DO_MOB_SPAWNING, false)
             PROLOGUE.setGameRule(GameRule.DO_WEATHER_CYCLE, false)
@@ -57,6 +64,10 @@ object WorldRegistry {
             SECOND_MEGA_STRUCTURE.setGameRule(GameRule.DO_MOB_SPAWNING, false)
             SECOND_MEGA_STRUCTURE.setGameRule(GameRule.DO_WEATHER_CYCLE, false)
             SECOND_MEGA_STRUCTURE.setGameRule(GameRule.KEEP_INVENTORY, true)
+
+            THIRD_MEGA_STRUCTURE.setGameRule(GameRule.DO_MOB_SPAWNING, false)
+            THIRD_MEGA_STRUCTURE.setGameRule(GameRule.DO_WEATHER_CYCLE, false)
+            THIRD_MEGA_STRUCTURE.setGameRule(GameRule.KEEP_INVENTORY, true)
         })
     }
 

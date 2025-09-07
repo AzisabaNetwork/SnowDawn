@@ -12,6 +12,7 @@ import com.github.bea4dev.snowDawn.world.WorldRegistry
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.GameMode
+import org.bukkit.Location
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerAnimationEvent
@@ -53,11 +54,13 @@ internal class PlayerJoinQuitListener : Listener {
         val playerData = PlayerDataRegistry[player]
         PlayerDataRegistry.load(playerData)
 
+        /*
         if (playerData.finishedTutorial) {
             player.teleport(playerData.lastLocation)
         } else {
             Prologue.start(player)
-        }
+        }*/
+        player.teleport(Location(WorldRegistry.THIRD_MEGA_STRUCTURE, 0.0, 0.0, 0.0))
     }
 
     @EventHandler

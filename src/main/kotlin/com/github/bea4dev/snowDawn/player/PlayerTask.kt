@@ -156,7 +156,7 @@ class PlayerTask(private val player: Player) : TickBase {
     }
 
     private fun updatePlayerInventory() {
-        if (tick % 20 == 0) {
+        if (tick % 20 == 0 && player.gameMode == GameMode.SURVIVAL) {
             player.updateInventory()
         }
     }

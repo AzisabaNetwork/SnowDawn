@@ -5,6 +5,7 @@ import com.github.bea4dev.snowDawn.coroutine.PlayerCoroutineFlag
 import com.github.bea4dev.snowDawn.item.ItemRegistry
 import com.github.bea4dev.snowDawn.save.PlayerDataRegistry
 import com.github.bea4dev.snowDawn.text.Text
+import com.github.bea4dev.snowDawn.world.WorldRegistry
 import net.kyori.adventure.text.Component
 import org.bukkit.GameMode
 import org.bukkit.Material
@@ -22,7 +23,9 @@ class BlockListener : Listener {
     @EventHandler
     fun onIceMelt(event: BlockFadeEvent) {
         if (event.block.type != Material.ICE) return
-        //event.isCancelled = true
+        if (event.block.world == WorldRegistry.SECOND_MEGA_STRUCTURE) {
+            event.isCancelled = true
+        }
     }
 
     @EventHandler

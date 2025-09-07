@@ -22,5 +22,9 @@ internal class ChunkListener : Listener {
         if (event.world.name == "second_mega_structure") {
             VanillaSourceAPI.getInstance().nmsHandler.setBiomeForChunk(event.chunk, BiomeRegistry.SECOND_MEGA_STRUCTURE)
         }
+
+        if (event.world.name == "third_mega_structure") {
+            VanillaSourceAPI.getInstance().nmsHandler.setBiomeForChunk(event.chunk, BiomeRegistry.THIRD_MEGA_STRUCTURE)
+        }
     }
 }
