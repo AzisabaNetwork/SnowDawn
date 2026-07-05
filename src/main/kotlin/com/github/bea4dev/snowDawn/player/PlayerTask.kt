@@ -1,10 +1,11 @@
 package com.github.bea4dev.snowDawn.player
 
 import com.github.bea4dev.snowDawn.SnowDawn
+import com.github.bea4dev.snowDawn.coroutine.CoroutineFlagRegistry
 import com.github.bea4dev.snowDawn.coroutine.MainThread
+import com.github.bea4dev.snowDawn.item.ItemRegistry
+import com.github.bea4dev.snowDawn.item.getItem
 import com.github.bea4dev.snowDawn.save.PlayerDataRegistry
-import com.github.bea4dev.snowDawn.scenario.script.EnterMegaStructure
-import com.github.bea4dev.snowDawn.scenario.script.Sisetu
 import com.github.bea4dev.snowDawn.world.WorldRegistry
 import com.github.bea4dev.vanilla_source.api.VanillaSourceAPI
 import com.github.bea4dev.vanilla_source.api.entity.TickBase
@@ -39,6 +40,8 @@ class PlayerTask(private val player: Player) : TickBase {
         sisetuMovieTick()
 
         entranceTick()
+
+        mainHandItemTick()
 
         updatePlayerInventory()
 
@@ -120,8 +123,6 @@ class PlayerTask(private val player: Player) : TickBase {
         if (location.toVector().distance(sisetuPosition) < 20 && player.world == WorldRegistry.SNOW_LAND) {
             if (!playerData.finishedSisetuMovie && !startedPlayingSisetuMovie) {
                 startedPlayingSisetuMovie = true
-
-                Sisetu.start(player)
             }
         }
     }
@@ -141,7 +142,7 @@ class PlayerTask(private val player: Player) : TickBase {
                     if (!playerData.secondMegaStructureEnterFlag) {
                         playerData.secondMegaStructureEnterFlag = true
                         // 初めて足を踏み入れたときには演出を再生する
-                        EnterMegaStructure.start(player)
+                        //EnterMegaStructure.start(player)
                     }
                 } else if (block.world == WorldRegistry.SECOND_MEGA_STRUCTURE) {
                     val dist = playerData.prevSnowLandEntrance?.clone()
@@ -158,6 +159,12 @@ class PlayerTask(private val player: Player) : TickBase {
     private fun updatePlayerInventory() {
         if (tick % 20 == 0 && player.gameMode == GameMode.SURVIVAL) {
             player.updateInventory()
+        }
+    }
+
+    private fun mainHandItemTick() {
+        if (player.inventory.itemInMainHand.getItem() == ItemRegistry.COMPASS) {
+            CoroutineFlagRegistry.MAIN_HAND_COMPASS.onComplete(player)
         }
     }
 

@@ -49,6 +49,7 @@ class ItemReplaceListener : Listener {
             Material.IRON_INGOT -> ItemRegistry.IRON_INGOT
             Material.SPRUCE_SAPLING -> ItemRegistry.SAPLING
             Material.DIRT -> ItemRegistry.DIRT
+            Material.COMPASS -> ItemRegistry.COMPASS
             else -> null
         }
     }

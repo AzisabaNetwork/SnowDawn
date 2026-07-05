@@ -401,22 +401,17 @@ private class ItemChestProcessor(seed: Long) : BlockPopulator() {
             ),
             listOf(
                 ItemRegistry.STORY_MEMO.createItemStack(),
-                ItemRegistry.BLUE_PRINT_IRON_EQUIPMENTS.createItemStack(),
                 ItemRegistry.SCRAP.createItemStack().also { item -> item.amount = 2 },
             ),
             listOf(
-                ItemRegistry.BLUE_PRINT_IRON_AXE.createItemStack(),
-                ItemRegistry.BLUE_PRINT_IRON_EQUIPMENTS.createItemStack(),
                 ItemRegistry.IRON_INGOT.createItemStack().also { item -> item.amount = 2 },
             ),
             listOf(
-                ItemRegistry.BLUE_PRINT_IRON_SHOVEL.createItemStack(),
                 ItemRegistry.STORY_MEMO.createItemStack(),
                 ItemRegistry.BLUE_PRINT_BOAT.createItemStack(),
             ),
             listOf(
                 ItemRegistry.STORY_MEMO.createItemStack(),
-                ItemRegistry.BLUE_PRINT_IRON_HOE.createItemStack(),
             )
         )
     )
@@ -425,7 +420,6 @@ private class ItemChestProcessor(seed: Long) : BlockPopulator() {
             listOf(
                 ItemRegistry.COPPER_INGOT.createItemStack().also { item -> item.amount = 3 },
                 ItemRegistry.COPPER_INGOT.createItemStack().also { item -> item.amount = 2 },
-                ItemRegistry.BLUE_PRINT_IRON_EQUIPMENTS.createItemStack(),
                 ItemRegistry.SCRAP.createItemStack().also { item -> item.amount = 2 },
                 ItemRegistry.COAL.createItemStack().also { item -> item.amount = 3 },
                 ItemRegistry.IRON_INGOT.createItemStack().also { item -> item.amount = 5 },
@@ -434,7 +428,6 @@ private class ItemChestProcessor(seed: Long) : BlockPopulator() {
             listOf(
                 ItemRegistry.COPPER_INGOT.createItemStack().also { item -> item.amount = 3 },
                 ItemRegistry.COPPER_INGOT.createItemStack().also { item -> item.amount = 2 },
-                ItemRegistry.BLUE_PRINT_IRON_EQUIPMENTS.createItemStack(),
                 ItemRegistry.IRON_INGOT.createItemStack().also { item -> item.amount = 2 },
                 ItemRegistry.BLUE_PRINT_BOAT.createItemStack(),
             )

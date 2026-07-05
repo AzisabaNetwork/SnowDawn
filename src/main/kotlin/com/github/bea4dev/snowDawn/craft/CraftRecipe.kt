@@ -15,7 +15,7 @@ import org.bukkit.inventory.ItemStack
 object CraftRecipeRegistry {
     val RECIPES = listOf(
         CraftRecipe(listOf(RequiredItem(ItemRegistry.SCRAP, 2)), ItemRegistry.SCRAP_PIPE),
-        CraftRecipe(listOf(RequiredItem(ItemRegistry.SCRAP, 3)), ItemRegistry.SCRAP_PICKAXE),
+        CraftRecipe(listOf(RequiredItem(ItemRegistry.WOOD, 1)), ItemRegistry.WOODEN_PICKAXE),
         CraftRecipe(listOf(RequiredItem(ItemRegistry.COAL, 1)), ItemRegistry.TORCH, 2),
         CraftRecipe(listOf(RequiredItem(ItemRegistry.COAL, 4), RequiredItem(ItemRegistry.WOOD, 2)), ItemRegistry.CAMPFIRE),
         CraftRecipe(listOf(RequiredItem(ItemRegistry.WOOD, 1)), ItemRegistry.CHEST),
@@ -29,10 +29,6 @@ object CraftRecipeRegistry {
             ItemRegistry.COMPASS
         ),
         CraftRecipe(listOf(RequiredItem(ItemRegistry.SCRAP, 1)), ItemRegistry.CATALYST, 2),
-        CraftRecipe(listOf(RequiredItem(ItemRegistry.COPPER_INGOT, 6)), ItemRegistry.COPPER_HELMET),
-        CraftRecipe(listOf(RequiredItem(ItemRegistry.COPPER_INGOT, 8)), ItemRegistry.COPPER_CHESTPLATE),
-        CraftRecipe(listOf(RequiredItem(ItemRegistry.COPPER_INGOT, 6)), ItemRegistry.COPPER_LEGGINGS),
-        CraftRecipe(listOf(RequiredItem(ItemRegistry.COPPER_INGOT, 4)), ItemRegistry.COPPER_BOOTS),
         CraftRecipe(listOf(RequiredItem(ItemRegistry.IRON_INGOT, 6)), ItemRegistry.IRON_HELMET),
         CraftRecipe(listOf(RequiredItem(ItemRegistry.IRON_INGOT, 8)), ItemRegistry.IRON_CHESTPLATE),
         CraftRecipe(listOf(RequiredItem(ItemRegistry.IRON_INGOT, 6)), ItemRegistry.IRON_LEGGINGS),

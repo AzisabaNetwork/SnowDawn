@@ -14,6 +14,9 @@ object CoroutineFlagRegistry {
     val CAMPFIRE_PLACE = PlayerCoroutineFlag()
     val CAMPFIRE_CLICK = PlayerCoroutineFlag()
     val CLOSE_CRAFT_UI = PlayerCoroutineFlag()
+    val CRAFTING_TORCH = PlayerCoroutineFlag()
+    val CRAFTING_WEAPON = PlayerCoroutineFlag()
+    val MAIN_HAND_COMPASS = PlayerCoroutineFlag()
 }
 
 class CoroutineFlag(private var isCompleted: Boolean) : ManualDispatcher() {

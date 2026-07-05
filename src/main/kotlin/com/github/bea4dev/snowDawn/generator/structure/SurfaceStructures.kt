@@ -14,7 +14,7 @@ import kotlin.jvm.optionals.getOrDefault
 class SurfaceStructures(
     private val shouldPlace: (minX: Int, minY: Int, minZ: Int, worldAsset: WorldAsset) -> Boolean,
     private val structures: List<Pair<WorldAsset, Double>>,
-    private val surfaceYFunction: ThreadLocal<(Int, Int) -> Int>,
+    private val surfaceYFunction: ThreadLocal<(Int, Int) -> Int>? = null,
     private val itemChest: ItemChest,
     seed: Long,
     private val merge: Boolean = true,
@@ -45,15 +45,14 @@ class SurfaceStructures(
         limitedRegion: LimitedRegion
     ) {
         val noise = noise.get()
-        val surfaceYFunction = surfaceYFunction.get()
+        val surfaceYFunction = surfaceYFunction?.get()
+        val chunkMinX = chunkX * 16
+        val chunkMaxX = chunkMinX + 15
+        val chunkMinZ = chunkZ * 16
+        val chunkMaxZ = chunkMinZ + 15
 
-        for (x in 0 until 16) {
-            for (z in 0 until 16) {
-                val worldX = chunkX * 16 + x
-                val worldZ = chunkZ * 16 + z
-                val minX = worldX - worldX.mod(maxLengthX)
-                val minZ = worldZ - worldZ.mod(maxLengthZ)
-
+        for (minX in cellStartsInChunk(chunkMinX, chunkMaxX, maxLengthX)) {
+            for (minZ in cellStartsInChunk(chunkMinZ, chunkMaxZ, maxLengthZ)) {
                 val assetAndRate = structures[(minX xor minZ).mod(structures.size)]
                 val asset = assetAndRate.first
                 val rate = assetAndRate.second
@@ -69,28 +68,57 @@ class SurfaceStructures(
                 val midX = (minX + maxX) / 2
                 val midZ = (minZ + maxZ) / 2
 
-                val surfaceY = surfaceYFunction(midX, midZ)
+                val surfaceY = surfaceYFunction?.invoke(midX, midZ)
+                    ?: (limitedRegion.findStructureTerrainSurfaceY(worldInfo, minX, maxX, minZ, maxZ)?.plus(2)
+                        ?: continue)
 
                 if (!shouldPlace(minX, surfaceY, minZ, asset)) {
                     continue
                 }
 
-                for (y in surfaceY until worldInfo.maxHeight) {
-                    val block = asset.getBlock(worldX - minX, y - surfaceY, worldZ - minZ)
+                val originY = surfaceY - 2
+                val assetHeight = asset.endPosition.blockY - asset.startPosition.blockY
 
-                    if (block != null) {
-                        if (merge && block.material.isAir) {
+                for (assetX in 0..(maxX - minX)) {
+                    val worldX = minX + assetX
+                    if (!limitedRegion.isInRegion(worldX, worldInfo.minHeight, minZ)) {
+                        continue
+                    }
+
+                    for (assetZ in 0..(maxZ - minZ)) {
+                        val worldZ = minZ + assetZ
+                        if (!limitedRegion.isInRegion(worldX, worldInfo.minHeight, worldZ)) {
                             continue
                         }
 
-                        limitedRegion.setBlockData(worldX, y - 2, worldZ, block)
+                        for (assetY in 0..assetHeight) {
+                            val worldY = originY + assetY
+                            if (worldY !in worldInfo.minHeight until worldInfo.maxHeight) {
+                                continue
+                            }
 
-                        if (block.material == Material.CHEST) {
-                            itemChest.populate(worldX, y - 2, worldZ, limitedRegion, noise)
+                            val block = asset.getBlock(assetX, assetY, assetZ) ?: continue
+                            if (merge && block.material.isAir) {
+                                continue
+                            }
+
+                            limitedRegion.setBlockData(worldX, worldY, worldZ, block)
+
+                            if (block.material == Material.CHEST) {
+                                itemChest.populate(worldX, worldY, worldZ, limitedRegion, noise)
+                            }
                         }
                     }
                 }
             }
         }
+    }
+
+    private fun cellStartsInChunk(chunkMin: Int, chunkMax: Int, cellSize: Int): IntProgression {
+        var first = Math.floorDiv(chunkMin, cellSize) * cellSize
+        if (first < chunkMin) {
+            first += cellSize
+        }
+        return first..chunkMax step cellSize
     }
 }

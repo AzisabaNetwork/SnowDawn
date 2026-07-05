@@ -1,14 +1,16 @@
 package com.github.bea4dev.snowDawn.listeners
 
 import com.github.bea4dev.snowDawn.coroutine.CoroutineFlagRegistry
-import com.github.bea4dev.snowDawn.coroutine.PlayerCoroutineFlag
+import com.github.bea4dev.snowDawn.generator.structure.SleepStructureLayout
 import com.github.bea4dev.snowDawn.item.ItemRegistry
+import com.github.bea4dev.snowDawn.item.getItem
 import com.github.bea4dev.snowDawn.save.PlayerDataRegistry
 import com.github.bea4dev.snowDawn.text.Text
 import com.github.bea4dev.snowDawn.world.WorldRegistry
 import net.kyori.adventure.text.Component
 import org.bukkit.GameMode
 import org.bukkit.Material
+import org.bukkit.Sound
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
@@ -20,6 +22,13 @@ import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
 
 class BlockListener : Listener {
+    @EventHandler
+    fun onSleepStructureBreak(event: BlockBreakEvent) {
+        if (SleepStructureLayout.isProtectedBlock(event.block)) {
+            event.isCancelled = true
+        }
+    }
+
     @EventHandler
     fun onIceMelt(event: BlockFadeEvent) {
         if (event.block.type != Material.ICE) return
@@ -57,6 +66,26 @@ class BlockListener : Listener {
 
             CoroutineFlagRegistry.CAMPFIRE_CLICK.onComplete(player)
         }
+    }
+
+    @EventHandler
+    fun onClickColdSleepChest(event: PlayerInteractEvent) {
+        val clickedBlock = event.clickedBlock ?: return
+        if (event.action != Action.RIGHT_CLICK_BLOCK || event.hand != EquipmentSlot.HAND) {
+            return
+        }
+        if (!SleepStructureLayout.isChestBlock(clickedBlock)) {
+            return
+        }
+
+        val player = event.player
+        if (player.inventory.itemInMainHand.getItem() == ItemRegistry.COLD_SLEEP_KEY) {
+            return
+        }
+
+        event.isCancelled = true
+        player.playSound(player.location, Sound.BLOCK_WOODEN_DOOR_CLOSE, 1.0F, 1.35F)
+        player.sendMessage(Component.translatable(Text.MESSAGE_COLD_SLEEP_CHEST_LOCKED.toString()))
     }
 
     @EventHandler

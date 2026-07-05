@@ -47,7 +47,7 @@ object MobSpawnProcessor : TickBase {
                             if (mobCount < MAX_MOB_COUNT && block.lightFromBlocks.toInt() == 0 && block.isPassable && ground.isSolid && up.isPassable) {
                                 var random = 3000
                                 if (block.lightFromSky.toInt() != 0) {
-                                    random = 10000
+                                    random = 11000
                                 }
 
                                 if (Random.nextInt(random) == 0) {
@@ -59,10 +59,9 @@ object MobSpawnProcessor : TickBase {
                                             listOf(
                                                 ItemRegistry.SCRAP.createItemStack().also { item -> item.amount = 2 }),
                                             listOf(ItemStack(Material.POTATO)),
-                                            listOf(ItemRegistry.FUEL.createItemStack()),
+                                            listOf(ItemRegistry.COAL.createItemStack()),
                                             listOf(
                                                 ItemRegistry.FUEL.createItemStack().also { item -> item.amount = 2 }),
-                                            listOf(ItemRegistry.COPPER_INGOT.createItemStack()),
                                         )
                                         phage.spawn()
                                         mobCount++
@@ -73,10 +72,7 @@ object MobSpawnProcessor : TickBase {
                                                 ItemRegistry.SCRAP.createItemStack().also { item -> item.amount = 2 }),
                                             listOf(ItemStack(Material.POTATO)),
                                             listOf(
-                                                ItemRegistry.FUEL.createItemStack().also { item -> item.amount = 2 }),
-                                            listOf(
-                                                ItemRegistry.COPPER_INGOT.createItemStack()
-                                                    .also { item -> item.amount = 2 }),
+                                                ItemRegistry.COAL.createItemStack().also { item -> item.amount = 2 }),
                                             listOf(ItemRegistry.IRON_INGOT.createItemStack()),
                                         )
 

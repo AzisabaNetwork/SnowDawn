@@ -10,12 +10,24 @@ object ServerData {
     val storyTextIndex = mutableMapOf<String, Int>()
     val craftableItems = mutableListOf(
         ItemRegistry.SCRAP_PIPE.id,
-        ItemRegistry.SCRAP_PICKAXE.id,
+        ItemRegistry.WOODEN_PICKAXE.id,
         ItemRegistry.STONE_PICKAXE.id,
         ItemRegistry.TORCH.id,
         ItemRegistry.FURNACE.id,
         ItemRegistry.CAMPFIRE.id,
         ItemRegistry.FLINT_AND_STEEL.id,
+        ItemRegistry.STONE_HOE.id,
+        ItemRegistry.STONE_AXE.id,
+        ItemRegistry.STONE_SHOVEL.id,
+        ItemRegistry.IRON_AXE.id,
+        ItemRegistry.IRON_HOE.id,
+        ItemRegistry.IRON_SHOVEL.id,
+        ItemRegistry.IRON_PICKAXE.id,
+        ItemRegistry.IRON_CHESTPLATE.id,
+        ItemRegistry.IRON_HELMET.id,
+        ItemRegistry.IRON_LEGGINGS.id,
+        ItemRegistry.IRON_BOOTS.id,
+        ItemRegistry.CRAFTING_TABLE.id
     )
 
     fun load() {

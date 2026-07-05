@@ -1,6 +1,5 @@
 package com.github.bea4dev.snowDawn.item
 
-import com.github.bea4dev.snowDawn.item.compass.Compass
 import com.github.bea4dev.snowDawn.item.weapon.BluePrint
 import com.github.bea4dev.snowDawn.item.weapon.Weapon
 import com.github.bea4dev.snowDawn.text.Text
@@ -34,18 +33,17 @@ object ItemRegistry {
     val SAPLING = Item("sapling", Material.SPRUCE_SAPLING, 0, 1, Text.ITEM_SAPLING, listOf())
     val WOOD = Item("wood", Material.SPRUCE_LOG, 0, 1, Text.ITEM_WOOD, listOf())
     val CHEST = Item("chest", Material.CHEST, 0, 1, Text.ITEM_CHEST, listOf())
+    val COLD_SLEEP_KEY = Item(
+        "cold_sleep_key",
+        Material.TRIPWIRE_HOOK,
+        0,
+        1,
+        Text.ITEM_COLD_SLEEP_KEY,
+        listOf(Text.ITEM_COLD_SLEEP_KEY_LORE_0)
+    )
     val CRAFTING_TABLE = Item("crafting_table", Material.CRAFTING_TABLE, 0, 1, Text.ITEM_CRAFTING_TABLE, listOf())
     val BLUE_PRINT_CHEST =
         BluePrint("blue_print_chest", Material.PAPER, 0, 1, Text.ITEM_BLUE_PRINT_CHEST, listOf(), listOf(CHEST))
-    val BLUE_PRINT_CRAFTING_TABLE = BluePrint(
-        "blue_print_crafting_table",
-        Material.PAPER,
-        0,
-        1,
-        Text.ITEM_BLUE_PRINT_CRAFTING_TABLE,
-        listOf(),
-        listOf(CRAFTING_TABLE)
-    )
     val BOAT = Item("boat", Material.SPRUCE_BOAT, 0, 1, Text.ITEM_BOAT, listOf())
     val BLUE_PRINT_BOAT = BluePrint("blue_print_boat", Material.PAPER, 0, 1, Text.ITEM_BOAT, listOf(), listOf(BOAT))
     val DIRT = Item("dirt", Material.DIRT, 0, 1, Text.ITEM_DIRT, listOf())
@@ -62,19 +60,13 @@ object ItemRegistry {
     val FERTILIZER =
         Item("fertilizer", Material.BONE_MEAL, 0, 1, Text.ITEM_FERTILIZER, listOf(Text.ITEM_FERTILIZER_LORE_0))
     val FUEL = Item("fuel", Material.CHARCOAL, 1, 2, Text.ITEM_FUEL, listOf(Text.ITEM_FUEL_LORE_0))
-    val SCRAP_PICKAXE = Item("scrap_pickaxe", Material.WOODEN_PICKAXE, 1, 2, Text.ITEM_SCRAP_PICKAXE, listOf())
+    val WOODEN_PICKAXE = Item("scrap_pickaxe", Material.WOODEN_PICKAXE, 1, 2, Text.ITEM_SCRAP_PICKAXE, listOf())
     val STONE_PICKAXE = Item("stone_pickaxe", Material.STONE_PICKAXE, 0, 1, Text.ITEM_STONE_PICKAXE, listOf())
     val STONE_HOE = Item("stone_hoe", Material.STONE_HOE, 0, 1, Text.ITEM_STONE_HOE, listOf())
     val STONE_SHOVEL = Item("stone_shovel", Material.STONE_SHOVEL, 0, 1, Text.ITEM_STONE_SHOVEL, listOf())
     val STONE_AXE = Item("stone_axe", Material.STONE_AXE, 0, 1, Text.ITEM_STONE_AXE, listOf())
     val FURNACE = Item("furnace", Material.FURNACE, 0, 1, Text.ITEM_FURNACE, listOf())
     val COPPER_INGOT = Item("copper_ingot", Material.COPPER_INGOT, 0, 1, Text.ITEM_COPPER_INGOT, listOf())
-    val COPPER_HELMET = Item("copper_helmet", Material.CHAINMAIL_HELMET, 0, 1, Text.ITEM_COPPER_HELMET, listOf())
-    val COPPER_CHESTPLATE =
-        Item("copper_chestplate", Material.CHAINMAIL_CHESTPLATE, 0, 1, Text.ITEM_COPPER_CHEST_PLATE, listOf())
-    val COPPER_LEGGINGS =
-        Item("copper_leggings", Material.CHAINMAIL_LEGGINGS, 0, 1, Text.ITEM_COPPER_LEGGINGS, listOf())
-    val COPPER_BOOTS = Item("copper_boots", Material.CHAINMAIL_BOOTS, 0, 1, Text.ITEM_COPPER_BOOTS, listOf())
     val IRON_HELMET = Item("iron_helmet", Material.IRON_HELMET, 0, 1, Text.ITEM_IRON_HELMET, listOf())
     val IRON_CHESTPLATE =
         Item("iron_chestplate", Material.IRON_CHESTPLATE, 0, 1, Text.ITEM_IRON_CHEST_PLATE, listOf())
@@ -82,95 +74,18 @@ object ItemRegistry {
         Item("iron_leggings", Material.IRON_LEGGINGS, 0, 1, Text.ITEM_IRON_LEGGINGS, listOf())
     val IRON_BOOTS = Item("iron_boots", Material.IRON_BOOTS, 0, 1, Text.ITEM_IRON_BOOTS, listOf())
     val STORY_MEMO = Item("empty_memo", Material.PAPER, 0, 1, Text.EMPTY, listOf())
-    val BLUE_PRINT_COPPER_EQUIPMENTS = BluePrint(
-        "blue_print_copper_equip", Material.PAPER, 2, 3, Text.ITEM_BLUE_PRINT_COPPER_EQUIPMENTS,
-        listOf(),
-        listOf(
-            COPPER_HELMET, COPPER_CHESTPLATE, COPPER_LEGGINGS, COPPER_BOOTS
-        )
-    )
-    val BLUE_PRINT_IRON_EQUIPMENTS = BluePrint(
-        "blue_print_iron_equip", Material.PAPER, 2, 3, Text.ITEM_BLUE_PRINT_IRON_EQUIPMENTS,
-        listOf(),
-        listOf(
-            IRON_HELMET, IRON_CHESTPLATE, IRON_LEGGINGS, IRON_BOOTS
-        )
-    )
-    val BLUE_PRINT_STONE_HOE = BluePrint(
-        "blue_print_stone_hoe",
-        Material.PAPER,
-        2,
-        3,
-        Text.ITEM_BLUE_PRINT_STONE_HOE,
-        listOf(),
-        listOf(STONE_HOE)
-    )
-    val BLUE_PRINT_STONE_SHOVEL = BluePrint(
-        "blue_print_stone_shovel",
-        Material.PAPER,
-        2,
-        3,
-        Text.ITEM_BLUE_PRINT_STONE_SHOVEL,
-        listOf(),
-        listOf(STONE_SHOVEL)
-    )
-    val BLUE_PRINT_STONE_AXE = BluePrint(
-        "blue_print_stone_axe",
-        Material.PAPER,
-        2,
-        3,
-        Text.ITEM_BLUE_PRINT_STONE_AXE,
-        listOf(),
-        listOf(STONE_AXE)
-    )
     val IRON_INGOT = Item("iron_ingot", Material.IRON_INGOT, 0, 1, Text.ITEM_IRON_INGOT, listOf())
     val IRON_PICKAXE = Item("iron_pickaxe", Material.IRON_PICKAXE, 0, 1, Text.ITEM_IRON_PICKAXE, listOf())
     val IRON_HOE = Item("iron_hoe", Material.IRON_HOE, 0, 1, Text.ITEM_IRON_HOE, listOf())
     val IRON_SHOVEL = Item("iron_shovel", Material.IRON_SHOVEL, 0, 1, Text.ITEM_IRON_SHOVEL, listOf())
     val IRON_AXE = Item("iron_axe", Material.IRON_AXE, 0, 1, Text.ITEM_IRON_AXE, listOf())
-    val BLUE_PRINT_IRON_HOE = BluePrint(
-        "blue_print_iron_hoe",
-        Material.PAPER,
-        2,
-        3,
-        Text.ITEM_BLUE_PRINT_IRON_HOE,
-        listOf(),
-        listOf(IRON_HOE)
-    )
-    val BLUE_PRINT_IRON_SHOVEL = BluePrint(
-        "blue_print_iron_shovel",
-        Material.PAPER,
-        2,
-        3,
-        Text.ITEM_BLUE_PRINT_IRON_SHOVEL,
-        listOf(),
-        listOf(IRON_SHOVEL)
-    )
-    val BLUE_PRINT_IRON_AXE = BluePrint(
-        "blue_print_iron_axe",
-        Material.PAPER,
-        2,
-        3,
-        Text.ITEM_BLUE_PRINT_IRON_AXE,
-        listOf(),
-        listOf(IRON_AXE)
-    )
-    val COMPASS = Compass(
+    val COMPASS = Item(
         "compass",
-        Material.BOOK,
+        Material.COMPASS,
         1,
         2,
         Text.ITEM_COMPASS,
         listOf(Text.ITEM_COMPASS_LORE_0, Text.ITEM_COMPASS_LORE_1)
-    )
-    val BLUE_PRINT_COMPASS = BluePrint(
-        "blue_print_compass",
-        Material.PAPER,
-        2,
-        3,
-        Text.ITEM_BLUE_PRINT_COMPASS,
-        listOf(Text.ITEM_COMPASS_LORE_0),
-        listOf(COMPASS)
     )
 
     operator fun get(id: String): Item? {

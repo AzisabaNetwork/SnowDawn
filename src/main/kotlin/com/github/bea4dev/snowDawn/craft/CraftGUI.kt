@@ -1,5 +1,7 @@
 package com.github.bea4dev.snowDawn.craft
 
+import com.github.bea4dev.snowDawn.coroutine.CoroutineFlagRegistry
+import com.github.bea4dev.snowDawn.item.ItemRegistry
 import com.github.bea4dev.snowDawn.item.getItem
 import com.github.bea4dev.snowDawn.text.Text
 import net.kyori.adventure.sound.Sound
@@ -127,6 +129,15 @@ class CraftGUI(private val player: Player) : InventoryHolder {
         val dropItem = inventory.addItem(craftItem).values
 
         dropItem.forEach { item -> player.world.dropItemNaturally(player.eyeLocation, item) }
+
+        when (recipe.craftItem) {
+            ItemRegistry.SCRAP_PIPE -> {
+                CoroutineFlagRegistry.CRAFTING_WEAPON.onComplete(player)
+            }
+            ItemRegistry.TORCH -> {
+                CoroutineFlagRegistry.CRAFTING_TORCH.onComplete(player)
+            }
+        }
 
         player.playSound(Sound.sound(org.bukkit.Sound.ENTITY_ITEM_PICKUP, Sound.Source.PLAYER, 1.0F, 1.2F))
 

@@ -2,7 +2,6 @@ package com.github.bea4dev.snowDawn.listeners
 
 import com.github.bea4dev.snowDawn.SnowDawn
 import com.github.bea4dev.snowDawn.item.ItemRegistry
-import com.github.bea4dev.snowDawn.item.compass.PlayerCompassTask
 import com.github.bea4dev.snowDawn.item.weapon.PlayerWeaponTask
 import com.github.bea4dev.snowDawn.player.PlayerTask
 import com.github.bea4dev.snowDawn.save.PlayerDataRegistry
@@ -12,7 +11,6 @@ import com.github.bea4dev.snowDawn.world.WorldRegistry
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.GameMode
-import org.bukkit.Location
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerAnimationEvent
@@ -45,7 +43,6 @@ internal class PlayerJoinQuitListener : Listener {
         player.inventory.addItem(ItemRegistry.SCRAP.createItemStack())
 
         PlayerWeaponTask(player).runTaskTimer(SnowDawn.plugin, 0, 1)
-        PlayerCompassTask(player).runTaskTimer(SnowDawn.plugin, 0, 1)
         PlayerTask(player).start()
 
         player.teleport(LOGIN_POSITION.toLocation(WorldRegistry.PROLOGUE))
@@ -54,13 +51,12 @@ internal class PlayerJoinQuitListener : Listener {
         val playerData = PlayerDataRegistry[player]
         PlayerDataRegistry.load(playerData)
 
-        /*
         if (playerData.finishedTutorial) {
             player.teleport(playerData.lastLocation)
         } else {
             Prologue.start(player)
-        }*/
-        player.teleport(Location(WorldRegistry.THIRD_MEGA_STRUCTURE, 0.0, 0.0, 0.0))
+        }
+        //player.teleport(Location(WorldRegistry.SNOW_LAND, 0.0, 0.0, 0.0))
     }
 
     @EventHandler

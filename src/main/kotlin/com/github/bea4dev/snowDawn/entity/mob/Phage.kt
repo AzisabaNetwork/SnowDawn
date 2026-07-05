@@ -17,6 +17,7 @@ import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
 import net.minecraft.world.entity.LivingEntity
 import org.bukkit.Bukkit
+import org.bukkit.GameMode
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.Particle
@@ -539,7 +540,7 @@ private class PhageStateVariables {
 private class PhageAIGoal(private val phage: Phage) : PathfindingGoal {
     private val maxTargetFollowTick = TickThread.TPS * 10
     private val targetSearchInterval = TickThread.TPS * 2
-    private val maxPlayerDetectionRange = 30.0
+    private val maxPlayerDetectionRange = 20.0
 
     private var tick = 0
     private var targetFollowTick = maxTargetFollowTick
@@ -554,8 +555,9 @@ private class PhageAIGoal(private val phage: Phage) : PathfindingGoal {
         if (targetFollowTick >= maxTargetFollowTick && tick % targetSearchInterval == 0) {
             val target = PlayerManager.getNearestPlayer(phage.position.toLocation(phage.bukkitWorld))
 
-            if (target != null && target.location.toVector()
-                    .distanceSquared(phage.position) < maxPlayerDetectionRange.pow(2)
+            if (target != null
+                && target.location.toVector().distanceSquared(phage.position) < maxPlayerDetectionRange.pow(2)
+                && target.gameMode == GameMode.SURVIVAL
             ) {
                 phage.target = target
             } else {

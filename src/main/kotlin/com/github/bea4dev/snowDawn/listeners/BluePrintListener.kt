@@ -1,17 +1,12 @@
 package com.github.bea4dev.snowDawn.listeners
 
-import com.github.bea4dev.snowDawn.coroutine.MainThread
-import com.github.bea4dev.snowDawn.coroutine.play
-import com.github.bea4dev.snowDawn.item.ItemRegistry
 import com.github.bea4dev.snowDawn.item.getItem
 import com.github.bea4dev.snowDawn.item.weapon.BluePrint
 import com.github.bea4dev.snowDawn.save.ServerData
-import com.github.bea4dev.snowDawn.scenario.DEFAULT_TEXT_BOX
 import com.github.bea4dev.snowDawn.text.Text
 import com.github.bea4dev.snowDawn.toast.ToastKind
 import com.github.bea4dev.snowDawn.toast.ToastNotification
 import com.github.bea4dev.snowDawn.toast.sendToast
-import com.github.bea4dev.vanilla_source.api.text.TextBox
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
@@ -54,26 +49,6 @@ class BluePrintListener : Listener {
                     ToastKind.GOAL
                 )
             )
-
-            if (item == ItemRegistry.BLUE_PRINT_COMPASS) {
-                MainThread.launch {
-                    TextBox(
-                        player,
-                        DEFAULT_TEXT_BOX,
-                        Text.BENE[player],
-                        1,
-                        Text.GET_BLUE_PRINT_COMPASS_0[player, player.name]
-                    ).play().await()
-
-                    TextBox(
-                        player,
-                        DEFAULT_TEXT_BOX,
-                        Text.BENE[player],
-                        1,
-                        Text.GET_BLUE_PRINT_COMPASS_1[player, player.name]
-                    ).play().await()
-                }
-            }
         } else {
             player.playSound(
                 player.location,

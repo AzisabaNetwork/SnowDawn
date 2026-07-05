@@ -35,8 +35,9 @@ object WorldRegistry {
             //deleteDirectory(Paths.get("snow_land"))
             //deleteDirectory(Paths.get("second_mega_structure"))
 
-            val slCreator = WorldCreator("snow_land")
+            val slCreator = WorldCreator("snow_land").seed(0)
             slCreator.generator(GeneratorRegistry.SNOW_LAND)
+            slCreator.generateStructures(false)
             SNOW_LAND = Bukkit.createWorld(slCreator)!!
 
             val smCreator = WorldCreator("second_mega_structure")
