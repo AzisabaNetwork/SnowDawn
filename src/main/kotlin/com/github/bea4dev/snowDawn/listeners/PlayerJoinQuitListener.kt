@@ -52,6 +52,7 @@ internal class PlayerJoinQuitListener : Listener {
         PlayerDataRegistry.load(playerData)
 
         if (playerData.finishedTutorial) {
+            CompassInventory.ensure(player)
             player.teleport(playerData.lastLocation)
         } else {
             Prologue.start(player)

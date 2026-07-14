@@ -55,20 +55,21 @@ object WorldRegistry {
 
             PROLOGUE.setGameRule(GameRule.DO_MOB_SPAWNING, false)
             PROLOGUE.setGameRule(GameRule.DO_WEATHER_CYCLE, false)
+            PROLOGUE.setGameRule(GameRule.KEEP_INVENTORY, false)
             PROLOGUE.setStorm(false)
 
             SNOW_LAND.setGameRule(GameRule.DO_MOB_SPAWNING, false)
             SNOW_LAND.setGameRule(GameRule.DO_WEATHER_CYCLE, false)
-            SNOW_LAND.setGameRule(GameRule.KEEP_INVENTORY, true)
+            SNOW_LAND.setGameRule(GameRule.KEEP_INVENTORY, false)
             SNOW_LAND.setStorm(true)
 
             SECOND_MEGA_STRUCTURE.setGameRule(GameRule.DO_MOB_SPAWNING, false)
             SECOND_MEGA_STRUCTURE.setGameRule(GameRule.DO_WEATHER_CYCLE, false)
-            SECOND_MEGA_STRUCTURE.setGameRule(GameRule.KEEP_INVENTORY, true)
+            SECOND_MEGA_STRUCTURE.setGameRule(GameRule.KEEP_INVENTORY, false)
 
             THIRD_MEGA_STRUCTURE.setGameRule(GameRule.DO_MOB_SPAWNING, false)
             THIRD_MEGA_STRUCTURE.setGameRule(GameRule.DO_WEATHER_CYCLE, false)
-            THIRD_MEGA_STRUCTURE.setGameRule(GameRule.KEEP_INVENTORY, true)
+            THIRD_MEGA_STRUCTURE.setGameRule(GameRule.KEEP_INVENTORY, false)
         })
     }
 

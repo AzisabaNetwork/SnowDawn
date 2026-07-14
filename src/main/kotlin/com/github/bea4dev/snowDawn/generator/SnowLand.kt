@@ -5,6 +5,7 @@ import com.github.bea4dev.snowDawn.generator.structure.FixedPositionStructures
 import com.github.bea4dev.snowDawn.generator.structure.ItemChest
 import com.github.bea4dev.snowDawn.generator.structure.SleepStructureLayout
 import com.github.bea4dev.snowDawn.generator.structure.SurfaceStructures
+import com.github.bea4dev.snowDawn.generator.structure.StructureChestRequirement
 import com.github.bea4dev.snowDawn.generator.structure.UnderGroundStructures
 import com.github.bea4dev.snowDawn.item.ItemRegistry
 import com.github.bea4dev.vanilla_source.api.asset.WorldAssetsRegistry
@@ -205,7 +206,8 @@ class SnowLand internal constructor(seed: Long) : ChunkGenerator() {
                     ItemRegistry.ICE.createItemStack().also { item -> item.amount = 5 },
                     ItemRegistry.BLUE_PRINT_CHEST.createItemStack(),
                 )
-            )
+            ),
+            StructureChestRequirement.IRON_INGOT,
         ),
         seed,
     )
@@ -249,7 +251,8 @@ class SnowLand internal constructor(seed: Long) : ChunkGenerator() {
                     ItemRegistry.STORY_MEMO.createItemStack(),
                     ItemRegistry.FUEL.createItemStack().also { item -> item.amount = 5 },
                 )
-            )
+            ),
+            StructureChestRequirement.DIAMOND,
         ),
         seed,
         0,
@@ -258,8 +261,8 @@ class SnowLand internal constructor(seed: Long) : ChunkGenerator() {
     private val surfaceRoomStructures = SurfaceStructures(
         { minX, surfaceY, minZ, asset -> true },
         listOf(
-            WorldAssetsRegistry.getAsset("room_0")!! to 0.1,
-            WorldAssetsRegistry.getAsset("room_1")!! to 0.1,
+            WorldAssetsRegistry.getAsset("room_0")!! to 0.05,
+            WorldAssetsRegistry.getAsset("room_1")!! to 0.05,
         ),
         null,
         ItemChest(
@@ -295,7 +298,8 @@ class SnowLand internal constructor(seed: Long) : ChunkGenerator() {
                     ItemRegistry.STORY_MEMO.createItemStack(),
                     ItemRegistry.FUEL.createItemStack().also { item -> item.amount = 5 },
                 )
-            )
+            ),
+            StructureChestRequirement.IRON_INGOT,
         ),
         seed,
         merge = false,
@@ -304,7 +308,7 @@ class SnowLand internal constructor(seed: Long) : ChunkGenerator() {
         { minX, surfaceY, minZ, asset -> true },
         WorldAssetsRegistry.getAsset("ent_door_0")!!,
         Vector(0, -64, 0),
-        ItemChest(listOf(emptyList())),
+        ItemChest(listOf(emptyList()), StructureChestRequirement.DIAMOND),
         seed,
         merge = true,
     )

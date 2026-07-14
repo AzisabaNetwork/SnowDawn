@@ -1,6 +1,7 @@
 package com.github.bea4dev.snowDawn.craft
 
 import com.github.bea4dev.snowDawn.coroutine.CoroutineFlagRegistry
+import com.github.bea4dev.snowDawn.coroutine.FirstCraftCloseEventTracker
 import com.github.bea4dev.snowDawn.item.ItemRegistry
 import com.github.bea4dev.snowDawn.item.getItem
 import com.github.bea4dev.snowDawn.text.Text
@@ -129,6 +130,8 @@ class CraftGUI(private val player: Player) : InventoryHolder {
         val dropItem = inventory.addItem(craftItem).values
 
         dropItem.forEach { item -> player.world.dropItemNaturally(player.eyeLocation, item) }
+
+        FirstCraftCloseEventTracker.onCraft(player)
 
         when (recipe.craftItem) {
             ItemRegistry.SCRAP_PIPE -> {

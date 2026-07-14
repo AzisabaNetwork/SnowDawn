@@ -1,16 +1,34 @@
 package com.github.bea4dev.snowDawn.text
 
+import com.github.bea4dev.snowDawn.coroutine.play
+import com.github.bea4dev.snowDawn.listeners.StoryMemoUnlockEventRegistry
 import com.github.bea4dev.snowDawn.save.ServerData
+import com.github.bea4dev.snowDawn.scenario.DEFAULT_TEXT_BOX
+import com.github.bea4dev.snowDawn.toast.ToastKind
+import com.github.bea4dev.snowDawn.toast.ToastNotification
+import com.github.bea4dev.snowDawn.toast.sendToast
 import com.github.bea4dev.snowDawn.world.WorldRegistry
+import com.github.bea4dev.vanilla_source.api.text.TextBox
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.text.format.TextDecoration
 import net.kyori.adventure.translation.GlobalTranslator
 import net.kyori.adventure.translation.TranslationRegistry
+import org.bukkit.Material
+import org.bukkit.Sound
 import org.bukkit.World
+import org.bukkit.inventory.ItemStack
 import java.text.MessageFormat
 import java.util.Locale
 
 object StoryMemoText {
+    data class StoryMemo(
+        val worldName: String,
+        val index: Int,
+        val lines: List<Component>,
+    )
+
     private val STORY_MEMO_TEXT = mapOf(
         WorldRegistry.SNOW_LAND to listOf(
             "観測記録・一\n三十年前の星図と\n今夜の空を照合した。\n星の位置が寸分違わない。\n一つとして動いていない。\n天は回っていない。\n……あるいは、\nあれは天ではないのか。",
@@ -21,6 +39,7 @@ object StoryMemoText {
             "手記\n兄から手紙が来た。\n短いものだった。\n「もう村でお前の名を\n口にするな」と。\n家族に累が及ぶのは道理だ。\n分かっている。\n分かってはいるのだ。",
             "手記\n旧い友人に、初めて全てを話した。\n壁のこと、星のこと、\n外の宇宙のこと。\n案の定、腹を抱えて笑われた。\nだが帰り際、彼はこう聞いた。\n「で、ポッドは二台あるのか」と。\n冗談だと思って流してしまった。\n彼はいつも冗談ばかり言う。",
             "手記\n彼まで村での立場を\n失いつつあるらしい。\n私と口をきくというだけで、だ。\nもう誰も巻き込むべきではない。\nこの先は一人でやる。\n古文書にあった「制御中枢」\n――ドームが実在するなら、\nその心臓部も実在するはずだ。\nそれを探す。",
+            "メモ\n見つけた。\n三百年前の測量記録の余白に、それはあった。\n制御中枢。X: ████ / Z: ████\n巨大な壁の内側だという。\nこの座標を計器に打ち込めば、あとは針が導いてくれる。",
         ),
         WorldRegistry.SECOND_MEGA_STRUCTURE to listOf(
             "メモ\n岩を被ったPhageに気をつけてほしい。\nそのままだと攻撃が通らない。\nアイツの攻撃時に弾き飛ばす必要がある。\nいわゆるパリィだ！",
@@ -45,9 +64,55 @@ object StoryMemoText {
         }
         val translator = GlobalTranslator.translator()
         translator.addSource(registry)
+
+        StoryMemoUnlockEventRegistry.register(WorldRegistry.SNOW_LAND, 0) { player ->
+            TextBox(
+                player,
+                DEFAULT_TEXT_BOX,
+                Text.LUCAS[player],
+                1,
+                Text.MEMO_0[player]
+            ).play().await()
+        }
+        StoryMemoUnlockEventRegistry.register(WorldRegistry.SNOW_LAND, 4) { player ->
+            TextBox(
+                player,
+                DEFAULT_TEXT_BOX,
+                Text.LUCAS[player],
+                1,
+                Text.MEMO_4[player]
+            ).play().await()
+        }
+        StoryMemoUnlockEventRegistry.register(WorldRegistry.SNOW_LAND, 8) { player ->
+            TextBox(
+                player,
+                DEFAULT_TEXT_BOX,
+                Text.LUCAS[player],
+                1,
+                Text.MEMO_8[player, player.name]
+            ).play().await()
+
+            player.playSound(
+                player.location,
+                Sound.ENTITY_ARROW_HIT_PLAYER,
+                Float.MAX_VALUE,
+                1.5F
+            )
+
+            player.sendToast(
+                ToastNotification(
+                    Component.translatable(Text.GOTO_COMPASS.toString())
+                        .color(NamedTextColor.AQUA)
+                        .decoration(TextDecoration.ITALIC, false)
+                        .decorate(TextDecoration.BOLD),
+                    ItemStack(Material.COMPASS),
+                    ToastKind.TASK
+                )
+            )
+        }
     }
 
-    fun getNext(world: World): List<Component>? {
+    fun getNext(world: World): StoryMemo? {
         val index = ServerData.storyTextIndex.computeIfAbsent(world.name) { 0 }
 
         val storyMemoText = STORY_MEMO_TEXT[world] ?: return null
@@ -58,12 +123,28 @@ object StoryMemoText {
 
         ServerData.storyTextIndex[world.name] = index + 1
 
+        return get(world, index)
+    }
+
+    fun get(world: World, index: Int): StoryMemo? {
+        val storyMemoText = STORY_MEMO_TEXT[world] ?: return null
+        if (index !in storyMemoText.indices) {
+            return null
+        }
+
         val lines = storyMemoText[index]
             .split("\n")
             .indices
             .map { line -> "memo:${world.name}:${index}:${line}" }
             .map { key -> Component.translatable(key) }
 
-        return lines
+        return StoryMemo(world.name, index, lines)
+    }
+
+    fun getUnlocked(world: World): List<StoryMemo> {
+        return ServerData.unlockedStoryMemos[world.name]
+            .orEmpty()
+            .sorted()
+            .mapNotNull { index -> get(world, index) }
     }
 }

@@ -5,6 +5,7 @@ import com.github.bea4dev.snowDawn.coroutine.CoroutineFlagRegistry
 import com.github.bea4dev.snowDawn.coroutine.MainThread
 import com.github.bea4dev.snowDawn.item.ItemRegistry
 import com.github.bea4dev.snowDawn.item.getItem
+import com.github.bea4dev.snowDawn.listeners.CompassInventory
 import com.github.bea4dev.snowDawn.save.PlayerDataRegistry
 import com.github.bea4dev.snowDawn.world.WorldRegistry
 import com.github.bea4dev.vanilla_source.api.VanillaSourceAPI
@@ -157,8 +158,13 @@ class PlayerTask(private val player: Player) : TickBase {
     }
 
     private fun updatePlayerInventory() {
-        if (tick % 20 == 0 && player.gameMode == GameMode.SURVIVAL) {
-            player.updateInventory()
+        if (tick % 20 == 0) {
+            MainThread.launch {
+                CompassInventory.ensure(player)
+                if (player.gameMode == GameMode.SURVIVAL) {
+                    player.updateInventory()
+                }
+            }
         }
     }
 

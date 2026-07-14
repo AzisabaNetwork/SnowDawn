@@ -8,6 +8,7 @@ object ServerData {
     private val file = File("server_saves.yml")
 
     val storyTextIndex = mutableMapOf<String, Int>()
+    val unlockedStoryMemos = mutableMapOf<String, MutableSet<Int>>()
     val craftableItems = mutableListOf(
         ItemRegistry.SCRAP_PIPE.id,
         ItemRegistry.WOODEN_PICKAXE.id,
@@ -52,6 +53,13 @@ object ServerData {
             }
         }
 
+        yml.getConfigurationSection("unlockedStoryMemos")?.let { sec ->
+            unlockedStoryMemos.clear()
+            for (worldName in sec.getKeys(false)) {
+                unlockedStoryMemos[worldName] = sec.getIntegerList(worldName).toMutableSet()
+            }
+        }
+
         // craftableItems 読み込み（存在すれば上書き、無ければ現状維持＝デフォルトのまま）
         if (yml.contains("craftableItems")) {
             craftableItems.clear()
@@ -73,6 +81,14 @@ object ServerData {
             // yml.createSection("storyTextIndex")
         }
 
+
+        if (unlockedStoryMemos.isNotEmpty()) {
+            yml.createSection(
+                "unlockedStoryMemos",
+                unlockedStoryMemos.mapValues { (_, indices) -> indices.sorted() }
+            )
+        }
+
         // リストはそのまま保存
         yml.set("craftableItems", craftableItems)
 
@@ -80,5 +96,15 @@ object ServerData {
             file.parentFile?.mkdirs()
             yml.save(file)
         }.onFailure { it.printStackTrace() }
+    }
+
+    fun unlockStoryMemo(worldName: String, index: Int): Boolean {
+        val unlocked = unlockedStoryMemos.computeIfAbsent(worldName) { mutableSetOf() }
+        if (!unlocked.add(index)) {
+            return false
+        }
+
+        save()
+        return true
     }
 }

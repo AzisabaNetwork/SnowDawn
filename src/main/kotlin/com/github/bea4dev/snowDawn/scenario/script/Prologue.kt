@@ -7,6 +7,7 @@ import com.github.bea4dev.snowDawn.coroutine.async
 import com.github.bea4dev.snowDawn.coroutine.play
 import com.github.bea4dev.snowDawn.item.ItemRegistry
 import com.github.bea4dev.snowDawn.listeners.sendCraftingSlotButtons
+import com.github.bea4dev.snowDawn.listeners.CompassInventory
 import com.github.bea4dev.snowDawn.save.PlayerDataRegistry
 import com.github.bea4dev.snowDawn.scenario.DEFAULT_TEXT_BOX
 import com.github.bea4dev.snowDawn.scenario.Scenario
@@ -253,7 +254,7 @@ object Prologue : Scenario() {
             player.inventory.clear()
             player.inventory.addItem(ItemRegistry.SCRAP.createItemStack().also { item -> item.amount = 2 })
             player.inventory.addItem(ItemRegistry.COAL.createItemStack().also { item -> item.amount = 1 })
-            player.inventory.addItem(ItemRegistry.COMPASS.createItemStack().also { item -> item.amount = 1 })
+            player.inventory.setItem(9, ItemRegistry.COMPASS.createItemStack().also { item -> item.amount = 1 })
         }.await()
 
         blackFeedIn(player, 2000)
@@ -315,6 +316,7 @@ object Prologue : Scenario() {
             playerData.finishedTutorial = true
             playerData.respawnLocation = SPAWN_POSITION.toLocation(WorldRegistry.SNOW_LAND)
 
+            CompassInventory.ensure(player)
             player.gameMode = GameMode.SURVIVAL
         }.await()
     }

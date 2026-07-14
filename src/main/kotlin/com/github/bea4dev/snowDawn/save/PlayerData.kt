@@ -44,6 +44,7 @@ class PlayerData(player: Player) {
     var finishedSisetuMovie = false
     var prevSnowLandEntrance: Location? = null
     var secondMegaStructureEnterFlag = false
+    val completedCoroutineEvents = mutableSetOf<String>()
 
     fun save(yml: YamlConfiguration) {
         yml.set("$uuid.finishedTutorial", finishedTutorial)
@@ -52,6 +53,7 @@ class PlayerData(player: Player) {
         yml.set("$uuid.finishedSisetuMovie", finishedSisetuMovie)
         yml.set("$uuid.prevSnowLandEntrance", prevSnowLandEntrance)
         yml.set("$uuid.secondMegaStructureEnterFlag", secondMegaStructureEnterFlag)
+        yml.set("$uuid.completedCoroutineEvents", completedCoroutineEvents.sorted())
     }
 
     fun load(yml: YamlConfiguration) {
@@ -62,6 +64,8 @@ class PlayerData(player: Player) {
             finishedSisetuMovie = yml.getBoolean("$uuid.finishedSisetuMovie")
             prevSnowLandEntrance = yml.getLocation("$uuid.prevSnowLandEntrance")
             secondMegaStructureEnterFlag = yml.getBoolean("$uuid.secondMegaStructureEnterFlag")
+            completedCoroutineEvents.clear()
+            completedCoroutineEvents.addAll(yml.getStringList("$uuid.completedCoroutineEvents"))
         }
     }
 }
